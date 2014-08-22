@@ -1,0 +1,5 @@
+package shocky3;
+
+public class DefaultConnectionHandler {
+	
+}

@@ -1,0 +1,10 @@
+package sconsole;
+
+public class ConsoleTab extends ConsoleView {
+	public String caption;
+	
+	public ConsoleTab(ConsoleThread thread, String caption) {
+		super(thread);
+		this.caption = caption;
+	}
+}

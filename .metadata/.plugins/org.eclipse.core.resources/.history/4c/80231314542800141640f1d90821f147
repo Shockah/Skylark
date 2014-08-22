@@ -1,0 +1,7 @@
+package sconsole;
+
+public class ConsoleView {
+	public void draw() {
+		
+	}
+}

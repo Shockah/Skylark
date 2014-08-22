@@ -1,0 +1,59 @@
+package shocky3;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import org.pircbotx.Channel;
+import pl.shockah.json.JSONObject;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
+
+public class Settings {
+	protected Map<String, Setting<?>> settings = Collections.synchronizedMap(new HashMap<String, Setting<?>>());
+	
+	public void read() {
+		DBCollection dbc = botApp.collection("servers");
+		for (DBObject dbo : JSONUtil.all(dbc.find())) {
+			JSONObject j = JSONUtil.fromDBObject(dbo);
+			
+			BotManager bm = new BotManager(this, j.getString("host"));
+			bm.botName = j.getString("name");
+			bm.channelsPerConn = j.getInt("channelsPerConn");
+			botManagers.add(bm);
+			
+			for (String jChannel : j.getList("channels").ofStrings()) {
+				bm.joinChannel(jChannel);
+			}
+		}
+	}
+	
+	public <T> void add(String setting, T defaultValue) {
+		if (settings.containsKey(setting)) return;
+		settings.put(setting, new Setting<T>(defaultValue));
+	}
+	
+	public String getStringForChannel(Channel channel, String setting) {
+		return getStringForChannel(channel.getBot().getConfiguration().getServerHostname(), channel.getName(), setting);
+	}
+	public String getStringForChannel(String server, String channel, String setting) {
+		return (String)getForChannel(server, channel, setting);
+	}
+	
+	public Object getForChannel(Channel channel, String setting) {
+		return getForChannel(channel.getBot().getConfiguration().getServerHostname(), channel.getName(), setting);
+	}
+	public Object getForChannel(String server, String channel, String setting) {
+		Setting<?> s = settings.get(setting);
+		if (s.custom.containsKey(server + "|" + channel)) return s.custom.get(server + "|" + channel);
+		return s.defaultValue;
+	}
+	
+	private class Setting<T> {
+		public T defaultValue;
+		public Map<String, T> custom = Collections.synchronizedMap(new HashMap<String, T>());
+		
+		public Setting(T defaultValue) {
+			this.defaultValue = defaultValue;
+		}
+	}
+}

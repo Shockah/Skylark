@@ -1,0 +1,14 @@
+package shocky3;
+
+public class Plugin {
+	private boolean enabled = false;
+	
+	public final void enable() {
+		onEnable();
+		enabled = true;
+	}
+	
+	public boolean enabled() {
+		return enabled;
+	}
+}

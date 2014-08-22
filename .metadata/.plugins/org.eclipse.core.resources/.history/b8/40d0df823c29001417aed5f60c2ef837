@@ -1,0 +1,27 @@
+package sconsole;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
+public class ConsoleViewOutput extends ConsoleView {
+	public List<String> lines = Collections.synchronizedList(new ArrayList<String>());
+	public StringBuffer sb = new StringBuffer();
+	
+	public ConsoleViewOutput(ConsoleThread thread) {
+		super(thread);
+	}
+	
+	public void draw(ConsoleViewSplitter.Side side) {
+		int yy = sp.y+sp.h-1;
+		if (sb.length() > 0) sp.draw(0,yy--,sb.toString());
+		
+		while (lines.size() > 500) lines.remove(0);
+		Iterator<String> it = linesBase.descendingIterator();
+		while (it.hasNext()) {
+			sp.draw(0,yy--,it.next());
+			if (yy < sp.y) break;
+		}
+	}
+}

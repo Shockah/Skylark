@@ -1,0 +1,17 @@
+package shocky3;
+
+import java.util.LinkedList;
+import java.util.List;
+
+public class ServerManager {
+	public final Shocky botApp;
+	protected List<BotManager> botManagers = new LinkedList<>();
+	
+	public ServerManager(Shocky botApp) {
+		this.botApp = botApp;
+	}
+	
+	public void readConfig() {
+		DBCollection dbc = botApp.collection("servers");
+	}
+}

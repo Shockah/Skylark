@@ -1,0 +1,40 @@
+package sconsole;
+
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import com.googlecode.lanterna.TerminalFacade;
+import com.googlecode.lanterna.screen.Screen;
+import com.googlecode.lanterna.terminal.swing.SwingTerminal;
+import pl.shockah.Util;
+
+public class ConsoleThread extends Thread {
+	public final Plugin plugin;
+	
+	public Screen screen;
+	public ScreenRect rect;
+	public Borders borders;
+	
+	public ConsoleThread(Plugin plugin) {
+		this.plugin = plugin;
+	}
+	
+	public void run() {
+		screen = TerminalFacade.createScreen();
+		screen.startScreen();
+		if (screen.getTerminal() instanceof SwingTerminal) {
+			((SwingTerminal)screen.getTerminal()).getJFrame().addWindowListener(new WindowAdapter(){
+				public void windowClosing(WindowEvent e) {
+					plugin.botApp.stop();
+				}
+			});
+		}
+		rect = new ScreenRect(this);
+		borders = new Borders(rect);
+		
+		while (plugin.botApp.running && plugin.running) {
+			Util.sleep(50);
+		}
+		
+		screen.stopScreen();
+	}
+}

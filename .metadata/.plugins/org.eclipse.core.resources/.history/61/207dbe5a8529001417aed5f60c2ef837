@@ -1,0 +1,20 @@
+package shocky3;
+
+import pl.shockah.Box;
+
+public class IdentityHandler {
+	public final String id;
+	protected Box<Boolean> available = null;
+	
+	public IdentityHandler(String id) {
+		this.id = id;
+	}
+	
+	public final boolean isAvailable() {
+		
+	}
+	public boolean checkAvailability() {}
+	
+	public boolean isAvailable();
+	public String account(BotManager bm, String user);
+}

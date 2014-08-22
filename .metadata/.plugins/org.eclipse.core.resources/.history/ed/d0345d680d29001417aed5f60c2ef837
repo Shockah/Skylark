@@ -1,0 +1,17 @@
+package scalc;
+
+import scommands.Command;
+import shocky3.PluginInfo;
+
+public class Plugin extends shocky3.Plugin {
+	protected Command
+		cmdCalc = new CommandCalc();
+	
+	public Plugin(PluginInfo pinfo) {
+		super(pinfo);
+	}
+	
+	protected void onLoad() {
+		scommands.Plugin p = botApp.pluginManager.byInternalName("Shocky.SCommands");
+	}
+}

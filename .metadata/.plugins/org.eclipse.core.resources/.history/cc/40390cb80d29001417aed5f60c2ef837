@@ -1,0 +1,15 @@
+package scalc;
+
+import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.events.MessageEvent;
+import scommands.Command;
+
+public class CommandCalc extends Command {
+	public CommandCalc() {
+		super("calc");
+	}
+	
+	public void call(MessageEvent<PircBotX> e, String trigger, String args) {
+		
+	}
+}

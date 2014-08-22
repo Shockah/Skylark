@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="build" name="Build SConsole">
+	<target name="build">
+		<mkdir dir="bin"/>
+		<delete file="../Shocky3/plugins/sconsole.jar"/>
+		<jar destfile="../Shocky3/plugins/sconsole.jar" filesetmanifest="mergewithoutmain">
+		<manifest>
+			<attribute name="Main-Class" value="pl.shockah.shocky.Shocky"/>
+			<attribute name="Class-Path" value=". libs/pircbotx-1.8.jar libs/commons-lang3-3.1.jar libs/commons-codec-1.8.jar libs/opennlp-tools-1.5.3.jar libs/LOLCODE-0.11.jar libs/luaj-jse-2.0.2.jar libs/mysql-connector-java-5.1.22-bin.jar"/>
+		</manifest>
+		<fileset dir="bin"/>
+		</jar>
+	</target>
+</project>

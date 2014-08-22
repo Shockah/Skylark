@@ -1,0 +1,36 @@
+package shocky3.ident;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import org.pircbotx.User;
+import shocky3.BotManager;
+
+public class IdentGroup {
+	public final BotManager manager;
+	public final String name;
+	protected List<String> idents = Collections.synchronizedList(new LinkedList<String>());
+	protected List<String> permissions = Collections.synchronizedList(new LinkedList<String>());
+	
+	public IdentGroup(BotManager manager, String name) {
+		this.manager = manager;
+		this.name = name;
+	}
+	
+	public boolean userBelongs(User user) {
+		for (String ident : idents) {
+			IdentHandler handler = manager.getIdentHandlerFor(ident);
+			if (handler != null) {
+				return handler.isAccount(user, ident);
+			}
+		}
+		return false;
+	}
+	
+	public boolean hasPermission(String permission) {
+		String[] spl = permission.split("\\.");
+		for (String permission2 : permissions) {
+			String[] spl2 = permission2.split("\\.");
+		}
+	}
+}

@@ -1,0 +1,7 @@
+package scalc;
+
+import scommands.Command;
+
+public class CommandCalc extends Command {
+	
+}

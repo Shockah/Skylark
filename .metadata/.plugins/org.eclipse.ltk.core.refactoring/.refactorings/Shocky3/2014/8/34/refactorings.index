@@ -1,0 +1,31 @@
+1408523086918	Rename package 'pl.shockah.shocky3'
+1408523091151	Rename package 'pl.shockah.shocky3.console'
+1408523108527	Copy compilation unit
+1408523113999	Delete element
+1408523670254	Move file
+1408523941596	Copy compilation unit
+1408532161576	Delete element
+1408532168091	Delete element
+1408535391497	Rename method 'enabled'
+1408535405231	Rename method 'enable'
+1408535410607	Rename method 'disable'
+1408535826489	Rename method 'onEnable'
+1408535832176	Rename method 'onDisable'
+1408538108198	Rename method 'load'
+1408538113510	Rename method 'unload'
+1408538145684	Rename method 'markLoad'
+1408538150429	Rename method 'markUnload'
+1408538160366	Rename method 'unload'
+1408542140200	Copy compilation unit
+1408543110820	Delete element
+1408552088033	Delete element
+1408569179269	Delete element
+1408622779837	Delete elements
+1408622946027	Delete element
+1408645375304	Delete element
+1408660630940	Delete element
+1408660636130	Delete element
+1408661241367	Rename type 'IIdentityHandler'
+1408661573522	Move compilation unit
+1408661579770	Rename type 'IdentityHandler'
+1408662047436	Rename field 'identityHandlers'

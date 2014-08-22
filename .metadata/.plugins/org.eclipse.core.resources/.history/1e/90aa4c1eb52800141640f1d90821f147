@@ -1,0 +1,10 @@
+package scommands;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
+public class Command {
+	public final String main;
+	public final List<String> alt = Collections.synchronizedList(new LinkedList<String>());
+}

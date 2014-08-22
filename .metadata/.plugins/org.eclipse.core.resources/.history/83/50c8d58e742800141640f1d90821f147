@@ -1,0 +1,48 @@
+package shocky3;
+
+import org.pircbotx.Configuration;
+import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.Event;
+import org.pircbotx.hooks.Listener;
+import org.pircbotx.hooks.events.ConnectEvent;
+import org.pircbotx.hooks.managers.ListenerManager;
+import com.google.common.collect.ImmutableSet;
+import pl.shockah.Util;
+
+public class BotStarterThread extends Thread {
+	public final String host;
+	public final String botName;
+	
+	public PircBotX bot = null;
+	public boolean drop = false;
+	
+	public BotStarterThread(String host, String botName) {
+		this.host = host;
+		this.botName = botName;
+	}
+	
+	public void run() {
+		try {
+			final BotStarterThread THIS = this;
+			Configuration.Builder<PircBotX> cfg = new Configuration.Builder<>()
+					.setName(botName)
+					.setAutoNickChange(true)
+					.setServerHostname(host)
+					.addListener(new Listener<PircBotX>(){
+						public void onEvent(Event<PircBotX> e) throws Exception {
+							if (e instanceof ConnectEvent) {
+								THIS.bot = bot;
+								drop = true;
+							}
+						}
+					});
+			
+			PircBotX bot = new PircBotX(cfg.buildConfiguration());
+			bot.startBot();
+		} catch (Exception e) {
+			this.bot = null;
+			drop = true;
+			e.printStackTrace();
+		}
+	}
+}

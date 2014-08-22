@@ -1,0 +1,14 @@
+package shocky3;
+
+public class Plugin {
+	public final Shocky botApp;
+	public final PluginInfo pinfo;
+	
+	public Plugin(PluginInfo pinfo) {
+		this.botApp = pinfo.botApp;
+		this.pinfo = pinfo;
+	}
+	
+	protected void onLoad() {}
+	protected void onDisable() {}
+}

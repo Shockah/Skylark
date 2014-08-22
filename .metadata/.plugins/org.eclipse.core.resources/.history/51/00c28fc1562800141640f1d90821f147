@@ -1,0 +1,53 @@
+package sconsole;
+
+public class ConsoleViewSplitter extends ConsoleView {
+	public static enum Side {
+		Left(true), Right(true), Top(false), Bottom(false);
+		
+		public final boolean h, v;
+		
+		private Side(boolean h) {
+			this.h = h;
+			this.v = !h;
+		}
+	}
+	
+	protected ConsoleView main = null, off = null;
+	protected Side side = null;
+	
+	public void update() {
+		if (side == null) return;
+		if (main == null && off == null) return;
+		if (main != null) main.update();
+		if (off != null) off.update();
+		
+		if ((main == null) ^ (off == null)) {
+			ConsoleView view = main == null ? off : main;
+			view.rect.x = rect.x;
+			view.rect.y = rect.y;
+			view.rect.w = rect.w;
+			view.rect.h = rect.h;
+		} else {
+			switch (side) {
+				case Left:
+					main.rect.x = rect.x;
+					main.rect.y = rect.y;
+					main.rect.h = rect.h;
+					off.rect.x = rect.x + main.rect.w + 1;
+					off.rect.y = rect.y;
+					off.rect.w = rect.w - main.rect.w - 1;
+					off.rect.h = rect.h;
+					break;
+				case Right:
+					main.rect.x = rect.w - main.rect.w;
+					main.rect.y = rect.y;
+					main.rect.h = rect.h;
+					off.rect.x = rect.x;
+					off.rect.y = rect.y;
+					off.rect.w = rect.w - main.rect.w - 1;
+					off.rect.h = rect.h;
+					break;
+			}
+		}
+	}
+}

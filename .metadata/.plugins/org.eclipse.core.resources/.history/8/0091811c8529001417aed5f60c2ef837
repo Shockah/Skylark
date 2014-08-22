@@ -1,0 +1,7 @@
+package shocky3;
+
+public interface IIdentityHandler {
+	public String id();
+	public boolean isAvailable();
+	public String account(BotManager bm, String user);
+}

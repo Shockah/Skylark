@@ -1,0 +1,35 @@
+package sconsole;
+
+import java.util.LinkedList;
+import pl.shockah.SelectList;
+
+public class ConsoleViewTabs extends ConsoleView {
+	public SelectList<ConsoleTab> tabs = new SelectList<>(new LinkedList<ConsoleTab>());
+	public ConsoleViewTab view = null;
+	
+	public ConsoleViewTabs(ConsoleThread thread) {
+		super(thread);
+	}
+	
+	public void update(ConsoleViewSplitter.Side side) {
+		if (side == null) return;
+		if (view == null) return;
+		
+		if (side.h) {
+			int w = 2;
+			for (ConsoleTab tab : tabs) {
+				tab.updateTabView(side, tabs.getCurrent() == tab);
+				int ww = tab.caption.length() + 2;
+				if (ww > w) w = ww;
+			}
+			rect.w = w;
+		} else {
+			int w = 0;
+			for (ConsoleTab tab : tabs) {
+				tab.updateTabView(side, tabs.getCurrent() == tab);
+				w += tab.caption.length() + 2;
+			}
+			rect.w = w;
+		}
+	}
+}

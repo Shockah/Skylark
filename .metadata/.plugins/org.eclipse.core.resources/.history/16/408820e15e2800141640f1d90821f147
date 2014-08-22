@@ -1,0 +1,33 @@
+package shocky3;
+
+import pl.shockah.json.JSONObject;
+
+public class Plugin {
+	public final Shocky botApp;
+	public JSONObject jInfo = null;
+	private boolean enabled = false;
+	
+	public Plugin(Shocky botApp) {
+		this.botApp = botApp;
+	}
+	
+	public final String internalName() {return jInfo.getString("internalName");}
+	public final String name() {return jInfo.contains("name") ? jInfo.getString("name") : null;}
+	
+	public final void enable() {
+		if (enabled) return;
+		onEnable();
+		enabled = true;
+	}
+	public final void disable() {
+		if (!enabled) return;
+		onDisable();
+		enabled = false;
+	}
+	public final boolean enabled() {
+		return enabled;
+	}
+	
+	protected void onEnable() {}
+	protected void onDisable() {}
+}

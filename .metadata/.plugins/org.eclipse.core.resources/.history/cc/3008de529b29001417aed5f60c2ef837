@@ -1,0 +1,91 @@
+package shocky3;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import org.pircbotx.PircBotX;
+import pl.shockah.Util;
+import pl.shockah.json.JSONObject;
+import shocky3.ident.IdentGroup;
+import shocky3.ident.IdentHandler;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
+
+public class BotManager {
+	public final Shocky botApp;
+	public final ServerManager manager;
+	public final String host;
+	public String botName = null;
+	public int channelsPerConn = 0;
+	public final List<PircBotX> bots = Collections.synchronizedList(new LinkedList<PircBotX>());
+	public final List<IdentHandler> identHandlers = Collections.synchronizedList(new LinkedList<IdentHandler>());
+	public final List<IdentGroup> identGroups = Collections.synchronizedList(new LinkedList<IdentGroup>());
+	
+	public BotManager(ServerManager manager, String host) {
+		this.botApp = manager.botApp;
+		this.manager = manager;
+		this.host = host;
+	}
+	
+	public IdentHandler getIdentHandlerFor(String account) {
+		String[] spl = account.split(":");
+		if (spl.length == 1) return null;
+		for (IdentHandler h : identHandlers) {
+			System.out.println(String.format("%s == %s", h.id, spl[0]));
+			if (h.id.equals(spl[0])) {
+				return h;
+			}
+		}
+		return null;
+	}
+	
+	private	void readIdentGroups() {
+		DBCollection dbc = botApp.collection("identGroups");
+		for (DBObject dbo : JSONUtil.all(dbc.find(JSONUtil.toDBObject(JSONObject.make(
+			"server", host
+		))))) {
+			JSONObject j = JSONUtil.fromDBObject(dbo);
+			
+			IdentGroup igroup = new IdentGroup(botApp, this, j.getString("name"));
+			for (String s : j.getList("idents").ofStrings()) {
+				igroup.idents.add(s);
+			}
+			for (String s : j.getList("permissions").ofStrings()) {
+				igroup.permissions.add(s);
+			}
+			identGroups.add(igroup);
+		}
+	}
+	
+	public PircBotX joinChannel(String cname) {
+		for (PircBotX bot : bots) {
+			if (bot.getUserBot().getChannels().size() < channelsPerConn) {
+				bot.sendIRC().joinChannel(cname);
+				return bot;
+			}
+		}
+		
+		connectNewBot();
+		return joinChannel(cname);
+	}
+	
+	public PircBotX connectNewBot() {
+		BotStarterThread botStarter = new BotStarterThread(this);
+		botStarter.start();
+		
+		while (true) {
+			if (botStarter.drop) break;
+			Util.sleep(50);
+		}
+		
+		if (botStarter.bot != null) {
+			bots.add(botStarter.bot);
+			readIdentGroups();
+		}
+		return botStarter.bot;
+	}
+	
+	public List<PircBotX> bots() {
+		return Collections.unmodifiableList(bots);
+	}
+}

@@ -1,0 +1,8 @@
+{
+	"name": "Shocky - Console",
+	"version": "r1",
+	"author": "Shockah",
+	
+	"internalName": "Shocky.SConsole",
+	"baseClass": "sconsole.Plugin"
+}

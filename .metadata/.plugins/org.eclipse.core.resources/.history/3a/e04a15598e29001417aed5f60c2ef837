@@ -1,0 +1,14 @@
+package shocky3.ident;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
+public class IdentGroup {
+	public final String name;
+	protected List<String> idents = Collections.synchronizedList(new LinkedList<String>());
+	
+	public IdentGroup(String name) {
+		this.name = name;
+	}
+}

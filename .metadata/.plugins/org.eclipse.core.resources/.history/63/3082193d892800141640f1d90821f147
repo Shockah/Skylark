@@ -1,0 +1,7 @@
+package shocky3;
+
+public abstract class ListenerPlugin extends Plugin {
+	public ListenerPlugin(PluginInfo pinfo) {
+		super(pinfo);
+	}
+}

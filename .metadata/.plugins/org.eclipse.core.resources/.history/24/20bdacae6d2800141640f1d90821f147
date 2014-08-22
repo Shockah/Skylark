@@ -1,0 +1,7 @@
+package shocky3;
+
+public class DefaultConnectionHandler implements IConnectionHandler {
+	public void handle() {
+		
+	}
+}

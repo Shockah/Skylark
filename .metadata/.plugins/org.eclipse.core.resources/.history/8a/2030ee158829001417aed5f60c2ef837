@@ -1,0 +1,27 @@
+package shocky3.ident;
+
+import org.pircbotx.User;
+import shocky3.BotManager;
+
+public class HostIdentHandler extends IdentHandler {
+	public HostIdentHandler() {
+		super("h");
+	}
+	
+	public IdentHandler copy() {
+		return new HostIdentHandler();
+	}
+	
+	public boolean checkAvailability() {
+		return true;
+	}
+	
+	public String account(BotManager bm, User user) {
+		return user.getHostmask();
+	}
+	
+	public boolean isAccount(BotManager bm, User user, String account) {
+		String acc = account(bm, user);
+		return acc.equals(account);
+	}
+}

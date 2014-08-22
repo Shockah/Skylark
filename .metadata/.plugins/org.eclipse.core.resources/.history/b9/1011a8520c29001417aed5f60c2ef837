@@ -1,0 +1,24 @@
+package scalc;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.events.MessageEvent;
+import pl.shockah.json.JSONObject;
+import shocky3.PluginInfo;
+
+public class Plugin extends shocky3.ListenerPlugin {
+	public Plugin(PluginInfo pinfo) {
+		super(pinfo);
+	}
+	
+	protected void onLoad() {
+		botApp.settings.add(this, "characters", "<");
+		commands.clear();
+	}
+	
+	protected void onUnload() {
+		commands.clear();
+	}
+}

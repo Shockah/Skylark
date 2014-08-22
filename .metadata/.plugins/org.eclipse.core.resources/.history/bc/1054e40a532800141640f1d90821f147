@@ -1,0 +1,23 @@
+package sconsole;
+
+import com.googlecode.lanterna.terminal.Terminal.Color;
+
+public class Borders {
+	public final int w, h;
+	public Color[][] bg, fg;
+	
+	public Borders(ScreenRect rect) {
+		this(rect.w, rect.h);
+	}
+	public Borders(int w, int h) {
+		this.w = w;
+		this.h = h;
+		bg = new Color[w][h];
+		fg = new Color[w][h];
+	}
+	
+	public void set(int x, int y) {
+		if (x < 0 || y < 0 || x >= w || y >= h) return;
+		set(x, y, Color.WHITE, Color.BLACK);
+	}
+}

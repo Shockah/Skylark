@@ -1,0 +1,17 @@
+package scalc;
+
+import shocky3.PluginInfo;
+
+public class Plugin extends shocky3.ListenerPlugin {
+	public Plugin(PluginInfo pinfo) {
+		super(pinfo);
+	}
+	
+	protected void onLoad() {
+		
+	}
+	
+	protected void onUnload() {
+		
+	}
+}

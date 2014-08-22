@@ -1,0 +1,10 @@
+package base.channelview;
+
+import old.console.views.ViewInSplit;
+import old.console.views.ViewSplit.Side;
+
+public class ViewChannel extends ViewInSplit {
+	public int minSize(Side side, int curLength) {
+		return 0;
+	}
+}

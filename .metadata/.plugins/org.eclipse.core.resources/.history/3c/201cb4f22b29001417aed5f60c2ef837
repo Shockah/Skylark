@@ -1,0 +1,75 @@
+package old.old.console.panels;
+
+import java.util.ArrayList;
+import old.old.console.ConsoleStyle;
+import old.old.console.ScreenPrinter;
+import old.old.console.tabs.Tab;
+import pl.shockah.SelectList;
+
+public class PanelTabs extends Panel {
+	public static PanelTabs create(ScreenPrinter sprinter, Splitter sp, int ind) {
+		PanelTabs panel = new PanelTabs();
+		sp.setPanel(ind,panel);
+		panel.update(sprinter,sp);
+		return panel;
+	}
+	
+	protected SelectList<Tab> tabs = new SelectList<>(new ArrayList<Tab>());
+	
+	public void add(Tab tab) {
+		tabs.add(tab);
+	}
+	public void remove(Tab tab) {
+		tabs.remove(tab);
+	}
+	public void clear() {
+		tabs.clear();
+	}
+	
+	public Tab previous() {
+		return tabs.previous();
+	}
+	public Tab next() {
+		return tabs.next();
+	}
+	
+	public void update(ScreenPrinter sprinter, Splitter parent) {
+		super.update(sprinter,parent);
+		for (Tab tab : tabs) if (tab.panel != null) tab.panel.update(sprinter,parent);
+		
+		if (parent.isHorizontal()) {
+			int len = 0, len2 = 0;
+			for (Tab tab : tabs) {
+				len2 = tab.title.length();
+				if (len2 > len) len = len2;
+			}
+			parent.setRestriction(parent.getIndex(this),len2+2);
+		} else parent.setRestriction(parent.getIndex(this),1);
+		
+		parent.setPanel(parent.getIndex(this) ^ 1,tabs.getCurrent() == null ? null : tabs.getCurrent().panel);
+	}
+	
+	public void draw(ScreenPrinter sp, Splitter parent) {
+		Tab tab;
+		String text;
+		
+		if (parent.isHorizontal()) {
+			for (int i = 0; i < tabs.size(); i++) {
+				tab = tabs.get(i);
+				text = tab.title;
+				text = /*tabs.getCurrentIndex() == i ? Borders.arrowRight+text+Borders.arrowLeft : */" "+text+" ";
+				sp.draw(0,i,text,tabs.getCurrentIndex() == i ? ConsoleStyle.Selected : ConsoleStyle.Default);
+			}
+		} else {
+			int xx = 0;
+			for (int i = 0; i < tabs.size(); i++) {
+				tab = tabs.get(i);
+				text = tab.title;
+				text = /*tabs.getCurrentIndex() == i ? Borders.arrowRight+text+Borders.arrowLeft : */" "+text+" ";
+				sp.draw(xx,0,text,tabs.getCurrentIndex() == i ? ConsoleStyle.Selected : ConsoleStyle.Default);
+				xx += text.length();
+			}
+		}
+		sp.selectBorder();
+	}
+}

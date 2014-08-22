@@ -1,0 +1,7 @@
+package scommands;
+
+public class CommandReverse extends Command {
+	public CommandReverse(String main, String[] alts) {
+		super(main, alts);
+	}
+}

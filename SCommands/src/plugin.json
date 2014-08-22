@@ -1,0 +1,8 @@
+{
+	"name": "Shocky - Commands",
+	"version": "r1",
+	"author": "Shockah",
+	
+	"internalName": "Shocky.SCommands",
+	"baseClass": "scommands.Plugin"
+}

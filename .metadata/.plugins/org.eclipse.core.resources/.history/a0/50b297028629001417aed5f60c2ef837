@@ -1,0 +1,7 @@
+package shocky3.ident;
+
+public class NickIdentHandler extends IdentHandler {
+	public NickIdentHandler() {
+		super("n");
+	}
+}

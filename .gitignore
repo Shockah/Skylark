@@ -1,3 +1,8 @@
+/Shocky3/config.json
+/Shocky3/plugins/*
+/Shocky3/temp/*
+/*/bin/*
+
 *.class
 
 # Mobile Tools for Java (J2ME)

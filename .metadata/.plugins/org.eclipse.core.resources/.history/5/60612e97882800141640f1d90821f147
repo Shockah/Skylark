@@ -1,0 +1,8 @@
+package scommands;
+
+import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.ListenerAdapter;
+
+public class CommandListener extends ListenerAdapter<PircBotX> {
+	
+}

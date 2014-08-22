@@ -1,0 +1,48 @@
+package shocky3;
+
+import java.util.LinkedList;
+import java.util.List;
+import org.pircbotx.Configuration;
+import org.pircbotx.PircBotX;
+
+public class BotManager {
+	public final Shocky botApp;
+	public final ServerManager manager;
+	public final String host;
+	public String botName = null;
+	public int channelsPerConn = 0;
+	protected List<PircBotX> bots = new LinkedList<>();
+	
+	public BotManager(ServerManager manager, String host) {
+		this.botApp = manager.botApp;
+		this.manager = manager;
+		this.host = host;
+	}
+	
+	public PircBotX joinChannel(String cname) {
+		for (PircBotX bot : bots) {
+			if (bot.getUserBot().getChannels().size() < channelsPerConn) {
+				bot.sendIRC().joinChannel(cname);
+				return bot;
+			}
+		}
+		
+		PircBotX bot = connectNewBot();
+		bot.sendIRC().joinChannel(cname);
+		return bot;
+	}
+	
+	public PircBotX connectNewBot() {
+		try {
+			Configuration.Builder<PircBotX> cfg = new Configuration.Builder<>()
+					.setName(botName)
+					.setAutoNickChange(true)
+					.setServerHostname(host);
+			PircBotX bot = new PircBotX(cfg.buildConfiguration());
+			bot.startBot();
+			bots.add(bot);
+			return bot;
+		} catch (Exception e) {e.printStackTrace();}
+		return null;
+	}
+}

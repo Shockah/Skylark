@@ -1,0 +1,14 @@
+package scommands;
+
+import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.events.MessageEvent;
+
+public class CommandDie extends Command {
+	public CommandDie() {
+		super("die");
+	}
+	
+	public void call(MessageEvent<PircBotX> e, String trigger, String args) {
+		
+	}
+}

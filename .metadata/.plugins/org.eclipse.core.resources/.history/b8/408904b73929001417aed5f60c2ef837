@@ -1,0 +1,28 @@
+package sconsole;
+
+public class ConsoleViewTab extends ConsoleView {
+	public ConsoleViewTabs view = null;
+	
+	public ConsoleViewTab(ConsoleThread thread) {
+		super(thread);
+	}
+	
+	public void update(ConsoleViewSplitter.Side side) {
+		if (view == null) return;
+		ConsoleTab tab = view.tabs.getCurrent();
+		tab.rect.x = rect.x;
+		tab.rect.y = rect.y;
+		tab.rect.w = rect.w;
+		tab.rect.h = rect.h;
+		tab.update(side);
+		rect.x = tab.rect.x;
+		rect.y = tab.rect.y;
+		rect.w = tab.rect.w;
+		rect.h = tab.rect.h;
+	}
+	
+	public void draw(ConsoleViewSplitter.Side side) {
+		if (view == null) return;
+		view.tabs.getCurrent().draw(side);
+	}
+}

@@ -1,0 +1,29 @@
+package shocky3.ident;
+
+import org.pircbotx.User;
+import shocky3.BotManager;
+
+public class NickIdentHandler extends IdentHandler {
+	public NickIdentHandler(BotManager manager) {
+		super(manager, "n");
+	}
+	
+	public IdentHandler copy(BotManager manager) {
+		return new NickIdentHandler();
+	}
+	
+	public boolean checkAvailability() {
+		
+		
+		
+	}
+	
+	public String account(BotManager bm, User user) {
+		return user.getNick();
+	}
+	
+	public boolean isAccount(BotManager bm, User user, String account) {
+		String acc = account(bm, user);
+		return acc.equals(account);
+	}
+}

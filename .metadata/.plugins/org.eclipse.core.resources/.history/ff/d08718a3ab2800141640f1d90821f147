@@ -1,0 +1,11 @@
+package scommands;
+
+import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.events.MessageEvent;
+
+public class CommandListener extends ListenerAdapter<PircBotX> {
+	public void onMessage(MessageEvent<PircBotX> e) {
+		System.out.println(">>> " + e.getMessage());
+	}
+}

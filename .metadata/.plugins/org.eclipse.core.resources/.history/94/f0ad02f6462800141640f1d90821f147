@@ -1,0 +1,29 @@
+package sconsole;
+
+import shocky3.Shocky;
+
+public class ConsolePlugin {
+	public final Shocky botApp;
+	private boolean enabled = false;
+	
+	public ConsolePlugin(Shocky botApp) {
+		this.botApp = botApp;
+	}
+	
+	public final void enable() {
+		if (enabled) return;
+		onEnable();
+		enabled = true;
+	}
+	public final void disable() {
+		if (!enabled) return;
+		onDisable();
+		enabled = false;
+	}
+	public final boolean enabled() {
+		return enabled;
+	}
+	
+	protected void onEnable() {}
+	protected void onDisable() {}
+}

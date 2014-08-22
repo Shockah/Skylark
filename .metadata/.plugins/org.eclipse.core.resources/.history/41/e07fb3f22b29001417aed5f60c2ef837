@@ -1,0 +1,64 @@
+package old.old.console.panels;
+
+import old.old.console.ScreenPrinter;
+
+public final class Splitter extends Panel {
+	protected final Panel[] panels = new Panel[2];
+	protected boolean horizontal;
+	protected int lengthRestriction = 0;
+	
+	public Splitter(boolean horizontal) {
+		super();
+		this.horizontal = horizontal;
+	}
+	
+	public void setHorizontal(boolean horizontal) {
+		this.horizontal = horizontal;
+	}
+	public boolean isHorizontal() {
+		return horizontal;
+	}
+	
+	public int getIndex(Panel panel) {
+		for (int i = 0; i < panels.length; i++) if (panel == panels[i]) return i;
+		throw new IllegalArgumentException();
+	}
+	
+	public void setPanel(int ind, Panel panel) {
+		if (ind < 0 || ind > 1) throw new IllegalArgumentException();
+		panels[ind] = panel;
+	}
+	public Panel getPanel(int ind) {
+		if (ind < 0 || ind > 1) throw new IllegalArgumentException();
+		return panels[ind];
+	}
+	public void switchPanels() {
+		Panel p = panels[0];
+		panels[0] = panels[1];
+		panels[1] = p;
+		lengthRestriction *= -1;
+	}
+	
+	public void setRestriction(int ind, int restriction) {
+		if (ind < 0 || ind > 1) throw new IllegalArgumentException();
+		lengthRestriction = restriction*(ind == 0 ? 1 : -1);
+	}
+	public void resetRestriction() {
+		lengthRestriction = 0;
+	}
+	
+	public void update(ScreenPrinter sprinter, Splitter parent) {
+		super.update(sprinter,parent);
+		for (int i = 0; i < panels.length; i++) if (panels[i] != null) panels[i].update(sprinter,this);
+	}
+	
+	public void draw(ScreenPrinter sp, Splitter parent) {
+		int restr = lengthRestriction;
+		if (restr == 0) restr = horizontal ? (sp.w-1)/2 : (sp.h-1)/2;
+		else if (restr < 0) restr = (horizontal ? (sp.w-1) : (sp.h-1))+restr;
+		
+		if (panels[0] != null) panels[0].draw(sp.rect(0,0,horizontal ? restr : sp.w,horizontal ? sp.h : restr),this);
+		if (panels[1] != null) panels[1].draw(sp.rect(horizontal ? restr+1 : 0,horizontal ? 0 : restr+1,horizontal ? sp.w-restr-1 : sp.w,horizontal ? sp.h : sp.h-restr-1),this);
+		for (int i = 0; i < (horizontal ? sp.h : sp.w); i++) sp.setBorder(horizontal ? restr : i,horizontal ? i : restr);
+	}
+}

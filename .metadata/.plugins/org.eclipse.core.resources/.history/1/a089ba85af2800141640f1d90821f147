@@ -1,0 +1,18 @@
+package shocky3;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+public class Settings {
+	protected Map<String, Setting<?>> settings = Collections.synchronizedMap(new HashMap<String, Setting<?>>());
+	
+	private class Setting<T> {
+		public T defaultValue;
+		public Map<String, T> custom = Collections.synchronizedMap(new HashMap<String, T>());
+		
+		public Setting(T defaultValue) {
+			this.defaultValue = defaultValue;
+		}
+	}
+}

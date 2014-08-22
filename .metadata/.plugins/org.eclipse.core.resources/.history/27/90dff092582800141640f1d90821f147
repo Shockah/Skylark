@@ -1,0 +1,58 @@
+package old.console;
+
+import com.googlecode.lanterna.terminal.Terminal.Color;
+
+public class Borders {
+	public static final char[] chars = "   �? �?╚╩ ╗╔╦║╣╠╬".toCharArray();
+	public static final char
+		arrowLeft = '�?',
+		arrowRight = '→';
+	
+	public static char sides(boolean l, boolean r, boolean u, boolean d) {
+		return chars[(l?1:0)+(r?2:0)+(u?4:0)+(d?8:0)];
+	}
+	
+	protected final Color[][] bordersForeground, bordersBackground;
+	
+	public Borders(int cols, int rows) {
+		bordersForeground = new Color[cols][rows];
+		bordersBackground = new Color[cols][rows];
+	}
+	
+	public void set(int x, int y) {
+		if (x < 0 || y < 0) return;
+		if (x >= bordersForeground.length || y >= bordersForeground[0].length) return;
+		if (bordersForeground[x][y] == null) set(x,y,Color.WHITE,Color.BLACK);
+	}
+	public void set(int x, int y, Color cForeground, Color cBackground) {
+		if (x < 0 || y < 0) return;
+		if (x >= bordersForeground.length || y >= bordersForeground[0].length) return;
+		bordersForeground[x][y] = cForeground;
+		bordersBackground[x][y] = cBackground;
+	}
+	public boolean get(int x, int y) {
+		if (x < 0 || y < 0) return true;
+		if (x >= bordersForeground.length || y >= bordersForeground[0].length) return true;
+		return bordersForeground[x][y] != null;
+	}
+	public Color getForeground(int x, int y) {
+		if (x < 0 || y < 0) return null;
+		if (x >= bordersForeground.length || y >= bordersForeground[0].length) return null;
+		return bordersForeground[x][y];
+	}
+	public Color getBackground(int x, int y) {
+		if (x < 0 || y < 0) return null;
+		if (x >= bordersForeground.length || y >= bordersForeground[0].length) return null;
+		return bordersBackground[x][y];
+	}
+	
+	public void drawAndClear(ScreenRect sr) {
+		for (int x = 0; x < bordersForeground.length; x++) for (int y = 0; y < bordersForeground[0].length; y++) {
+			if (bordersForeground[x][y] != null) sr.draw(x,y,sides(get(x-1,y),get(x+1,y),get(x,y-1),get(x,y+1)),getForeground(x,y),getBackground(x,y));
+		}
+		for (int x = 0; x < bordersForeground.length; x++) for (int y = 0; y < bordersForeground[0].length; y++) {
+			bordersForeground[x][y] = null;
+			bordersBackground[x][y] = null;
+		}
+	}
+}

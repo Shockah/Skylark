@@ -1,0 +1,9 @@
+package sconsole;
+
+public class ConsoleView {
+	public void draw(ScreenRect rect) {}
+	
+	public ScreenRect minimumSize() {
+		return new ScreenRect(0, 0);
+	}
+}

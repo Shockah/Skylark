@@ -1,0 +1,34 @@
+package shocky3;
+
+import org.pircbotx.Configuration;
+import org.pircbotx.PircBotX;
+
+public class BotStarterThread extends Thread {
+	public final String host;
+	public final String botName;
+	
+	public PircBotX bot = null;
+	public boolean drop = false;
+	
+	public BotStarterThread(String host, String botName) {
+		this.host = host;
+		this.botName = botName;
+	}
+	
+	public void run() {
+		try {
+			Configuration.Builder<PircBotX> cfg = new Configuration.Builder<>()
+					.setName(botName)
+					.setAutoNickChange(true)
+					.setServerHostname(host);
+			PircBotX bot = new PircBotX(cfg.buildConfiguration());
+			this.bot = bot;
+			drop = true;
+			bot.startBot();
+		} catch (Exception e) {
+			this.bot = null;
+			drop = true;
+			e.printStackTrace();
+		}
+	}
+}

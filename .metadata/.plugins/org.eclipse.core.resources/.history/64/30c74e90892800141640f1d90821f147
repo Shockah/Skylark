@@ -1,0 +1,17 @@
+package shocky3;
+
+import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.Listener;
+import org.pircbotx.hooks.ListenerAdapter;
+
+public abstract class ListenerPlugin extends Plugin {
+	public final Listener<PircBotX> listener;
+	
+	public ListenerPlugin(PluginInfo pinfo) {
+		super(pinfo);
+	}
+	
+	protected class MyListener extends ListenerAdapter<PircBotX> {
+		
+	}
+}

@@ -1,0 +1,11 @@
+{
+	"name": "Shocky - Calc",
+	"version": "r1",
+	"author": "Shockah",
+	
+	"internalName": "Shocky.SCalc",
+	"baseClass": "scalc.Plugin",
+	"dependsOn": [
+		"Shocky.SCommands"
+	]
+}

@@ -1,0 +1,15 @@
+package scommands;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
+public abstract class CommandLoader {
+	List<Command> commands = Collections.synchronizedList(new LinkedList<Command>());
+	
+	public final void add(Command... cmds) {
+		for (Command cmd : cmds) commands.add(cmd);
+	}
+	
+	public abstract void init();
+}

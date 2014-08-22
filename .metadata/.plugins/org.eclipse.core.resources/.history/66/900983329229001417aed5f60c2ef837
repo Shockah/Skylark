@@ -1,0 +1,7 @@
+package scommands;
+
+public class CommandDie extends Command {
+	public CommandDie(String main, String[] alts) {
+		super(main, alts);
+	}
+}
