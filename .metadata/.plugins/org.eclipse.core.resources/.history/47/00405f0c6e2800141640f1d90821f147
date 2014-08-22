@@ -1,9 +1,0 @@
-package shocky3;
-
-public class ServerManager {
-	public final String host;
-	
-	public ServerManager(String host) {
-		this.host = host;
-	}
-}

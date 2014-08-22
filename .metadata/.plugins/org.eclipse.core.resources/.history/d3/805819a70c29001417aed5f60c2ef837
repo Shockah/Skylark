@@ -1,9 +1,0 @@
-package scommands;
-
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
-public abstract class CommandLoader {
-	public List<Command> commands = Collections.synchronizedList(new LinkedList<Command>());
-}

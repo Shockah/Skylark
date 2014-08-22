@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<section name="Workbench">
-	<item value="false" key="AntPropertiesFileSelectionDialog.showAll"/>
-	<item value="/SIdentityNickServ" key="AntPropertiesFileSelectionDialog.lastContainer"/>
-	<section name="org.eclipse.ant.internal.ui.views.AntView">
-		<item value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#x0D;&#x0A;&lt;antView&gt;&#x0D;&#x0A;&lt;project default=&quot;build&quot; error=&quot;false&quot; name=&quot;SConsole&quot; path=&quot;/SConsole/build.xml&quot;/&gt;&#x0D;&#x0A;&lt;project default=&quot;build&quot; error=&quot;false&quot; name=&quot;SCalc&quot; path=&quot;/SCalc/build.xml&quot;/&gt;&#x0D;&#x0A;&lt;project default=&quot;build&quot; error=&quot;false&quot; name=&quot;SCommands&quot; path=&quot;/SCommands/build.xml&quot;/&gt;&#x0D;&#x0A;&lt;project default=&quot;build&quot; error=&quot;false&quot; name=&quot;SIdentityNickServ&quot; path=&quot;/SIdentityNickServ/build.xml&quot;/&gt;&#x0D;&#x0A;&lt;filterInternalTargets value=&quot;false&quot;/&gt;&#x0D;&#x0A;&lt;/antView&gt;" key="memento"/>
-	</section>
-</section>

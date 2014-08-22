@@ -1,8 +1,0 @@
-package sconsole;
-
-public class ConsoleView {
-	protected final ScreenRect rect = new ScreenRect();
-	
-	public void update() {}
-	public void draw() {}
-}

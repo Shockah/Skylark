@@ -1,9 +1,0 @@
-package shocky3;
-
-public abstract class ListenerPlugin extends Plugin {
-	public final Listener<PircBotX> listener;
-	
-	public ListenerPlugin(PluginInfo pinfo) {
-		super(pinfo);
-	}
-}

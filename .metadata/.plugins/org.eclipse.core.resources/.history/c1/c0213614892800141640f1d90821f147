@@ -1,5 +1,0 @@
-package shocky3;
-
-public class ListenerPlugin extends Plugin {
-	
-}

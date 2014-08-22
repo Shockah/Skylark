@@ -1,2 +1,0 @@
-commit_dialog_history_messages=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<messages>\r\n<message>Box.value is now public, got rid of the get&amp;set pair</message>\r\n<message>Strings.tryParseX</message>\r\n<message>Whoops, now can use JSONList.make with any number of args</message>\r\n</messages>
-eclipse.preferences.version=1

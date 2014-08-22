@@ -1,5 +1,0 @@
-package scommands;
-
-public interface CommandLoader {
-	
-}

@@ -1,7 +1,0 @@
-package scalc;
-
-public class SCommandsRunnable implements Runnable {
-	public void run() {
-		
-	}
-}

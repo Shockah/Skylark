@@ -1,5 +1,0 @@
-package scommands;
-
-public class Command {
-	public final String main;
-}

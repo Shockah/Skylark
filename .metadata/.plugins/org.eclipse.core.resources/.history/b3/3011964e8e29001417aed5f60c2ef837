@@ -1,9 +1,0 @@
-package shocky3.ident;
-
-public class IdentGroup {
-	public final String name;
-	
-	public IdentGroup(String name) {
-		this.name = name;
-	}
-}

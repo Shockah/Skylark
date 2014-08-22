@@ -1,9 +1,0 @@
-package shocky3;
-
-public class Plugin {
-	private boolean enabled = false;
-	
-	public boolean enabled() {
-		return enabled;
-	}
-}

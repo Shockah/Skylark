@@ -1,9 +1,0 @@
-package sconsole;
-
-public class ConsoleTab extends ConsoleView {
-	public String title;
-	
-	public ConsoleTab(ConsoleThread thread) {
-		super(thread);
-	}
-}

@@ -1,5 +1,0 @@
-package shocky3;
-
-public interface IIdentityHandler {
-	public String id();
-}

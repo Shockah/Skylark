@@ -1,7 +1,0 @@
-package shocky3;
-
-import java.io.PrintStream;
-
-public class CustomPrintStream extends PrintStream {
-	
-}
