@@ -30,9 +30,9 @@ public class NickServIdentHandler extends IdentHandler {
 	}
 	
 	public boolean checkAvailability() {
-		return true; //trusting the config
+		if (manager == null) return false;
 		
-		/*Plugin plugin = manager.botApp.pluginManager.byInternalName("Shocky.SIdentity.NickServ");
+		Plugin plugin = manager.botApp.pluginManager.byInternalName("Shocky.SIdentity.NickServ");
 		if (!plugin.map.containsKey(manager)) {
 			plugin.map.put(manager, this);
 		}
@@ -50,7 +50,7 @@ public class NickServIdentHandler extends IdentHandler {
 			Util.sleep(50);
 		}
 		
-		return whois != null;*/
+		return whois != null;
 	}
 	
 	public String account(User user) {
