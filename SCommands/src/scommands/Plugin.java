@@ -10,6 +10,7 @@ import pl.shockah.Pair;
 import pl.shockah.json.JSONObject;
 import scommands.CommandProvider.EPriority;
 import shocky3.PluginInfo;
+import shocky3.Shocky;
 
 public class Plugin extends shocky3.ListenerPlugin {
 	protected JSONObject j = null;
@@ -62,23 +63,30 @@ public class Plugin extends shocky3.ListenerPlugin {
 				String trigger = msg.split("\\s")[0].toLowerCase();
 				String args = msg.equals(trigger) ? "" : msg.substring(trigger.length() + 1).trim();
 				
-				List<Pair<ICommand, CommandProvider.EPriority>> list = new LinkedList<>();
-				for (CommandProvider cp : providers) {
-					cp.provide(list, botApp, e, trigger, args);
-				}
-				
-				if (!list.isEmpty()) {
-					Collections.sort(list, new Comparator<Pair<ICommand, CommandProvider.EPriority>>(){
-						public int compare(Pair<ICommand, EPriority> p1, Pair<ICommand, EPriority> p2) {
-							return Integer.compare(p2.get2().value, p1.get2().value);
-						}
-					});
-					
-					ICommand cmd = list.get(0).get1();
+				ICommand cmd = findCommand(botApp, e, trigger, args);
+				if (cmd != null) {
 					cmd.call(botApp, e, trigger, args);
 				}
 				break;
 			}
 		}
+	}
+	
+	public ICommand findCommand(Shocky botApp, MessageEvent<PircBotX> e, String trigger, String args) {
+		List<Pair<ICommand, CommandProvider.EPriority>> list = new LinkedList<>();
+		for (CommandProvider cp : providers) {
+			cp.provide(list, botApp, e, trigger, args);
+		}
+		
+		if (!list.isEmpty()) {
+			Collections.sort(list, new Comparator<Pair<ICommand, CommandProvider.EPriority>>(){
+				public int compare(Pair<ICommand, EPriority> p1, Pair<ICommand, EPriority> p2) {
+					return Integer.compare(p2.get2().value, p1.get2().value);
+				}
+			});
+			
+			return list.get(0).get1();
+		}
+		return null;
 	}
 }
