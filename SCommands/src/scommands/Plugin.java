@@ -1,44 +1,56 @@
 package scommands;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
+import pl.shockah.Pair;
 import pl.shockah.json.JSONObject;
+import scommands.CommandProvider.EPriority;
 import shocky3.PluginInfo;
 
 public class Plugin extends shocky3.ListenerPlugin {
 	protected JSONObject j = null;
-	protected List<Command> commands = Collections.synchronizedList(new LinkedList<Command>());
+	public final DefaultCommandProvider provider;
+	protected List<CommandProvider> providers = new LinkedList<>();
 	
 	public Plugin(PluginInfo pinfo) {
 		super(pinfo);
+		provider = new DefaultCommandProvider(this);
 	}
 	
-	public void add(Command... cmds) {
-		for (Command cmd : cmds) {
-			if (!commands.contains(cmd)) {
-				commands.add(cmd);
+	public void add(CommandProvider... cps) {
+		for (CommandProvider cp : cps) {
+			if (!providers.contains(cp)) {
+				providers.add(cp);
 			}
 		}
 	}
-	public void remove(Command... cmds) {
-		for (Command cmd : cmds) {
-			commands.remove(cmd);
+	public void remove(CommandProvider... cps) {
+		for (CommandProvider cp : cps) {
+			providers.remove(cp);
 		}
 	}
 	
 	protected void onLoad() {
 		botApp.settings.add(this, "characters", ".");
-		commands.clear();
+		providers.clear();
+		provider.list.clear();
 		
-		commands.add(new CommandDie());
-		commands.add(new CommandPlugins());
+		add(
+			provider
+		);
+		provider.add(
+			new CmdDie(this),
+			new CmdPlugins(this)
+		);
 	}
 	
 	protected void onUnload() {
-		commands.clear();
+		provider.list.clear();
+		providers.clear();
 	}
 	
 	protected void onMessage(MessageEvent<PircBotX> e) {
@@ -50,46 +62,22 @@ public class Plugin extends shocky3.ListenerPlugin {
 				String trigger = msg.split("\\s")[0].toLowerCase();
 				String args = msg.equals(trigger) ? "" : msg.substring(trigger.length() + 1).trim();
 				
-				for (Command cmd : commands) {
-					if (cmd.main.equals(trigger)) {
-						cmd.call(botApp, e, trigger, args);
-						return;
-					}
-				}
-				for (Command cmd : commands) {
-					for (String alt : cmd.alt) {
-						if (alt.equals(trigger)) {
-							cmd.call(botApp, e, trigger, args);
-							return;
-						}
-					}
+				List<Pair<ICommand, CommandProvider.EPriority>> list = new LinkedList<>();
+				for (CommandProvider cp : providers) {
+					cp.provide(list, botApp, e, trigger, args);
 				}
 				
-				Command closest = null;
-				int diff = -1;
-				for (Command cmd : commands) {
-					if (cmd.main.startsWith(trigger)) {
-						int d = cmd.main.length() - trigger.length();
-						if (closest == null || d < diff) {
-							closest = cmd;
-							diff = d;
+				if (!list.isEmpty()) {
+					Collections.sort(list, new Comparator<Pair<ICommand, CommandProvider.EPriority>>(){
+						public int compare(Pair<ICommand, EPriority> p1, Pair<ICommand, EPriority> p2) {
+							return Integer.compare(p2.get2().value, p1.get2().value);
 						}
-					}
-					for (String alt : cmd.alt) {
-						if (alt.startsWith(trigger)) {
-							int d = alt.length() - trigger.length();
-							if (closest == null || d < diff) {
-								closest = cmd;
-								diff = d;
-							}
-						}
-					}
+					});
+					
+					ICommand cmd = list.get(0).get1();
+					cmd.call(botApp, e, trigger, args);
 				}
-				
-				if (closest != null) {
-					closest.call(botApp, e, trigger, args);
-				}
-				return;
+				break;
 			}
 		}
 	}

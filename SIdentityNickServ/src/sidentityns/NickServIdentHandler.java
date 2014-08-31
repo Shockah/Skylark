@@ -22,7 +22,7 @@ public class NickServIdentHandler extends IdentHandler {
 		this(null);
 	}
 	public NickServIdentHandler(BotManager manager) {
-		super(manager, "ns", IdentHandler.OVERHEAD_MEDIUM);
+		super(manager, "ns", "NickServ", IdentHandler.OVERHEAD_MEDIUM);
 	}
 	
 	public IdentHandler copy(BotManager manager) {

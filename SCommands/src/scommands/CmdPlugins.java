@@ -4,9 +4,9 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 import shocky3.Shocky;
 
-public class CommandPlugins extends Command {
-	public CommandPlugins() {
-		super("reload");
+public class CmdPlugins extends Command {
+	public CmdPlugins(Plugin plugin) {
+		super(plugin, "reload");
 	}
 	
 	public void call(Shocky botApp, MessageEvent<PircBotX> e, String trigger, String args) {

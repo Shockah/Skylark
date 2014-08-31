@@ -12,16 +12,17 @@ public abstract class IdentHandler implements Comparable<IdentHandler> {
 		OVERHEAD_HIGH = 1000;
 	
 	public final BotManager manager;
-	public final String id;
+	public final String id, name;
 	public final int overhead;
 	protected Box<Boolean> available = null;
 	
-	public IdentHandler(String id, int overhead) {
-		this(null, id, overhead);
+	public IdentHandler(String id, String name, int overhead) {
+		this(null, id, name, overhead);
 	}
-	public IdentHandler(BotManager manager, String id, int overhead) {
+	public IdentHandler(BotManager manager, String id, String name, int overhead) {
 		this.manager = manager;
 		this.id = id;
+		this.name = name;
 		this.overhead = overhead;
 	}
 	

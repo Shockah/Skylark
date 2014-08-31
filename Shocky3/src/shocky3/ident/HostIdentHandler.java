@@ -8,7 +8,7 @@ public class HostIdentHandler extends IdentHandler {
 		this(null);
 	}
 	public HostIdentHandler(BotManager manager) {
-		super(manager, "h", IdentHandler.OVERHEAD_LOW);
+		super(manager, "h", "hostmask", IdentHandler.OVERHEAD_LOW);
 	}
 	
 	public IdentHandler copy(BotManager manager) {

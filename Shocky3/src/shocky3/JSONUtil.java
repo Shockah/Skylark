@@ -12,7 +12,11 @@ import com.mongodb.DBObject;
 public final class JSONUtil {
 	public static DBObject toDBObject(JSONObject j) {
 		BasicDBObject bdbo = new BasicDBObject();
-		for (String key : j.keys()) bdbo.append(key, j.get(key));
+		for (String key : j.keys()) {
+			Object o = j.get(key);
+			if (o instanceof JSONObject) o = toDBObject((JSONObject)o);
+			bdbo.append(key, o);
+		}
 		return bdbo;
 	}
 	public static JSONObject fromDBObject(DBObject dbo) {

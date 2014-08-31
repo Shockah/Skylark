@@ -1,4 +1,4 @@
-package scalc;
+package sfactoids;
 
 import shocky3.PluginInfo;
 
@@ -9,6 +9,11 @@ public class Plugin extends shocky3.Plugin {
 	
 	protected void onLoad() {
 		scommands.Plugin pluginCmd = botApp.pluginManager.byInternalName("Shocky.SCommands");
-		pluginCmd.provider.add(new CmdCalc(this));
+		pluginCmd.add(new FactoidCommandProvider(this));
+		pluginCmd.provider.add(
+			new CmdRemember(this),
+			new CmdForget(this),
+			new CmdInfo(this)
+		);
 	}
 }

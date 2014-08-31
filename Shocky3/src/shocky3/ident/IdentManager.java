@@ -29,6 +29,7 @@ public class IdentManager {
 		identHandlers.put(null, Collections.synchronizedList(new LinkedList<IdentHandler>()));
 		identGroups.put(null, Collections.synchronizedList(new LinkedList<IdentGroup>()));
 		add(
+			new ServerIdentHandler(),
 			new NickIdentHandler(),
 			new HostIdentHandler()
 		);
@@ -54,10 +55,10 @@ public class IdentManager {
 	}
 	
 	public IdentHandler getIdentHandlerFor(BotManager manager, String account) {
-		String[] spl = account.split(":");
-		if (spl.length == 1) return null;
+		int index = account.indexOf(':');
+		String id = index == -1 ? account : account.substring(0, index);
 		for (IdentHandler h : identHandlers.get(manager)) {
-			if (h.id.equals(spl[0])) {
+			if (h.id.equals(id)) {
 				return h;
 			}
 		}

@@ -14,12 +14,12 @@ import pl.shockah.Strings;
 import scommands.Command;
 import shocky3.Shocky;
 
-public class CommandCalc extends Command {
+public class CmdCalc extends Command {
 	public static final Pattern
 		REGEX_VARIABLE_ASSIGN = Pattern.compile("([a-zA-Z_][a-zA-Z_0-9]*)\\s?=\\s(.*)");
 	
-	public CommandCalc() {
-		super("calc");
+	public CmdCalc(Plugin plugin) {
+		super(plugin, "calc");
 	}
 	
 	public void call(Shocky botApp, MessageEvent<PircBotX> e, String trigger, String args) {

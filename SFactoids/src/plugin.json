@@ -1,0 +1,11 @@
+{
+	"name": "Shocky - Factoids",
+	"version": "r1",
+	"author": "Shockah",
+	
+	"internalName": "Shocky.SFactoids",
+	"baseClass": "sfactoids.Plugin",
+	"dependsOn": [
+		"Shocky.SCommands"
+	]
+}
