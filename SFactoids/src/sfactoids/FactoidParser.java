@@ -4,9 +4,13 @@ import java.util.regex.Pattern;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 import pl.shockah.json.JSONObject;
+import scommands.ICommand;
 import shocky3.Shocky;
 
 public abstract class FactoidParser {
+	public static final int
+		TYPE_STRING_CODE = 1,
+		TYPE_ICOMMAND = 2;
 	public static final Pattern
 		REGEX_PARSER = Pattern.compile("^\\{(.+?)\\}(.*)$");
 	
@@ -16,5 +20,11 @@ public abstract class FactoidParser {
 		this.id = id;
 	}
 	
-	public abstract String parse(JSONObject j, Shocky botApp, MessageEvent<PircBotX> e, String trigger, String code, String message);
+	public abstract int resultType();
+	public String parseStringCode(JSONObject j, Shocky botApp, MessageEvent<PircBotX> e, String trigger, String args, String code) {
+		return code;
+	}
+	public ICommand parseICommand(JSONObject j, Shocky botApp, MessageEvent<PircBotX> e, String trigger, String args, String code) {
+		return null;
+	}
 }

@@ -17,6 +17,9 @@ public class FactoidCommandProvider extends CommandProvider {
 	
 	public FactoidCommandProvider(Plugin plugin) {
 		super(plugin);
+		builder.add(
+			new AliasFactoidParser()
+		);
 	}
 	
 	public void provide(List<Pair<ICommand, EPriority>> candidates, Shocky botApp, MessageEvent<PircBotX> e, String trigger, String args) {
@@ -56,7 +59,10 @@ public class FactoidCommandProvider extends CommandProvider {
 		
 		JSONObject j = jChannel != null ? jChannel : (jServer != null ? jServer : (jGlobal != null ? jGlobal : null));
 		if (j != null) {
-			candidates.add(new Pair<ICommand, EPriority>(builder.build(j, botApp, e, trigger, args), EPriority.Medium));
+			ICommand built = builder.build(j, botApp, e, trigger, args);
+			if (built != null) {
+				candidates.add(new Pair<ICommand, EPriority>(built, EPriority.Medium));
+			}
 		}
 	}
 }

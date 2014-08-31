@@ -34,7 +34,7 @@ public class FactoidCommandBuilder {
 		return null;
 	}
 	
-	public ICommand build(JSONObject j, Shocky botApp, MessageEvent<PircBotX> e, String trigger, String message) {
+	public ICommand build(JSONObject j, Shocky botApp, MessageEvent<PircBotX> e, String trigger, String args) {
 		//String original = message;
 		String originalCode = j.getString("code");
 		String code = originalCode;
@@ -46,7 +46,17 @@ public class FactoidCommandBuilder {
 				if (fp == null) {
 					break;
 				} else {
-					code = fp.parse(j, botApp, e, trigger, m.group(2), message);
+					String oldCode = code;
+					switch (fp.resultType()) {
+						case FactoidParser.TYPE_STRING_CODE:
+							code = fp.parseStringCode(j, botApp, e, trigger, args, m.group(2));
+							break;
+						case FactoidParser.TYPE_ICOMMAND:
+							return fp.parseICommand(j, botApp, e, trigger, args, m.group(2));
+					}
+					if (code == null || code.equals("") || oldCode.equals(code)) {
+						return null;
+					}
 				}
 			} else {
 				break;
