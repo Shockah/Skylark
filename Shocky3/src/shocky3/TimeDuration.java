@@ -16,11 +16,11 @@ public final class TimeDuration {
 		int w = d / 7; h %= 7;
 		
 		StringBuilder sb = new StringBuilder();
-		if (w + d + h + m + s != 0) sb.append(String.format(" %dw", w));
-		if (d + h + m + s != 0) sb.append(String.format(" %dd", d));
-		if (h + m + s != 0) sb.append(String.format(" %dh", h));
-		if (m + s != 0) sb.append(String.format(" %dm", m));
-		if (s != 0) sb.append(String.format(" %ds", s));
+		if (w != 0) sb.append(String.format(" %dw", w));
+		if (w + d != 0) sb.append(String.format(" %dd", d));
+		if (w + d + h != 0) sb.append(String.format(" %dh", h));
+		if (w + d + h + m != 0) sb.append(String.format(" %dm", m));
+		if (w + d + h + m + s != 0) sb.append(String.format(" %ds", s));
 		return sb.toString().substring(1);
 	}
 	
