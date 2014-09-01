@@ -26,8 +26,9 @@ public class FactoidCommandProvider extends CommandProvider {
 		DBCollection dbc = botApp.collection(plugin.pinfo.internalName());
 		trigger = trigger.toLowerCase();
 		
-		String contextServer = "server:" + botApp.serverManager.byBot(e).host;
-		String contextChannel = String.format("channel:%s@%s", e.getChannel().getName(), botApp.serverManager.byBot(e).host);
+		String serverName = botApp.serverManager.byBot(e).name;
+		String contextServer = "server:" + serverName;
+		String contextChannel = String.format("channel:%s@%s", e.getChannel().getName(), serverName);
 		
 		JSONObject jGlobal = null, jServer = null, jChannel = null;
 		for (DBObject dbo : JSONUtil.all(dbc.find(JSONUtil.toDBObject(

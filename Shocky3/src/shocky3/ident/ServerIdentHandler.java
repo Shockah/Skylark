@@ -20,7 +20,7 @@ public class ServerIdentHandler extends IdentHandler {
 	}
 	
 	public String account(User user) {
-		return manager.host;
+		return String.format("%s (%s)", manager.name, manager.host);
 	}
 	
 	public boolean isAccount(User user, String account) {

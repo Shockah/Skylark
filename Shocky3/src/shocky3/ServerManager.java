@@ -22,10 +22,10 @@ public class ServerManager {
 		for (DBObject dbo : JSONUtil.all(dbc.find())) {
 			JSONObject j = JSONUtil.fromDBObject(dbo);
 			
-			BotManager bm = new BotManager(this, j.getString("host"));
-			bm.botName = j.getString("name");
-			bm.channelsPerConn = j.getInt("channelsPerConn");
-			bm.messageDelay = j.getInt("messageDelay");
+			BotManager bm = new BotManager(this, j.getString("name"), j.getString("host"));
+			if (j.contains("botName")) bm.botName = j.getString("botName");
+			if (j.contains("channelsPerConn")) bm.channelsPerConn = j.getInt("channelsPerConn");
+			if (j.contains("messageDelay")) bm.messageDelay = j.getInt("messageDelay");
 			botManagers.add(bm);
 			
 			for (String jChannel : j.getList("channels").ofStrings()) {
@@ -35,6 +35,14 @@ public class ServerManager {
 	}
 	
 	public BotManager byServerName(String name) {
+		for (BotManager manager : botManagers) {
+			if (manager.name.equals(name)) {
+				return manager;
+			}
+		}
+		return null;
+	}
+	public BotManager byServerHost(String name) {
 		for (BotManager manager : botManagers) {
 			if (manager.host.equals(name)) {
 				return manager;

@@ -33,10 +33,13 @@ public class CmdForget extends Command {
 				return;
 			}
 			
-			if (context.equals("server")) {
-				context = "server:" + botApp.serverManager.byBot(e).host;
-			} else if (context.equals("channel")) {
-				context = String.format("channel:%s@%s", e.getChannel().getName(), botApp.serverManager.byBot(e).host);
+			if (!context.equals("global")) {
+				String serverName = botApp.serverManager.byBot(e).name;
+				if (context.equals("server")) {
+					context = "server:" + serverName;
+				} else if (context.equals("channel")) {
+					context = String.format("channel:%s@%s", e.getChannel().getName(), serverName);
+				}
 			}
 		}
 		context = context.toLowerCase();

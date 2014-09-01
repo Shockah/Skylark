@@ -10,14 +10,15 @@ import shocky3.ident.IdentHandler;
 public class BotManager {
 	public final Shocky botApp;
 	public final ServerManager manager;
-	public final String host;
-	public String botName = null;
+	public final String name, host;
+	public String botName = "Shocky";
 	public int channelsPerConn = 10, messageDelay = 500;
 	public final List<PircBotX> bots = Collections.synchronizedList(new LinkedList<PircBotX>());
 	
-	public BotManager(ServerManager manager, String host) {
+	public BotManager(ServerManager manager, String name, String host) {
 		this.botApp = manager.botApp;
 		this.manager = manager;
+		this.name = name;
 		this.host = host;
 	}
 	
