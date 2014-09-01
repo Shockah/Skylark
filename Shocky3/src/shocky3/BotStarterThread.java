@@ -20,7 +20,6 @@ public class BotStarterThread extends Thread {
 	
 	public void run() {
 		try {
-			final BotStarterThread THIS = this;
 			Configuration.Builder<PircBotX> cfgb = new Configuration.Builder<>()
 				.setName(manager.botName)
 				.setAutoNickChange(true)
@@ -29,7 +28,7 @@ public class BotStarterThread extends Thread {
 				.addListener(new Listener<PircBotX>(){
 					public void onEvent(Event<PircBotX> e) throws Exception {
 						if (e instanceof ConnectEvent) {
-							THIS.bot = e.getBot();
+							BotStarterThread.this.bot = e.getBot();
 							drop = true;
 						}
 					}
