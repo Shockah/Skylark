@@ -69,6 +69,8 @@ public class Shocky {
 			serverManager.readConfig();
 			identManager.readConfig();
 			
+			settings.write();
+			
 			while (running) {
 				Util.sleep(50);
 			}

@@ -33,6 +33,29 @@ public class Settings {
 			settings.put(j.getString("name"), s);
 		}
 	}
+	public void write() {
+		List<JSONObject> list = new LinkedList<>();
+		for (Map.Entry<String, Setting<?>> entry : settings.entrySet()) {
+			JSONObject j = new JSONObject();
+			j.put("name", entry.getKey());
+			j.put("defaultValue", entry.getValue().defaultValue);
+			if (!entry.getValue().custom.isEmpty()) {
+				JSONObject j2 = new JSONObject();
+				for (Map.Entry<String, ?> entry2 : entry.getValue().custom.entrySet()) {
+					j2.put(entry2.getKey(), entry2.getValue());
+				}
+				j.put("custom", j2);
+			}
+			list.add(j);
+		}
+		
+		DBCollection dbc = botApp.collection("settings");
+		for (JSONObject j : list) {
+			dbc.update(JSONUtil.toDBObject(JSONObject.make(
+				"name", j.get("name")
+			)), JSONUtil.toDBObject(j), true, false);
+		}
+	}
 	
 	public <T> void add(Plugin plugin, String setting, T defaultValue) {
 		setting = plugin.pinfo.internalName() + "|" + setting;
