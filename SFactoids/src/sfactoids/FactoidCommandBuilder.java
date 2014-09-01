@@ -39,26 +39,26 @@ public class FactoidCommandBuilder {
 		String originalCode = j.getString("code");
 		String code = originalCode;
 		while (true) {
-			System.out.println(code);
+			String oldCode = code;
 			Matcher m = FactoidParser.REGEX_PARSER.matcher(code);
 			if (m.find()) {
 				FactoidParser fp = findByID(m.group(1));
+				code = m.group(2);
 				if (fp == null) {
 					break;
 				} else {
-					String oldCode = code;
 					switch (fp.resultType()) {
 						case FactoidParser.TYPE_STRING_CODE:
-							code = fp.parseStringCode(j, botApp, e, trigger, args, m.group(2));
+							code = fp.parseStringCode(j, botApp, e, trigger, args, code);
 							break;
 						case FactoidParser.TYPE_ICOMMAND:
-							return fp.parseICommand(j, botApp, e, trigger, args, m.group(2));
-					}
-					if (code == null || code.equals("") || oldCode.equals(code)) {
-						return null;
+							return fp.parseICommand(j, botApp, e, trigger, args, code);
 					}
 				}
 			} else {
+				break;
+			}
+			if (code == null || code.equals("") || oldCode.equals(code)) {
 				break;
 			}
 		}

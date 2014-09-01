@@ -20,7 +20,7 @@ public class AliasFactoidParser extends FactoidParser {
 		args = spl.length == 1 ? "" : code.substring(spl.length + 1);
 		
 		scommands.Plugin pluginCmd = botApp.pluginManager.byInternalName("Shocky.SCommands");
-		ICommand cmd = pluginCmd.findCommand(botApp, e, trigger, args);
+		ICommand cmd = pluginCmd.findCommand(botApp, e, spl[0], args);
 		return cmd;
 	}
 }
