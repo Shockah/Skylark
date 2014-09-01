@@ -50,13 +50,10 @@ public class CmdRemember extends Command {
 		String code = args;
 		
 		JSONObject jAuthor = new JSONObject();
+		BotManager bm = botApp.serverManager.byBot(e);
 		for (IdentHandler handler : botApp.identManager.identHandlers.get(null)) {
-			if (handler.isAvailable()) {
-				IdentHandler handler2 = handler;
-				BotManager bm = botApp.serverManager.byBot(e);
-				if (botApp.identManager.identHandlers.containsKey(bm)) {
-					handler2 = botApp.identManager.getIdentHandlerFor(bm, handler.id);
-				}
+			IdentHandler handler2 = botApp.identManager.getIdentHandlerFor(bm, handler.id);
+			if (handler2.isAvailable()) {
 				String account = handler2.account(e.getUser());
 				if (account != null) {
 					jAuthor.put(handler.id, account);

@@ -62,6 +62,15 @@ public class IdentManager {
 				return h;
 			}
 		}
+		if (manager != null) {
+			for (IdentHandler h : identHandlers.get(null)) {
+				if (h.id.equals(id)) {
+					IdentHandler newh = h.copy(manager);
+					identHandlers.get(manager).add(newh);
+					return newh;
+				}
+			}
+		}
 		return null;
 	}
 	
