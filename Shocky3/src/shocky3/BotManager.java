@@ -12,7 +12,7 @@ public class BotManager {
 	public final ServerManager manager;
 	public final String host;
 	public String botName = null;
-	public int channelsPerConn = 0;
+	public int channelsPerConn = 10, messageDelay = 500;
 	public final List<PircBotX> bots = Collections.synchronizedList(new LinkedList<PircBotX>());
 	
 	public BotManager(ServerManager manager, String host) {

@@ -25,6 +25,7 @@ public class BotStarterThread extends Thread {
 				.setName(manager.botName)
 				.setAutoNickChange(true)
 				.setServerHostname(manager.host)
+				.setMessageDelay(manager.messageDelay)
 				.addListener(new Listener<PircBotX>(){
 					public void onEvent(Event<PircBotX> e) throws Exception {
 						if (e instanceof ConnectEvent) {

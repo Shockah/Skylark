@@ -25,6 +25,7 @@ public class ServerManager {
 			BotManager bm = new BotManager(this, j.getString("host"));
 			bm.botName = j.getString("name");
 			bm.channelsPerConn = j.getInt("channelsPerConn");
+			bm.messageDelay = j.getInt("messageDelay");
 			botManagers.add(bm);
 			
 			for (String jChannel : j.getList("channels").ofStrings()) {
