@@ -7,9 +7,10 @@ public final class TimeDuration {
 		return format(date, new Date());
 	}
 	public static String format(Date date1, Date date2) {
-		long diff = Math.abs(date2.getTime() - date1.getTime());
-		
-		int s = (int)(diff / 1000l);
+		return formatMiliseconds(Math.abs(date2.getTime() - date1.getTime()));
+	}
+	
+	public static String formatSeconds(int s) {
 		int m = s / 60; s %= 60;
 		int h = m / 60; m %= 60;
 		int d = h / 24; h %= 24;
@@ -22,6 +23,9 @@ public final class TimeDuration {
 		if (w + d + h + m != 0) sb.append(String.format(" %dm", m));
 		if (w + d + h + m + s != 0) sb.append(String.format(" %ds", s));
 		return sb.toString().substring(1);
+	}
+	public static String formatMiliseconds(long ms) {
+		return formatSeconds((int)(ms / 1000l));
 	}
 	
 	private TimeDuration() {}
