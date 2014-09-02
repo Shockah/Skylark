@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 import pl.shockah.Pair;
@@ -13,6 +15,9 @@ import pl.shockah.json.JSONObject;
 import shocky3.PluginInfo;
 
 public class Plugin extends shocky3.ListenerPlugin {
+	public static final Pattern
+		REGEX_NORMALIZE = Pattern.compile("^(https?\\://)(?:www\\.)?(.*)$");
+	
 	protected JSONObject j = null;
 	public final DefaultURLAnnouncer announcer;
 	protected List<URLAnnouncer> announcers = new LinkedList<>();
@@ -54,13 +59,27 @@ public class Plugin extends shocky3.ListenerPlugin {
 			for (String s : spl) {
 				try {
 					new URL(s);
-					String announce = getAnnouncement(e, s);
+					String s2 = normalizeURL(s);
+					String announce = getAnnouncement(e, s2);
 					if (announce != null) {
 						e.respond(announce);
 					}
 				} catch (Exception ex) {}
 			}
 		}
+	}
+	
+	public String normalizeURL(String url) {
+		if (!url.contains("://")) {
+			url = "http://" + url;
+		}
+		
+		Matcher m = REGEX_NORMALIZE.matcher(url);
+		if (m.find()) {
+			url = m.group(1) + m.group(2);
+		}
+		
+		return url;
 	}
 	
 	public String getAnnouncement(MessageEvent<PircBotX> e, String url) {
