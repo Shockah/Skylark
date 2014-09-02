@@ -25,7 +25,7 @@ public class YoutubeURLAnnouncer extends URLAnnouncer {
 		if (vid != null) {
 			candidates.add(new Pair<Func<String>, EPriority>(new Func<String>(){
 				public String f() {
-					return String.format("[%s]", getVideoInfo(vid));
+					return String.format("[%s]", getVideoInfo(vid).format());
 				}
 			}, EPriority.Medium));
 		}
@@ -47,7 +47,13 @@ public class YoutubeURLAnnouncer extends URLAnnouncer {
 		return null;
 	}
 	
-	public String getVideoInfo(String vid) {
-		return null;
+	public VideoInfo getVideoInfo(String vid) {
+		return new VideoInfo();
+	}
+	
+	public static final class VideoInfo {
+		public String format() {
+			return null;
+		}
 	}
 }
