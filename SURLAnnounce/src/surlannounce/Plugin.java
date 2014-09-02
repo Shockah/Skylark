@@ -76,7 +76,12 @@ public class Plugin extends shocky3.ListenerPlugin {
 				}
 			});
 			
-			return list.get(0).get1().f();
+			for (Pair<Func<String>, URLAnnouncer.EPriority> p : list) {
+				String announce = p.get1().f();
+				if (announce != null) {
+					return announce;
+				}
+			}
 		}
 		return null;
 	}
