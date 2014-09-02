@@ -2,10 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/pl.shockah"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/pl.shockah.json"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Shocky3"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/SURLAnnounce"/>
-	<classpathentry kind="lib" path="/Shocky3/libs/pircbotx-2.0.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
