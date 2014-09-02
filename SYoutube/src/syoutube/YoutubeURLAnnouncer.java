@@ -100,7 +100,8 @@ public class YoutubeURLAnnouncer extends URLAnnouncer {
 			DecimalFormat formatter = new DecimalFormat("###,###", symbols);
 			StringBuilder sb = new StringBuilder();
 			
-			sb.append(String.format(" | &b%s&r added by &b%s&r", title, uploader));
+			sb.append(String.format(" | &b%s&r", title));
+			sb.append(String.format(" | added by &b%s&r", uploader));
 			if (duration != 0) {
 				sb.append(String.format(" | %s long", TimeDuration.formatSeconds(duration)));
 			}
