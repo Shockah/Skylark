@@ -63,7 +63,6 @@ public class Shocky {
 			
 			settings.read();
 			
-			pluginManager.init();
 			pluginManager.readPlugins();
 			pluginManager.reload();
 			

@@ -70,24 +70,13 @@ public class PluginManager {
 		this.botApp = botApp;
 	}
 	
-	public void init() {
-		try {
-			if (tempDir.exists()) {
-				FileUtils.deleteDirectory(tempDir);
-			}
-			tempDir.mkdir();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
 	public void readPlugins() {
 		if (!pluginsDir.exists()) {
 			pluginsDir.mkdir();
 		}
 		
 		List<File> toCheck = new LinkedList<>();
-		toCheck.add(tempDir);
+		toCheck.add(pluginsDir);
 		while (!toCheck.isEmpty()) {
 			File file = toCheck.remove(0);
 			if (file.isDirectory()) {
