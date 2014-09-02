@@ -1,0 +1,8 @@
+{
+	"name": "Shocky - URL Announce",
+	"version": "r1",
+	"author": "Shockah",
+	
+	"internalName": "Shocky.SURLAnnounce",
+	"baseClass": "surlannounce.Plugin"
+}
