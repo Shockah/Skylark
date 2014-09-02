@@ -70,6 +70,17 @@ public class PluginManager {
 		this.botApp = botApp;
 	}
 	
+	public void init() {
+		try {
+			if (tempDir.exists()) {
+				FileUtils.deleteDirectory(tempDir);
+			}
+			tempDir.mkdir();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void readPlugins() {
 		if (!pluginsDir.exists()) {
 			pluginsDir.mkdir();
