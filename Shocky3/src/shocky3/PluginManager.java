@@ -1,6 +1,8 @@
 package shocky3;
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collections;
@@ -153,6 +155,13 @@ public class PluginManager {
 		for (PluginInfo pinfo : toLoad) {
 			actualLoad(pinfo);
 		}
+		for (Plugin plugin : plugins) {
+			setReflectionFields(plugin.pinfo);
+		}
+		for (Plugin plugin : plugins) {
+			plugin.onLoad();
+			System.out.println("Loaded plugin: " + plugin.pinfo.internalName());
+		}
 	}
 	
 	public void markLoad(PluginInfo pinfo) {
@@ -171,10 +180,8 @@ public class PluginManager {
 		try {
 			pinfo.plugin = (Plugin)currentClassLoader.loadClass(pinfo.baseClass()).getConstructor(PluginInfo.class).newInstance(pinfo);
 			pinfo.plugin.preOnLoad();
-			pinfo.plugin.onLoad();
 			plugins.add(pinfo.plugin);
-			System.out.println("Loaded plugin: " + pinfo.internalName());
-		} catch (Exception e) {}
+		} catch (Exception e) {e.printStackTrace();}
 	}
 	private void actualUnload(Plugin plugin) {
 		try {
@@ -184,6 +191,31 @@ public class PluginManager {
 			plugin.pinfo.plugin = null;
 			System.out.println("Unloaded plugin: " + plugin.pinfo.internalName());
 		} catch (Exception e) {}
+	}
+	
+	private void setReflectionFields(PluginInfo pinfo) {
+		for (Field field : pinfo.plugin.getClass().getDeclaredFields()) {
+			Plugin.Dependency pluginDependency = field.getAnnotation(Plugin.Dependency.class);
+			if (pluginDependency != null) {
+				L: for (String dependsOn : pinfo.dependsOn()) {
+					for (Plugin plugin : plugins) {
+						if (plugin.pinfo.internalName().equals(dependsOn)) {
+							if (field.getType() == plugin.getClass()) {
+								try {
+									field.setAccessible(true);
+									if (Modifier.isStatic(field.getModifiers())) {
+										field.set(null, plugin);
+									} else {
+										field.set(pinfo.plugin, plugin);
+									}
+									break L;
+								} catch (Exception e) {e.printStackTrace();}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	public List<Plugin> plugins() {

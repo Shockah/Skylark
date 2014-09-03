@@ -1,4 +1,4 @@
-package sidentityns;
+package sident.ns;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,31 +8,32 @@ import org.pircbotx.User;
 import org.pircbotx.hooks.events.WhoisEvent;
 import pl.shockah.Util;
 import shocky3.BotManager;
-import shocky3.ident.IdentHandler;
+import sident.IdentHandler;
 
 public class NickServIdentHandler extends IdentHandler {
 	public static final int
 		MAX_WAIT_TIME = 1000 * 3, //3 seconds
 		RECHECK_DELAY = 1000 * 60 * 5; //5 minutes
 	
+	public final Plugin plugin;
 	protected WhoisEvent<PircBotX> whois = null;
 	protected Map<String, UserEntry> map = Collections.synchronizedMap(new HashMap<String, UserEntry>());
 	
-	public NickServIdentHandler() {
-		this(null);
+	public NickServIdentHandler(Plugin plugin) {
+		this(plugin, null);
 	}
-	public NickServIdentHandler(BotManager manager) {
+	public NickServIdentHandler(Plugin plugin, BotManager manager) {
 		super(manager, "ns", "NickServ", IdentHandler.OVERHEAD_MEDIUM);
+		this.plugin = plugin;
 	}
 	
 	public IdentHandler copy(BotManager manager) {
-		return new NickServIdentHandler(manager);
+		return new NickServIdentHandler(plugin, manager);
 	}
 	
 	public boolean checkAvailability() {
 		if (manager == null) return false;
 		
-		Plugin plugin = manager.botApp.pluginManager.byInternalName("Shocky.SIdentity.NickServ");
 		if (!plugin.map.containsKey(manager)) {
 			plugin.map.put(manager, this);
 		}
@@ -54,7 +55,6 @@ public class NickServIdentHandler extends IdentHandler {
 	}
 	
 	public String account(User user) {
-		Plugin plugin = manager.botApp.pluginManager.byInternalName("Shocky.SIdentity.NickServ");
 		if (!plugin.map.containsKey(manager)) {
 			plugin.map.put(manager, this);
 		}

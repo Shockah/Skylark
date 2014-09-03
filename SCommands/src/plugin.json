@@ -4,5 +4,8 @@
 	"author": "Shockah",
 	
 	"internalName": "Shocky.SCommands",
-	"baseClass": "scommands.Plugin"
+	"baseClass": "scommands.Plugin",
+	"dependsOn": [
+		"Shocky.SIdent"
+	]
 }

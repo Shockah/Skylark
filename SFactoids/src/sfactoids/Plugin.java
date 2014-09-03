@@ -3,6 +3,9 @@ package sfactoids;
 import shocky3.PluginInfo;
 
 public class Plugin extends shocky3.Plugin {
+	@Dependency protected static sident.Plugin pluginIdent;
+	@Dependency protected static scommands.Plugin pluginCmd;
+	
 	public FactoidCommandProvider provider;
 	
 	public Plugin(PluginInfo pinfo) {
@@ -10,7 +13,6 @@ public class Plugin extends shocky3.Plugin {
 	}
 	
 	protected void onLoad() {
-		scommands.Plugin pluginCmd = botApp.pluginManager.byInternalName("Shocky.SCommands");
 		pluginCmd.add(provider = new FactoidCommandProvider(this));
 		pluginCmd.provider.add(
 			new CmdRemember(this),

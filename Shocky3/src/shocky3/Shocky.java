@@ -1,12 +1,13 @@
 package shocky3;
 
 import java.io.File;
+import java.util.List;
 import org.pircbotx.PircBotX;
 import pl.shockah.FileIO;
+import pl.shockah.Pair;
 import pl.shockah.Util;
 import pl.shockah.json.JSONObject;
 import pl.shockah.json.JSONParser;
-import shocky3.ident.IdentManager;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
@@ -29,7 +30,6 @@ public class Shocky {
 	public final Settings settings;
 	public final ServerManager serverManager;
 	public final PluginManager pluginManager;
-	public final IdentManager identManager;
 	public boolean running = false;
 	public MongoClient mongo = null;
 	protected String mongoDb = null;
@@ -38,7 +38,6 @@ public class Shocky {
 		settings = new Settings(this);
 		serverManager = new ServerManager(this);
 		pluginManager = new PluginManager(this);
-		identManager = new IdentManager(this);
 	}
 	
 	public void run() {
@@ -62,12 +61,14 @@ public class Shocky {
 			mongo = new MongoClient();
 			
 			settings.read();
+			List<Pair<BotManager, String>> channels = serverManager.readConfig();
 			
 			pluginManager.readPlugins();
 			pluginManager.reload();
 			
-			serverManager.readConfig();
-			identManager.readConfig();
+			for (Pair<BotManager, String> pair : channels) {
+				pair.get1().joinChannel(pair.get2());
+			}
 			
 			settings.write();
 			

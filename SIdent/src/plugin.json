@@ -1,0 +1,8 @@
+{
+	"name": "Shocky - Ident",
+	"version": "r1",
+	"author": "Shockah",
+	
+	"internalName": "Shocky.SIdent",
+	"baseClass": "sident.Plugin"
+}

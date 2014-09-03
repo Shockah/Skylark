@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
+import pl.shockah.Pair;
 import pl.shockah.json.JSONObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
@@ -17,7 +18,8 @@ public class ServerManager {
 		this.botApp = botApp;
 	}
 	
-	public void readConfig() {
+	public List<Pair<BotManager, String>> readConfig() {
+		List<Pair<BotManager, String>> ret = new LinkedList<>();
 		DBCollection dbc = botApp.collection("servers");
 		for (DBObject dbo : JSONUtil.all(dbc.find())) {
 			JSONObject j = JSONUtil.fromDBObject(dbo);
@@ -29,9 +31,10 @@ public class ServerManager {
 			botManagers.add(bm);
 			
 			for (String jChannel : j.getList("channels").ofStrings()) {
-				bm.joinChannel(jChannel);
+				ret.add(new Pair<>(bm, jChannel));
 			}
 		}
+		return ret;
 	}
 	
 	public BotManager byServerName(String name) {

@@ -8,7 +8,7 @@ import scommands.Command;
 import shocky3.JSONUtil;
 import shocky3.Shocky;
 import shocky3.TimeDuration;
-import shocky3.ident.IdentHandler;
+import sident.IdentHandler;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 
@@ -65,7 +65,7 @@ public class CmdInfo extends Command {
 			StringBuilder sb = new StringBuilder();
 			JSONObject jAuthor = j.getObject("author");
 			for (String jAuthorKey : jAuthor.keys()) {
-				IdentHandler handler = botApp.identManager.getIdentHandlerFor(null, jAuthorKey);
+				IdentHandler handler = Plugin.pluginIdent.getIdentHandlerFor(null, jAuthorKey);
 				if (handler != null) {
 					sb.append(String.format(", %s: %s", handler.name, jAuthor.getString(jAuthorKey)));
 				}

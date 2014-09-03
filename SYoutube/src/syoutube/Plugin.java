@@ -5,6 +5,8 @@ import shocky3.PluginInfo;
 import surlannounce.URLAnnouncer;
 
 public class Plugin extends shocky3.ListenerPlugin {
+	@Dependency protected static surlannounce.Plugin pluginURLAnnounce;
+	
 	protected JSONObject j = null;
 	public URLAnnouncer announcer;
 	
@@ -13,7 +15,6 @@ public class Plugin extends shocky3.ListenerPlugin {
 	}
 	
 	protected void onLoad() {
-		surlannounce.Plugin pluginURLAnnounce = botApp.pluginManager.byInternalName("Shocky.SURLAnnounce");
 		pluginURLAnnounce.add(
 			announcer = new YoutubeURLAnnouncer(this)
 		);

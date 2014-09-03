@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import org.pircbotx.PircBotX;
 import pl.shockah.Util;
-import shocky3.ident.IdentHandler;
 
 public class BotManager {
 	public final Shocky botApp;
@@ -35,7 +34,7 @@ public class BotManager {
 	}
 	
 	public PircBotX connectNewBot() {
-		BotStarterThread botStarter = new BotStarterThread(this);
+		final BotStarterThread botStarter = new BotStarterThread(this);
 		botStarter.start();
 		
 		while (true) {
@@ -45,17 +44,10 @@ public class BotManager {
 		
 		try {
 			if (botStarter.bot != null) {
-				if (!botApp.identManager.identHandlers.containsKey(this)) {
-					botApp.identManager.identHandlers.put(this, Collections.synchronizedList(new LinkedList<IdentHandler>()));
-				}
-				List<IdentHandler> handlers = botApp.identManager.identHandlers.get(this);
-				for (IdentHandler h : botApp.identManager.identHandlers.get(null)) {
-					IdentHandler copy = h.copy(this);
-					if (!handlers.contains(copy)) {
-						handlers.add(copy);
-					}
-				}
 				bots.add(botStarter.bot);
+				for (Plugin plugin : botApp.pluginManager.plugins()) {
+					plugin.onBotStarted(this, botStarter.bot);
+				}
 			}
 		} catch (Exception e) {e.printStackTrace();}
 		

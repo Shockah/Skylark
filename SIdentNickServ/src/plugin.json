@@ -1,0 +1,11 @@
+{
+	"name": "Shocky - Ident - NickServ",
+	"version": "r1",
+	"author": "Shockah",
+	
+	"internalName": "Shocky.SIdent.NickServ",
+	"baseClass": "sident.ns.Plugin",
+	"dependsOn": [
+		"Shocky.SIdent"
+	]
+}

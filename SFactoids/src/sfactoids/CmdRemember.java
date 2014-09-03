@@ -8,7 +8,7 @@ import scommands.Command;
 import shocky3.BotManager;
 import shocky3.JSONUtil;
 import shocky3.Shocky;
-import shocky3.ident.IdentHandler;
+import sident.IdentHandler;
 import com.mongodb.DBCollection;
 
 public class CmdRemember extends Command {
@@ -54,8 +54,8 @@ public class CmdRemember extends Command {
 		
 		JSONObject jAuthor = new JSONObject();
 		BotManager bm = botApp.serverManager.byBot(e);
-		for (IdentHandler handler : botApp.identManager.identHandlers.get(null)) {
-			IdentHandler handler2 = botApp.identManager.getIdentHandlerFor(bm, handler.id);
+		for (IdentHandler handler : Plugin.pluginIdent.identHandlers.get(null)) {
+			IdentHandler handler2 = Plugin.pluginIdent.getIdentHandlerFor(bm, handler.id);
 			if (handler2.isAvailable()) {
 				String account = handler2.account(e.getUser());
 				if (account != null) {

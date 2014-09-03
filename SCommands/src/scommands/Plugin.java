@@ -13,6 +13,8 @@ import shocky3.PluginInfo;
 import shocky3.Shocky;
 
 public class Plugin extends shocky3.ListenerPlugin {
+	@Dependency protected static sident.Plugin pluginIdent;
+	
 	protected JSONObject j = null;
 	public final DefaultCommandProvider provider;
 	protected List<CommandProvider> providers = new LinkedList<>();

@@ -1,8 +1,0 @@
-{
-	"name": "Shocky - Identity - NickServ",
-	"version": "r1",
-	"author": "Shockah",
-	
-	"internalName": "Shocky.SIdentity.NickServ",
-	"baseClass": "sidentityns.Plugin"
-}

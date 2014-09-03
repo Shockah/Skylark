@@ -1,18 +1,18 @@
-package shocky3.ident;
+package sident;
 
 import org.pircbotx.User;
 import shocky3.BotManager;
 
-public class ServerIdentHandler extends IdentHandler {
-	public ServerIdentHandler() {
+public class NickIdentHandler extends IdentHandler {
+	public NickIdentHandler() {
 		this(null);
 	}
-	public ServerIdentHandler(BotManager manager) {
-		super(manager, "srv", "server", IdentHandler.OVERHEAD_LOW);
+	public NickIdentHandler(BotManager manager) {
+		super(manager, "n", "nick", IdentHandler.OVERHEAD_LOW);
 	}
 	
 	public IdentHandler copy(BotManager manager) {
-		return new ServerIdentHandler(manager);
+		return new NickIdentHandler(manager);
 	}
 	
 	public boolean checkAvailability() {
@@ -20,7 +20,7 @@ public class ServerIdentHandler extends IdentHandler {
 	}
 	
 	public String account(User user) {
-		return String.format("%s (%s)", manager.name, manager.host);
+		return user.getNick();
 	}
 	
 	public boolean isAccount(User user, String account) {

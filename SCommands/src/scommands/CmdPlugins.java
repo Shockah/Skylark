@@ -10,7 +10,7 @@ public class CmdPlugins extends Command {
 	}
 	
 	public void call(Shocky botApp, MessageEvent<PircBotX> e, String trigger, String args) {
-		if (!botApp.identManager.userHasPermission(e, "Shocky.SCommands.Plugins.Reload")) return;
+		if (!Plugin.pluginIdent.userHasPermission(e, "Shocky.SCommands.Plugins.Reload")) return;
 		e.respond("Reloading...");
 		botApp.pluginManager.reload();
 		e.respond("Finished.");
