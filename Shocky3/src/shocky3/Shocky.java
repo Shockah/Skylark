@@ -52,13 +52,7 @@ public class Shocky {
 		if (j == null) j = new JSONObject();
 		
 		try {
-			JSONObject jMongo = j.contains("mongo") ? j.getObject("mongo") : new JSONObject();
-			String mHost = jMongo.contains("host") ? jMongo.getString("host") : null;
-			int mPort = jMongo.contains("port") ? jMongo.getInt("port") : 0;
-			
-			mongo = mPort == 0 ? (mHost == null ? new MongoClient() : new MongoClient(mHost)) : new MongoClient(mHost, mPort);
-			mongoDb = jMongo.getString("db");
-			mongo = new MongoClient();
+			initializeMongo(j.contains("mongo") ? j.getObject("mongo") : new JSONObject());
 			
 			settings.read();
 			List<Pair<BotManager, String>> channels = serverManager.readConfig();
@@ -83,6 +77,17 @@ public class Shocky {
 				bot.sendIRC().quitServer();
 			}
 		}
+	}
+	
+	private void initializeMongo(JSONObject j) {
+		try {
+			String mHost = j.contains("host") ? j.getString("host") : null;
+			int mPort = j.contains("port") ? j.getInt("port") : 0;
+			
+			mongo = mPort == 0 ? (mHost == null ? new MongoClient() : new MongoClient(mHost)) : new MongoClient(mHost, mPort);
+			mongoDb = j.getString("db");
+			mongo = new MongoClient();
+		} catch (Exception e) {e.printStackTrace();}
 	}
 	
 	public void stop() {
