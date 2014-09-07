@@ -7,11 +7,14 @@ import org.pircbotx.PircBotX;
 import pl.shockah.Util;
 
 public class BotManager {
+	public static final int
+		BASE_CHANNELLIMIT = 10, BASE_MESSAGEDELAY = 500;
+	
 	public final Shocky botApp;
 	public final ServerManager manager;
 	public final String name, host;
 	public String botName = "Shocky";
-	public int channelsPerConn = 10, messageDelay = 500;
+	public int channelsPerConn = -1, messageDelay = BASE_MESSAGEDELAY;
 	public final List<PircBotX> bots = Collections.synchronizedList(new LinkedList<PircBotX>());
 	
 	public BotManager(ServerManager manager, String name, String host) {
@@ -22,6 +25,25 @@ public class BotManager {
 	}
 	
 	public PircBotX joinChannel(String cname) {
+		if (channelsPerConn == 0) {
+			return null;
+		}
+		if (channelsPerConn < 0) {
+			if (bots.isEmpty()) {
+				connectNewBot();
+			}
+			if (!bots.isEmpty()) {
+				try {
+					channelsPerConn = Integer.parseInt(bots.get(0).getServerInfo().getChanlimit());
+					if (channelsPerConn < 0) {
+						channelsPerConn = BASE_CHANNELLIMIT;
+					}
+				} catch (Exception e) {
+					channelsPerConn = BASE_CHANNELLIMIT;
+				}
+			}
+		}
+		
 		for (PircBotX bot : bots) {
 			if (bot.getUserBot().getChannels().size() < channelsPerConn) {
 				bot.sendIRC().joinChannel(cname);

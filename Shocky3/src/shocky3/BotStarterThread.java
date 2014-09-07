@@ -47,7 +47,7 @@ public class BotStarterThread extends Thread {
 				}
 			}
 			
-			PircBotX bot = new PircBotX(cfgb.buildConfiguration());
+			bot = new PircBotX(cfgb.buildConfiguration());
 			
 			try {
 				Field field = bot.getClass().getDeclaredField("inputParser");
