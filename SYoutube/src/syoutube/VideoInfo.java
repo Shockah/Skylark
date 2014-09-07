@@ -25,7 +25,7 @@ public final class VideoInfo {
 			StringBuilder sb = new StringBuilder();
 			
 			sb.append(String.format(" | &b%s&r", title));
-			sb.append(String.format(" | added by &b%s&r", uploader));
+			sb.append(String.format(" | by &b%s&r", uploader));
 			if (duration != 0) {
 				sb.append(String.format(" | %s long", TimeDuration.formatSeconds(duration)));
 			}
