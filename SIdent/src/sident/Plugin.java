@@ -70,7 +70,7 @@ public class Plugin extends shocky3.Plugin {
 		}
 	}
 	
-	protected void prepare(BotManager manager) {
+	public void prepare(BotManager manager) {
 		if (manager == null) return;
 		
 		if (!identHandlers.containsKey(manager)) {
