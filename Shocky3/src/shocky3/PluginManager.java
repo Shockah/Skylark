@@ -169,6 +169,9 @@ public class PluginManager {
 		}
 		for (Plugin plugin : plugins) {
 			plugin.onLoad();
+		}
+		for (Plugin plugin : plugins) {
+			plugin.postLoad();
 			System.out.println("Loaded plugin: " + plugin.pinfo.internalName());
 		}
 	}
@@ -188,14 +191,14 @@ public class PluginManager {
 		if (pinfo.loaded()) return;
 		try {
 			pinfo.plugin = (Plugin)currentClassLoader.loadClass(pinfo.baseClass()).getConstructor(PluginInfo.class).newInstance(pinfo);
-			pinfo.plugin.preOnLoad();
+			pinfo.plugin.preLoad();
 			plugins.add(pinfo.plugin);
 		} catch (Exception e) {e.printStackTrace();}
 	}
 	private void actualUnload(Plugin plugin) {
 		try {
 			plugins.remove(plugin);
-			plugin.preOnUnload();
+			plugin.preUnload();
 			plugin.onUnload();
 			plugin.pinfo.plugin = null;
 			System.out.println("Unloaded plugin: " + plugin.pinfo.internalName());

@@ -17,14 +17,14 @@ public abstract class ListenerPlugin extends Plugin {
 		listener = new MyListener(this);
 	}
 	
-	void preOnLoad() {
+	protected void preLoad() {
 		for (BotManager bm : botApp.serverManager.botManagers) {
 			for (PircBotX bot : bm.bots) {
 				bot.getConfiguration().getListenerManager().addListener(listener);
 			}
 		}
 	}
-	void preOnUnload() {
+	protected void preUnload() {
 		for (BotManager bm : botApp.serverManager.botManagers) {
 			for (PircBotX bot : bm.bots) {
 				bot.getConfiguration().getListenerManager().removeListener(listener);
