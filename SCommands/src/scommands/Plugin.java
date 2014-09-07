@@ -6,11 +6,14 @@ import java.util.LinkedList;
 import java.util.List;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
+import org.pircbotx.hooks.events.NoticeEvent;
+import org.pircbotx.hooks.events.PrivateMessageEvent;
 import pl.shockah.Pair;
 import pl.shockah.json.JSONObject;
 import scommands.CommandProvider.EPriority;
 import shocky3.PluginInfo;
 import shocky3.Shocky;
+import shocky3.pircbotx.NullableChannelUserEvent;
 
 public class Plugin extends shocky3.ListenerPlugin {
 	@Dependency protected static sident.Plugin pluginIdent;
@@ -57,6 +60,16 @@ public class Plugin extends shocky3.ListenerPlugin {
 	}
 	
 	protected void onMessage(MessageEvent<PircBotX> e) {
+		handleCommands(new NullableChannelUserEvent<>(e));
+	}
+	protected void onPrivateMessage(PrivateMessageEvent<PircBotX> e) {
+		handleCommands(new NullableChannelUserEvent<>(e));
+	}
+	protected void onNotice(NoticeEvent<PircBotX> e) {
+		handleCommands(new NullableChannelUserEvent<>(e));
+	}
+	
+	 public void handleCommands(NullableChannelUserEvent<PircBotX> e) {
 		String msg = e.getMessage();
 		String[] spl = botApp.settings.getStringForChannel(e.getChannel(), this, "characters").split(" ");
 		for (String s : spl) {
@@ -74,7 +87,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 		}
 	}
 	
-	public ICommand findCommand(Shocky botApp, MessageEvent<PircBotX> e, String trigger, String args) {
+	public ICommand findCommand(Shocky botApp, NullableChannelUserEvent<PircBotX> e, String trigger, String args) {
 		List<Pair<ICommand, CommandProvider.EPriority>> list = new LinkedList<>();
 		for (CommandProvider cp : providers) {
 			cp.provide(list, botApp, e, trigger, args);

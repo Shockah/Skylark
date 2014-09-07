@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.pircbotx.PircBotX;
-import org.pircbotx.hooks.Event;
+import org.pircbotx.hooks.types.GenericEvent;
 import pl.shockah.Pair;
 import pl.shockah.json.JSONObject;
 import com.mongodb.DBCollection;
@@ -54,7 +54,7 @@ public class ServerManager {
 		return null;
 	}
 	
-	public BotManager byBot(Event<PircBotX> e) {
+	public BotManager byBot(GenericEvent<PircBotX> e) {
 		return byBot(e.getBot());
 	}
 	public BotManager byBot(PircBotX bot) {

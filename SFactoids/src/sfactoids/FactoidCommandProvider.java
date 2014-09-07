@@ -2,13 +2,13 @@ package sfactoids;
 
 import java.util.List;
 import org.pircbotx.PircBotX;
-import org.pircbotx.hooks.events.MessageEvent;
 import pl.shockah.Pair;
 import pl.shockah.json.JSONObject;
 import scommands.CommandProvider;
 import scommands.ICommand;
 import shocky3.JSONUtil;
 import shocky3.Shocky;
+import shocky3.pircbotx.NullableChannelUserEvent;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 
@@ -22,7 +22,7 @@ public class FactoidCommandProvider extends CommandProvider {
 		);
 	}
 	
-	public void provide(List<Pair<ICommand, EPriority>> candidates, Shocky botApp, MessageEvent<PircBotX> e, String trigger, String args) {
+	public void provide(List<Pair<ICommand, EPriority>> candidates, Shocky botApp, NullableChannelUserEvent<PircBotX> e, String trigger, String args) {
 		DBCollection dbc = botApp.collection(plugin.pinfo.internalName());
 		trigger = trigger.toLowerCase();
 		
