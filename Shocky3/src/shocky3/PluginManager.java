@@ -114,15 +114,24 @@ public class PluginManager {
 			currentClassLoader = null;
 		}
 		
+		List<PluginInfo> dontLoad = new LinkedList<>();
+		
 		Map<PluginInfo, List<PluginInfo>> plugindeps = new HashMap<>();
-		for (PluginInfo pinfo : toLoad) {
+		L: for (PluginInfo pinfo : toLoad) {
 			List<PluginInfo> deps = new LinkedList<PluginInfo>();
 			for (String s : pinfo.dependsOn()) {
 				PluginInfo pinfo2 = byPluginInfoInternalName(s);
-				if (pinfo2 != null) deps.add(pinfo2);
+				if (pinfo2 == null) {
+					dontLoad.add(pinfo);
+					System.out.println(String.format("Couldn't load %s: missing dependency %s", pinfo.internalName(), s));
+					continue L;
+				} else {
+					deps.add(pinfo2);
+				}
 			}
 			plugindeps.put(pinfo, deps);
 		}
+		toLoad.removeAll(dontLoad);
 		
 		List<PluginInfo> order = new LinkedList<>();
 		while (!toLoad.isEmpty()) {
@@ -197,21 +206,17 @@ public class PluginManager {
 		for (Field field : pinfo.plugin.getClass().getDeclaredFields()) {
 			Plugin.Dependency pluginDependency = field.getAnnotation(Plugin.Dependency.class);
 			if (pluginDependency != null) {
-				L: for (String dependsOn : pinfo.dependsOn()) {
-					for (Plugin plugin : plugins) {
-						if (plugin.pinfo.internalName().equals(dependsOn)) {
-							if (field.getType() == plugin.getClass()) {
-								try {
-									field.setAccessible(true);
-									if (Modifier.isStatic(field.getModifiers())) {
-										field.set(null, plugin);
-									} else {
-										field.set(pinfo.plugin, plugin);
-									}
-									break L;
-								} catch (Exception e) {e.printStackTrace();}
+				L: for (Plugin plugin : plugins) {
+					if (field.getType() == plugin.getClass()) {
+						try {
+							field.setAccessible(true);
+							if (Modifier.isStatic(field.getModifiers())) {
+								field.set(null, plugin);
+							} else {
+								field.set(pinfo.plugin, plugin);
 							}
-						}
+							break L;
+						} catch (Exception e) {e.printStackTrace();}
 					}
 				}
 			}
