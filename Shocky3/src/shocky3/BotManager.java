@@ -33,6 +33,17 @@ public class BotManager {
 		return joinChannel(cname);
 	}
 	
+	public boolean inAnyChannels() {
+		for (PircBotX bot : bots) {
+			if (bot.isConnected()) {
+				if (!bot.getUserBot().getChannels().isEmpty()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	public PircBotX connectNewBot() {
 		final BotStarterThread botStarter = new BotStarterThread(this);
 		botStarter.start();
@@ -52,9 +63,5 @@ public class BotManager {
 		} catch (Exception e) {e.printStackTrace();}
 		
 		return botStarter.bot;
-	}
-	
-	public List<PircBotX> bots() {
-		return Collections.unmodifiableList(bots);
 	}
 }

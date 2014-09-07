@@ -3,9 +3,11 @@ package shocky3;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
-import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.*;
 import org.pircbotx.hooks.types.*;
+import shocky3.pircbotx.AccountNotifyEvent;
+import shocky3.pircbotx.CustomListenerAdapter;
+import shocky3.pircbotx.ExtendedJoinEvent;
 
 public abstract class ListenerPlugin extends Plugin {
 	public final Listener<PircBotX> listener;
@@ -93,7 +95,10 @@ public abstract class ListenerPlugin extends Plugin {
 	protected void onVoice(VoiceEvent<PircBotX> e) {}
 	protected void onWhois(WhoisEvent<PircBotX> e) {}
 	
-	protected class MyListener extends ListenerAdapter<PircBotX> {
+	protected void onExtendedJoin(ExtendedJoinEvent<PircBotX> e) {}
+	protected void onAccountNotify(AccountNotifyEvent<PircBotX> e) {}
+	
+	protected class MyListener extends CustomListenerAdapter<PircBotX> {
 		public final ListenerPlugin plugin;
 		
 		public MyListener(ListenerPlugin plugin) {
@@ -167,5 +172,8 @@ public abstract class ListenerPlugin extends Plugin {
 		public void onVersion(VersionEvent<PircBotX> e) { plugin.onVersion(e); }
 		public void onVoice(VoiceEvent<PircBotX> e) { plugin.onVoice(e); }
 		public void onWhois(WhoisEvent<PircBotX> e) { plugin.onWhois(e); }
+		
+		public void onExtendedJoin(ExtendedJoinEvent<PircBotX> e) { plugin.onExtendedJoin(e); }
+		public void onAccountNotify(AccountNotifyEvent<PircBotX> e) { plugin.onAccountNotify(e); }
 	}
 }

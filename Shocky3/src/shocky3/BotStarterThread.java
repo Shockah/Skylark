@@ -1,10 +1,14 @@
 package shocky3;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
+import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.events.ConnectEvent;
+import shocky3.pircbotx.CustomInputParser;
 
 public class BotStarterThread extends Thread {
 	public final Shocky botApp;
@@ -25,6 +29,9 @@ public class BotStarterThread extends Thread {
 				.setAutoNickChange(true)
 				.setServerHostname(manager.host)
 				.setMessageDelay(manager.messageDelay)
+				.setCapEnabled(true)
+				.addCapHandler(new EnableCapHandler("extended-join", true))
+				.addCapHandler(new EnableCapHandler("account-notify", true))
 				.addListener(new Listener<PircBotX>(){
 					public void onEvent(Event<PircBotX> e) throws Exception {
 						if (e instanceof ConnectEvent) {
@@ -41,6 +48,20 @@ public class BotStarterThread extends Thread {
 			}
 			
 			PircBotX bot = new PircBotX(cfgb.buildConfiguration());
+			
+			try {
+				Field field = bot.getClass().getDeclaredField("inputParser");
+				field.setAccessible(true);
+				
+				Field mfield = Field.class.getDeclaredField("modifiers");
+				mfield.setAccessible(true);
+				mfield.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+				
+				field.set(bot, new CustomInputParser(bot));
+				
+				mfield.setInt(field, field.getModifiers() | Modifier.FINAL);
+			} catch (Exception e) {e.printStackTrace();}
+			
 			bot.startBot();
 		} catch (Exception e) {
 			this.bot = null;

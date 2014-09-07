@@ -12,7 +12,7 @@ import com.mongodb.DBObject;
 
 public class ServerManager {
 	public final Shocky botApp;
-	protected List<BotManager> botManagers = Collections.synchronizedList(new LinkedList<BotManager>());
+	public List<BotManager> botManagers = Collections.synchronizedList(new LinkedList<BotManager>());
 	
 	public ServerManager(Shocky botApp) {
 		this.botApp = botApp;
