@@ -8,7 +8,7 @@ public class NickIdentHandler extends IdentHandler {
 		this(null);
 	}
 	public NickIdentHandler(BotManager manager) {
-		super(manager, "n", "nick", OVERHEAD_LOW, (CREDIBILITY_LOW + CREDIBILITY_MEDIUM) / 2);
+		super(manager, "n", "nick", OVERHEAD_LOW, (CREDIBILITY_LOW + CREDIBILITY_MEDIUM) / 2, true);
 	}
 	
 	public IdentHandler copy(BotManager manager) {

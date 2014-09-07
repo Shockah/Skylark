@@ -19,8 +19,9 @@ import shocky3.JSONUtil;
 import shocky3.PluginInfo;
 
 public class Plugin extends shocky3.Plugin {
-	public Map<BotManager, List<IdentHandler>> identHandlers = Collections.synchronizedMap(new HashMap<BotManager, List<IdentHandler>>());
-	public Map<BotManager, List<IdentGroup>> identGroups = Collections.synchronizedMap(new HashMap<BotManager, List<IdentGroup>>());
+	public final Map<BotManager, List<IdentHandler>> identHandlers = Collections.synchronizedMap(new HashMap<BotManager, List<IdentHandler>>());
+	public final Map<BotManager, List<IdentGroup>> identGroups = Collections.synchronizedMap(new HashMap<BotManager, List<IdentGroup>>());
+	public IdentHandler handlerServer, handlerNick, handlerHost;
 	
 	public Plugin(PluginInfo pinfo) {
 		super(pinfo);
@@ -30,9 +31,9 @@ public class Plugin extends shocky3.Plugin {
 		identHandlers.put(null, Collections.synchronizedList(new LinkedList<IdentHandler>()));
 		identGroups.put(null, Collections.synchronizedList(new LinkedList<IdentGroup>()));
 		add(
-			new ServerIdentHandler(),
-			new NickIdentHandler(),
-			new HostIdentHandler()
+			handlerServer = new ServerIdentHandler(),
+			handlerNick = new NickIdentHandler(),
+			handlerHost = new HostIdentHandler()
 		);
 		
 		readConfig();

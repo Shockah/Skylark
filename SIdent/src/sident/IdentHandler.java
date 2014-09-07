@@ -32,17 +32,19 @@ public abstract class IdentHandler {
 	public final BotManager manager;
 	public final String id, name;
 	public final int overhead, credibility;
+	public final boolean userFriendly;
 	protected Box<Boolean> available = null;
 	
-	public IdentHandler(String id, String name, int overhead, int credibility) {
-		this(null, id, name, overhead, credibility);
+	public IdentHandler(String id, String name, int overhead, int credibility, boolean userFriendly) {
+		this(null, id, name, overhead, credibility, userFriendly);
 	}
-	public IdentHandler(BotManager manager, String id, String name, int overhead, int credibility) {
+	public IdentHandler(BotManager manager, String id, String name, int overhead, int credibility, boolean userFriendly) {
 		this.manager = manager;
 		this.id = id;
 		this.name = name;
 		this.overhead = overhead;
 		this.credibility = credibility;
+		this.userFriendly = userFriendly;
 	}
 	
 	public final boolean equals(Object o) {

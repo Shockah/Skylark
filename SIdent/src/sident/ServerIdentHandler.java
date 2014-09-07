@@ -8,7 +8,7 @@ public class ServerIdentHandler extends IdentHandler {
 		this(null);
 	}
 	public ServerIdentHandler(BotManager manager) {
-		super(manager, "srv", "server", OVERHEAD_LOW, CREDIBILITY_NONE);
+		super(manager, "srv", "server", OVERHEAD_LOW, CREDIBILITY_NONE, true);
 	}
 	
 	public IdentHandler copy(BotManager manager) {
