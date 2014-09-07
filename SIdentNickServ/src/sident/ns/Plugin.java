@@ -6,6 +6,7 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.NoticeEvent;
+import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.events.ServerResponseEvent;
 import org.pircbotx.hooks.events.WhoisEvent;
@@ -56,9 +57,9 @@ public class Plugin extends shocky3.ListenerPlugin {
 		
 		String[] spl = e.getMessage().split(" ");
 		if (spl[1].equals("->") && (!spl[2].equals("0") && !spl[2].equals("*")) && spl[4].equals("3")) {
-			handler.setAccount(spl[0], spl[2]);
+			handler.setAccount(spl[0], spl[2], false);
 		} else {
-			handler.setAccount(spl[0], null);
+			handler.setAccount(spl[0], null, false);
 		}
 	}
 	
@@ -91,6 +92,28 @@ public class Plugin extends shocky3.ListenerPlugin {
 			} else if (!handler.availableExtendedJoin) {
 				handler.requests++;
 				e.getBot().sendRaw().rawLine(String.format("WHO %s %%na", e.getUser().getNick()));
+			}
+		}
+	}
+	
+	protected void onPart(PartEvent<PircBotX> e) {
+		BotManager manager = botApp.serverManager.byBot(e);
+		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(manager, identHandler.id);
+		if (handler.isAvailable()) {
+			boolean foundUser = false;
+			L: for (PircBotX bot : manager.bots) {
+				for (Channel channel : bot.getUserBot().getChannels()) {
+					if (channel.getUsers().contains(e.getUser())) {
+						foundUser = true;
+						break L;
+					}
+				}
+			}
+			if (!foundUser) {
+				String nick = e.getUser().getNick().toLowerCase();
+				if (handler.map.containsKey(nick)) {
+					handler.map.remove(nick);
+				}
 			}
 		}
 	}
