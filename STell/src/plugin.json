@@ -1,0 +1,12 @@
+{
+	"name": "Shocky - Tell",
+	"version": "r1",
+	"author": "Shockah",
+	
+	"internalName": "Shocky.STell",
+	"baseClass": "stell.Plugin",
+	"dependsOn": [
+		"Shocky.SCommands",
+		"Shocky.SIdent"
+	]
+}
