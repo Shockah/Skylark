@@ -32,11 +32,7 @@ public class CustomInputParser extends InputParser {
 				configuration.getListenerManager().dispatchEvent(new AccountNotifyEvent<PircBotX>(bot, channel, source, account));
 				return;
 			}
-		}
-		
-		super.processCommand(target, sourceNick, sourceLogin, sourceHostname, command, line, parsedLine);
-		
-		if (command.equals("JOIN")) {
+		} else if (command.equals("JOIN")) {
 			if (!sourceNick.equalsIgnoreCase(bot.getNick())) {
 				if (availableExtendedJoin == null) {
 					availableExtendedJoin = bot.getEnabledCapabilities().contains("extended-join");
@@ -50,5 +46,7 @@ public class CustomInputParser extends InputParser {
 				}
 			}
 		}
+		
+		super.processCommand(target, sourceNick, sourceLogin, sourceHostname, command, line, parsedLine);
 	}
 }
