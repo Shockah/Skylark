@@ -7,7 +7,10 @@ import java.util.ListIterator;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.MessageEvent;
+import shocky3.JSONUtil;
 import shocky3.PluginInfo;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
 
 public class Plugin extends shocky3.ListenerPlugin {
 	@Dependency protected static scommands.Plugin pluginCmd;
@@ -24,6 +27,18 @@ public class Plugin extends shocky3.ListenerPlugin {
 			new CmdTell(this),
 			new CmdTells(this)
 		);
+		
+		DBCollection dbc;
+		
+		dbc = botApp.collection(String.format("%s.Settings", pinfo.internalName()));
+		if (dbc.count() != 0) {
+			Tell.nextID = JSONUtil.fromDBObject(dbc.findOne()).getInt("nextID");
+		}
+		
+		dbc = botApp.collection(pinfo.internalName());
+		for (DBObject dbo : JSONUtil.all(dbc.find())) {
+			tells.add(Tell.read(botApp, JSONUtil.fromDBObject(dbo)));
+		}
 	}
 	
 	protected void onMessage(MessageEvent<PircBotX> e) {
@@ -35,6 +50,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 				for (String s : spl) {
 					e.getUser().send().notice(s);
 				}
+				Tell.removeDB(this, tell);
 				lit.remove();
 			}
 		}

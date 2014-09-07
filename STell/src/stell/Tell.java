@@ -7,11 +7,86 @@ import java.util.LinkedList;
 import java.util.List;
 import org.pircbotx.User;
 import pl.shockah.Pair;
+import pl.shockah.json.JSONList;
+import pl.shockah.json.JSONObject;
 import shocky3.BotManager;
+import shocky3.JSONUtil;
+import shocky3.Shocky;
 import shocky3.TimeDuration;
 import sident.IdentHandler;
+import com.mongodb.DBCollection;
 
 public class Tell {
+	public static int nextID = 0;
+	
+	public static Tell read(Shocky botApp, JSONObject j) {
+		int id = j.getInt("tellid");
+		Date date = new Date(j.getInt("date") * 1000l);
+		String message = j.getString("message");
+		
+		BotManager managerSender = botApp.serverManager.byServerName(j.getString("serverFrom"));
+		BotManager managerReceiver = botApp.serverManager.byServerName(j.getString("serverTo"));
+		
+		List<Pair<IdentHandler, String>> dataSender = new LinkedList<>();
+		for (JSONObject jSender : j.getList("sender").ofObjects()) {
+			IdentHandler handler = Plugin.pluginIdent.getIdentHandlerFor(managerSender, jSender.getString("handler"));
+			String account = jSender.getString("account");
+			dataSender.add(new Pair<>(handler, account));
+		}
+		
+		List<Pair<IdentHandler, String>> dataReceiver = new LinkedList<>();
+		for (JSONObject jReceiver : j.getList("receiver").ofObjects()) {
+			IdentHandler handler = Plugin.pluginIdent.getIdentHandlerFor(managerReceiver, jReceiver.getString("handler"));
+			String account = jReceiver.getString("account");
+			dataReceiver.add(new Pair<>(handler, account));
+		}
+		
+		return new Tell(id, dataSender, dataReceiver, date, message);
+	}
+	
+	public static JSONObject write(Tell tell) {
+		JSONObject j = JSONObject.make(
+			"tellid", tell.id,
+			"date", (int)(tell.date.getTime() / 1000),
+			"message", tell.message,
+			"serverFrom", tell.managerSender.name,
+			"serverTo", tell.managerReceiver.name
+		);
+		
+		JSONList<JSONObject> jSender = j.putNewList("sender").ofObjects();
+		for (Pair<IdentHandler, String> pair : tell.dataSender) {
+			jSender.add(JSONObject.make(
+				"handler", pair.get1().id,
+				"account", pair.get2()
+			));
+		}
+		
+		JSONList<JSONObject> jReceiver = j.putNewList("receiver").ofObjects();
+		for (Pair<IdentHandler, String> pair : tell.dataReceiver) {
+			jReceiver.add(JSONObject.make(
+				"handler", pair.get1().id,
+				"account", pair.get2()
+			));
+		}
+		
+		return j;
+	}
+	public static void writeDB(shocky3.Plugin plugin, Tell tell) {
+		DBCollection dbc = plugin.botApp.collection(plugin.pinfo.internalName());
+		removeDB(plugin, tell);
+		dbc.insert(JSONUtil.toDBObject(write(tell)));
+	}
+	
+	public static void removeDB(shocky3.Plugin plugin, Tell tell) {
+		DBCollection dbc = plugin.botApp.collection(plugin.pinfo.internalName());
+		dbc.remove(JSONUtil.toDBObject(JSONObject.make("tellid", tell.id)));
+	}
+	
+	public static void updateIDDB(shocky3.Plugin plugin) {
+		DBCollection dbc = plugin.botApp.collection(String.format("%s.Settings", plugin.pinfo.internalName()));
+		dbc.update(JSONUtil.toDBObject(new JSONObject()), JSONUtil.toDBObject(JSONObject.make("nextID", nextID)), true, false);
+	}
+	
 	public static List<Pair<IdentHandler, String>> createData(BotManager manager, User user) {
 		List<Pair<IdentHandler, String>> list = new LinkedList<>();
 		for (IdentHandler handler : Plugin.pluginIdent.identHandlers.get(null)) {
@@ -48,6 +123,7 @@ public class Tell {
 		});
 	}
 	
+	public final int id;
 	public final List<Pair<IdentHandler, String>>
 		dataSender = new LinkedList<>(),
 		dataReceiver = new LinkedList<>();
@@ -59,6 +135,10 @@ public class Tell {
 		this(dataSender, dataReceiver, new Date(), message);
 	}
 	public Tell(List<Pair<IdentHandler, String>> dataSender, List<Pair<IdentHandler, String>> dataReceiver, Date date, String message) {
+		this(nextID++, dataSender, dataReceiver, date, message);
+	}
+	protected Tell(int id, List<Pair<IdentHandler, String>> dataSender, List<Pair<IdentHandler, String>> dataReceiver, Date date, String message) {
+		this.id = id;
 		sortData(dataSender);
 		sortData(dataReceiver);
 		this.dataSender.addAll(dataSender);

@@ -23,6 +23,7 @@ public class CmdTells extends Command {
 				for (String s : spl) {
 					e.getUser().send().notice(s);
 				}
+				Tell.removeDB(plugin, tell);
 				lit.remove();
 			}
 		}

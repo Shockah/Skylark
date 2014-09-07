@@ -56,8 +56,11 @@ public class CmdTell extends Command {
 				pair.set1(pair.get1().copy(managerReceiver));
 			}
 			
-			pluginTell.tells.add(Tell.create(manager, e.getUser(), list, args));
+			Tell tell = Tell.create(manager, e.getUser(), list, args);
+			pluginTell.tells.add(tell);
 			e.getUser().send().notice("I'll pass that along.");
+			Tell.writeDB(plugin, tell);
+			Tell.updateIDDB(plugin);
 		}
 	}
 }
