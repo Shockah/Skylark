@@ -1,38 +1,54 @@
 package sident;
 
+import java.util.Comparator;
 import org.pircbotx.User;
 import pl.shockah.Box;
 import pl.shockah.Util;
 import shocky3.BotManager;
 
-public abstract class IdentHandler implements Comparable<IdentHandler> {
+public abstract class IdentHandler {
 	public static final int
 		OVERHEAD_LOW = 0,
 		OVERHEAD_MEDIUM = 500,
 		OVERHEAD_HIGH = 1000;
+	public static final int
+		CREDIBILITY_NONE = -1,
+		CREDIBILITY_LOW = 0,
+		CREDIBILITY_MEDIUM = 500,
+		CREDIBILITY_HIGH = 1000;
+	
+	public static final Comparator<IdentHandler>
+		comparatorOverhead = new Comparator<IdentHandler>(){
+			public int compare(IdentHandler h1, IdentHandler h2) {
+				return Integer.compare(h1.overhead, h2.overhead);
+			}
+		},
+		comparatorCredibility = new Comparator<IdentHandler>(){
+			public int compare(IdentHandler h1, IdentHandler h2) {
+				return Integer.compare(h2.credibility, h1.credibility);
+			}
+		};
 	
 	public final BotManager manager;
 	public final String id, name;
-	public final int overhead;
+	public final int overhead, credibility;
 	protected Box<Boolean> available = null;
 	
-	public IdentHandler(String id, String name, int overhead) {
-		this(null, id, name, overhead);
+	public IdentHandler(String id, String name, int overhead, int credibility) {
+		this(null, id, name, overhead, credibility);
 	}
-	public IdentHandler(BotManager manager, String id, String name, int overhead) {
+	public IdentHandler(BotManager manager, String id, String name, int overhead, int credibility) {
 		this.manager = manager;
 		this.id = id;
 		this.name = name;
 		this.overhead = overhead;
+		this.credibility = credibility;
 	}
 	
 	public final boolean equals(Object o) {
 		if (!(o instanceof IdentHandler)) return false;
 		IdentHandler h = (IdentHandler)o;
 		return getClass() == h.getClass() && Util.equals(manager, h.manager);
-	}
-	public int compareTo(IdentHandler h) {
-		return Integer.compare(overhead, h.overhead);
 	}
 	
 	public final boolean isAvailable() {

@@ -189,7 +189,7 @@ public class Plugin extends shocky3.Plugin {
 		}
 		Collections.sort(list, new Comparator<Pair<IdentHandler, String>>(){
 			public int compare(Pair<IdentHandler, String> p1, Pair<IdentHandler, String> p2) {
-				return p1.get1().compareTo(p2.get1());
+				return IdentHandler.comparatorOverhead.compare(p1.get1(), p2.get1());
 			}
 		});
 		

@@ -25,7 +25,7 @@ public class NickServIdentHandler extends IdentHandler {
 		this(plugin, null);
 	}
 	public NickServIdentHandler(Plugin plugin, BotManager manager) {
-		super(manager, "ns", "NickServ", IdentHandler.OVERHEAD_MEDIUM);
+		super(manager, "ns", "NickServ", OVERHEAD_MEDIUM, CREDIBILITY_HIGH);
 		this.plugin = plugin;
 	}
 	
