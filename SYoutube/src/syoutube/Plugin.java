@@ -5,7 +5,7 @@ import pl.shockah.json.JSONObject;
 import pl.shockah.json.JSONParser;
 import shocky3.PluginInfo;
 
-public class Plugin extends shocky3.ListenerPlugin {
+public class Plugin extends shocky3.Plugin {
 	@Dependency protected static surlannounce.Plugin pluginURLAnnounce;
 	@Dependency protected static scommands.Plugin pluginCmd;
 	
