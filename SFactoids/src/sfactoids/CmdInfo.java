@@ -1,7 +1,10 @@
 package sfactoids;
 
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import org.pircbotx.PircBotX;
+import pl.shockah.Pair;
 import pl.shockah.json.JSONObject;
 import scommands.Command;
 import shocky3.JSONUtil;
@@ -62,17 +65,12 @@ public class CmdInfo extends Command {
 			
 			e.respond(String.format("%s added %s ago", name, TimeDuration.format(new Date(j.getInt("timestamp") * 1000l))));
 			
-			StringBuilder sb = new StringBuilder();
 			JSONObject jAuthor = j.getObject("author");
+			List<Pair<IdentHandler, String>> list = new LinkedList<>();
 			for (String jAuthorKey : jAuthor.keys()) {
-				IdentHandler handler = Plugin.pluginIdent.getIdentHandlerFor(null, jAuthorKey);
-				if (handler != null) {
-					sb.append(String.format(", %s: %s", handler.name, jAuthor.getString(jAuthorKey)));
-				}
+				list.add(new Pair<>(Plugin.pluginIdent.getIdentHandlerFor(null, jAuthorKey), jAuthor.getString(jAuthorKey)));
 			}
-			if (sb.length() != 0) {
-				e.respond(String.format("> ident: %s", sb.toString().substring(2)));
-			}
+			e.respond(String.format("> ident: %s", Plugin.pluginIdent.formatIdent(list, "%_%")));
 			
 			e.respond(String.format("> source: %s", j.getString("code")));
 		} else {

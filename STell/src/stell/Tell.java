@@ -158,26 +158,17 @@ public class Tell {
 	}
 	
 	public String buildMessage() {
-		String server = null, nick = null;
-		
+		boolean hasServer = false;
 		for (Pair<IdentHandler, String> pair : dataSender) {
 			if (managerSender != managerReceiver) {
 				if (pair.get1().id.equals(Plugin.pluginIdent.handlerServer.id)) {
-					server = pair.get2();
+					hasServer = true;
+					break;
 				}
-			}
-			if (pair.get1().id.equals(Plugin.pluginIdent.handlerNick.id)) {
-				nick = pair.get2();
 			}
 		}
 		
-		StringBuilder sb = new StringBuilder();
-		for (Pair<IdentHandler, String> pair : dataSender) {
-			if (!pair.get1().id.equals(Plugin.pluginIdent.handlerServer.id) && !pair.get1().id.equals(Plugin.pluginIdent.handlerNick.id)) {
-				sb.append(", ");
-				sb.append(String.format("%s: %s", pair.get1().name, pair.get2()));
-			}
-		}
-		return String.format("[%s] <%s%s> %s\nAdditional info: %s", TimeDuration.format(date) + " ago", nick, server == null ? "" : "@" + server, message, sb.toString().substring(2));
+		return String.format("[%s] %s", TimeDuration.format(date) + " ago",
+			Plugin.pluginIdent.formatIdent(dataSender, "<%n%" + (hasServer ? "@%srv%" : "") + "> %arg0%\nAdditional info: %_%", message));
 	}
 }

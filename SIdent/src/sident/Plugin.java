@@ -5,20 +5,26 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.types.GenericUserEvent;
 import pl.shockah.Pair;
 import pl.shockah.json.JSONObject;
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
 import shocky3.BotManager;
 import shocky3.JSONUtil;
 import shocky3.PluginInfo;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
 
 public class Plugin extends shocky3.Plugin {
+	public static final Pattern
+		REGEX_IDENT_FORMATTER = Pattern.compile(".*%([^%]+?)%.*");
+	
 	public final Map<BotManager, List<IdentHandler>> identHandlers = Collections.synchronizedMap(new HashMap<BotManager, List<IdentHandler>>());
 	public final Map<BotManager, List<IdentGroup>> identGroups = Collections.synchronizedMap(new HashMap<BotManager, List<IdentGroup>>());
 	public IdentHandler handlerServer, handlerNick, handlerHost;
@@ -200,6 +206,64 @@ public class Plugin extends shocky3.Plugin {
 			}
 		}
 		return false;
+	}
+	
+	public String formatIdent(User user, String format, Object... args) {
+		BotManager manager = botApp.serverManager.byBot(user);
+		prepare(manager);
+		
+		List<Pair<IdentHandler, String>> list = new LinkedList<>();
+		for (IdentHandler handler : identHandlers.get(manager)) {
+			if (handler.isAvailable()) {
+				list.add(new Pair<>(handler, handler.account(user)));
+			}
+		}
+		
+		return formatIdent(list, format, args);
+	}
+	public String formatIdent(List<Pair<IdentHandler, String>> list, String format, Object... args) {
+		String cur = format;
+		Matcher m;
+		while ((m = REGEX_IDENT_FORMATTER.matcher(cur)).find()) {
+			boolean didChange = false;
+			String hid = m.group(1);
+			
+			if (hid.startsWith("arg")) {
+				hid = hid.substring(3);
+				try {
+					int index = Integer.parseInt(hid);
+					if (index < args.length) {
+						cur = m.replaceAll(args[index] == null ? "null" : args[index].toString());
+						continue;
+					}
+				} catch (Exception e) {}
+			}
+			
+			if (hid.equals("_")) {
+				StringBuilder sb = new StringBuilder();
+				for (Pair<IdentHandler, String> pair : list) {
+					sb.append(String.format(", %s: %s", pair.get1().name, pair.get2()));
+				}
+				cur = m.replaceAll(sb.toString().substring(2));
+				break;
+			}
+			
+			ListIterator<Pair<IdentHandler, String>> lit = list.listIterator();
+			while (lit.hasNext()) {
+				Pair<IdentHandler, String> pair = lit.next();
+				if (pair.get1().id.equals(hid)) {
+					cur = m.replaceAll(String.format("%s: %s", pair.get1().name, pair.get2()));
+					lit.remove();
+					break;
+				}
+			}
+			
+			if (!didChange) {
+				cur = m.replaceAll("");
+			}
+		}
+		
+		return cur;
 	}
 	
 	public void readConfig() {
