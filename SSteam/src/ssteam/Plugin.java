@@ -39,28 +39,42 @@ public class Plugin extends shocky3.ListenerPlugin {
 	}
 	
 	protected AppInfo getAppInfo(JSONObject j) {
-		AppInfo info = new AppInfo(Integer.parseInt(j.getString("steam_appid")));
-		info.name = j.getString("name");
-		info.developers = j.getList("developers").ofStrings();
-		if (j.contains("price_overview")) {
-			JSONObject jPrice = j.getObject("price_overview");
-			info.priceType = jPrice.getString("currency");
-			info.priceBase = jPrice.getInt("initial");
-			info.price = jPrice.getInt("final", info.priceBase);
-			if (info.price != info.priceBase) {
-				info.discount = jPrice.getDouble("discount_percent") * .01d;
+		int id = 0;
+		try {
+			if (j.contains("steam_appid")) {
+				Object o = j.get("steam_appid");
+				if (o instanceof String) {
+					id = Integer.parseInt((String)o);
+				} else if (o instanceof Number) {
+					id = ((Number)o).intValue();
+				}
+				if (id != 0) {
+					AppInfo info = new AppInfo(id);
+					info.name = j.getString("name");
+					info.developers = j.getList("developers").ofStrings();
+					if (j.contains("price_overview")) {
+						JSONObject jPrice = j.getObject("price_overview");
+						info.priceType = jPrice.getString("currency");
+						info.priceBase = jPrice.getInt("initial");
+						info.price = jPrice.getInt("final", info.priceBase);
+						if (info.price != info.priceBase) {
+							info.discount = jPrice.getDouble("discount_percent") * .01d;
+						}
+					}
+					if (j.contains("platforms")) {
+						JSONObject jPlatforms = j.getObject("platforms");
+						info.forWindows = jPlatforms.getBoolean("windows", false);
+						info.forLinux = jPlatforms.getBoolean("linux", false);
+						info.forOSX = jPlatforms.getBoolean("mac", false);
+					}
+					if (j.contains("metacritic")) {
+						JSONObject jMetacritic = j.getObject("metacritic");
+						info.metascore = jMetacritic.getInt("score", 0);
+					}
+					return info;
+				}
 			}
-		}
-		if (j.contains("platforms")) {
-			JSONObject jPlatforms = j.getObject("platforms");
-			info.forWindows = jPlatforms.getBoolean("windows", false);
-			info.forLinux = jPlatforms.getBoolean("linux", false);
-			info.forOSX = jPlatforms.getBoolean("mac", false);
-		}
-		if (j.contains("metacritic")) {
-			JSONObject jMetacritic = j.getObject("metacritic");
-			info.metascore = jMetacritic.getInt("score", 0);
-		}
-		return info;
+		} catch (Exception e) {}
+		return null;
 	}
 }
