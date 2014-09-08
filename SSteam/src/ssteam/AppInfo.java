@@ -25,6 +25,7 @@ public final class AppInfo {
 		try {
 			DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance();
 			symbols.setGroupingSeparator(',');
+			symbols.setDecimalSeparator('.');
 			DecimalFormat formatter = new DecimalFormat("###,###.##", symbols);
 			StringBuilder sb = new StringBuilder();
 			
@@ -37,6 +38,7 @@ public final class AppInfo {
 			sb.append(String.format(" | by &b%s&r", sb2.toString().substring(2)));
 			
 			if (priceBase != 0) {
+				sb.append(" | ");
 				String formatted = formatter.format(priceBase / 100d);
 				switch (priceType) {
 					case "EUR": formatted = formatted + "€"; break;
@@ -52,8 +54,6 @@ public final class AppInfo {
 						case "EUR": formatted = formatted + "€"; break;
 						case "USD": formatted = "$" + formatted; break;
 					}
-					sb.append(formatted);
-					
 					sb.append(" = ");
 					sb.append(formatted);
 				}
@@ -101,7 +101,7 @@ public final class AppInfo {
 						sb2.append(Colors.NORMAL);
 					}
 				}
-				sb.append(sb2.toString().substring(2));
+				sb.append(String.format(" | %s", sb2.toString().substring(2)));
 			}
 			
 			if (includeUrl) {
