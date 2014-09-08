@@ -21,7 +21,7 @@ public final class JSONUtil {
 		}
 		return bdbo;
 	}
-	@SuppressWarnings("unchecked") public static List<?> toDBList(JSONList<?> j) {
+	public static List<?> toDBList(JSONList<?> j) {
 		ListIterator<Object> lit = (ListIterator<Object>)j.listIterator();
 		while (lit.hasNext()) {
 			Object o = lit.next();
@@ -53,7 +53,7 @@ public final class JSONUtil {
 		}
 		return j;
 	}
-	@SuppressWarnings("unchecked") public static JSONList<?> fromDBList(List<?> list) {
+	public static JSONList<?> fromDBList(List<?> list) {
 		ListIterator<Object> lit = (ListIterator<Object>)list.listIterator();
 		while (lit.hasNext()) {
 			Object o = lit.next();

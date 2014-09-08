@@ -1,0 +1,11 @@
+{
+	"name": "Shocky - Steam",
+	"version": "r1",
+	"author": "Shockah",
+	
+	"internalName": "Shocky.SSteam",
+	"baseClass": "ssteam.Plugin",
+	"dependsOn": [
+		"Shocky.SURLAnnounce"
+	]
+}
