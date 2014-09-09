@@ -67,6 +67,10 @@ import shocky3.pircbotx.AccountNotifyEvent;
 import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.CustomListenerAdapter;
 import shocky3.pircbotx.ExtendedJoinEvent;
+import shocky3.pircbotx.OutActionEvent;
+import shocky3.pircbotx.OutMessageEvent;
+import shocky3.pircbotx.OutNoticeEvent;
+import shocky3.pircbotx.OutPrivateMessageEvent;
 
 public abstract class ListenerPlugin extends Plugin {
 	public final Listener<Bot> listener;
@@ -156,6 +160,10 @@ public abstract class ListenerPlugin extends Plugin {
 	
 	protected void onExtendedJoin(ExtendedJoinEvent<Bot> e) {}
 	protected void onAccountNotify(AccountNotifyEvent<Bot> e) {}
+	protected void onOutAction(OutActionEvent<Bot> e) {}
+	protected void onOutMessage(OutMessageEvent<Bot> e) {}
+	protected void onOutNotice(OutNoticeEvent<Bot> e) {}
+	protected void onOutPrivateMessage(OutPrivateMessageEvent<Bot> e) {}
 	
 	protected class MyListener extends CustomListenerAdapter<Bot> {
 		public final ListenerPlugin plugin;
@@ -234,5 +242,9 @@ public abstract class ListenerPlugin extends Plugin {
 		
 		public void onExtendedJoin(ExtendedJoinEvent<Bot> e) { plugin.onExtendedJoin(e); }
 		public void onAccountNotify(AccountNotifyEvent<Bot> e) { plugin.onAccountNotify(e); }
+		public void onOutAction(OutActionEvent<Bot> e) { plugin.onOutAction(e); }
+		public void onOutMessage(OutMessageEvent<Bot> e) { plugin.onOutMessage(e); }
+		public void onOutNotice(OutNoticeEvent<Bot> e) { plugin.onOutNotice(e); }
+		public void onOutPrivateMessage(OutPrivateMessageEvent<Bot> e) { plugin.onOutPrivateMessage(e); }
 	}
 }
