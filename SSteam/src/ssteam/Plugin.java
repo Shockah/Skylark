@@ -71,6 +71,10 @@ public class Plugin extends shocky3.Plugin {
 						JSONObject jMetacritic = j.getObject("metacritic");
 						info.metascore = jMetacritic.getInt("score", 0);
 					}
+					if (j.contains("recommendations")) {
+						JSONObject jRecommendations = j.getObject("recommendations");
+						info.recommendations = jRecommendations.getInt("total");
+					}
 					return info;
 				}
 			}

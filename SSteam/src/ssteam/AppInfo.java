@@ -10,7 +10,7 @@ public final class AppInfo {
 	public final int id;
 	public String name, priceType;
 	public List<String> developers = new LinkedList<>();
-	public int priceBase = 0, price = 0, metascore = 0;
+	public int priceBase = 0, price = 0, metascore = 0, recommendations = 0;
 	public double discount = 0;
 	public boolean forWindows = false, forLinux = false, forOSX = false;
 	
@@ -57,10 +57,15 @@ public final class AppInfo {
 					sb.append(" = ");
 					sb.append(formatted);
 				}
+			} else {
+				sb.append(" | free to play");
 			}
 			
 			if (metascore != 0) {
 				sb.append(String.format(" | metascore: %d/100", metascore));
+			}
+			if (recommendations != 0) {
+				sb.append(String.format(" | +%s", recommendations));
 			}
 			
 			if (forWindows || forLinux || forOSX) {
