@@ -12,9 +12,9 @@ import org.pircbotx.hooks.events.ServerResponseEvent;
 import org.pircbotx.hooks.events.WhoisEvent;
 import shocky3.BotManager;
 import shocky3.PluginInfo;
-import shocky3.pircbotx.AccountNotifyEvent;
 import shocky3.pircbotx.Bot;
-import shocky3.pircbotx.ExtendedJoinEvent;
+import shocky3.pircbotx.event.AccountNotifyEvent;
+import shocky3.pircbotx.event.ExtendedJoinEvent;
 
 public class Plugin extends shocky3.ListenerPlugin {
 	@Dependency protected static sident.Plugin pluginIdent;

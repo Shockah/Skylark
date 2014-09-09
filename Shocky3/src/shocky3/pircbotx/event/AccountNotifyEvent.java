@@ -1,4 +1,4 @@
-package shocky3.pircbotx;
+package shocky3.pircbotx.event;
 
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;

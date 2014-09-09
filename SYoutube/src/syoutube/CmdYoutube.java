@@ -3,7 +3,7 @@ package syoutube;
 import scommands.Command;
 import shocky3.Shocky;
 import shocky3.pircbotx.Bot;
-import shocky3.pircbotx.GenericUserMessageEvent;
+import shocky3.pircbotx.event.GenericUserMessageEvent;
 
 public class CmdYoutube extends Command {
 	protected final Plugin pluginYoutube;

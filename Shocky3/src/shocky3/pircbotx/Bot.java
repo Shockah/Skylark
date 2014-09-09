@@ -5,6 +5,10 @@ import org.pircbotx.Channel;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
+import shocky3.pircbotx.event.OutActionEvent;
+import shocky3.pircbotx.event.OutMessageEvent;
+import shocky3.pircbotx.event.OutNoticeEvent;
+import shocky3.pircbotx.event.OutPrivateMessageEvent;
 
 public class Bot extends PircBotX {
 	public Bot(Configuration<? extends Bot> configuration) {

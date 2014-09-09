@@ -6,6 +6,8 @@ import org.pircbotx.Channel;
 import org.pircbotx.InputParser;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
+import shocky3.pircbotx.event.AccountNotifyEvent;
+import shocky3.pircbotx.event.ExtendedJoinEvent;
 
 public class CustomInputParser extends InputParser {
 	protected Boolean

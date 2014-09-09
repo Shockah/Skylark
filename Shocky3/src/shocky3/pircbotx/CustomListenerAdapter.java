@@ -3,6 +3,12 @@ package shocky3.pircbotx;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.ListenerAdapter;
+import shocky3.pircbotx.event.AccountNotifyEvent;
+import shocky3.pircbotx.event.ExtendedJoinEvent;
+import shocky3.pircbotx.event.OutActionEvent;
+import shocky3.pircbotx.event.OutMessageEvent;
+import shocky3.pircbotx.event.OutNoticeEvent;
+import shocky3.pircbotx.event.OutPrivateMessageEvent;
 
 public class CustomListenerAdapter<T extends PircBotX> extends ListenerAdapter<T> {
 	public void onEvent(Event<T> event) throws Exception {

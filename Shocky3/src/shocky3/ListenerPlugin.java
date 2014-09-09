@@ -63,14 +63,14 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 import org.pircbotx.hooks.types.GenericUserEvent;
 import org.pircbotx.hooks.types.GenericUserModeEvent;
-import shocky3.pircbotx.AccountNotifyEvent;
 import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.CustomListenerAdapter;
-import shocky3.pircbotx.ExtendedJoinEvent;
-import shocky3.pircbotx.OutActionEvent;
-import shocky3.pircbotx.OutMessageEvent;
-import shocky3.pircbotx.OutNoticeEvent;
-import shocky3.pircbotx.OutPrivateMessageEvent;
+import shocky3.pircbotx.event.AccountNotifyEvent;
+import shocky3.pircbotx.event.ExtendedJoinEvent;
+import shocky3.pircbotx.event.OutActionEvent;
+import shocky3.pircbotx.event.OutMessageEvent;
+import shocky3.pircbotx.event.OutNoticeEvent;
+import shocky3.pircbotx.event.OutPrivateMessageEvent;
 
 public abstract class ListenerPlugin extends Plugin {
 	public final Listener<Bot> listener;

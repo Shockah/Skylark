@@ -1,19 +1,17 @@
-package shocky3.pircbotx;
+package shocky3.pircbotx.event;
 
-import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.Event;
-import org.pircbotx.hooks.types.GenericChannelUserEvent;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 
-public class OutMessageEvent<T extends PircBotX> extends Event<T> implements GenericMessageEvent<T>, GenericChannelUserEvent<T> {
-	protected final Channel channel;
+public class OutPrivateMessageEvent<T extends PircBotX> extends Event<T> implements GenericMessageEvent<T> {
+	protected final User recipient;
 	protected final String message;
 	
-	public OutMessageEvent(T bot, Channel channel, String message) {
+	public OutPrivateMessageEvent(T bot, User recipient, String message) {
 		super(bot);
-		this.channel = channel;
+		this.recipient = recipient;
 		this.message = message;
 	}
 
@@ -21,8 +19,8 @@ public class OutMessageEvent<T extends PircBotX> extends Event<T> implements Gen
 		return bot.getUserBot();
 	}
 
-	public Channel getChannel() {
-		return channel;
+	public User getRecipient() {
+		return recipient;
 	}
 
 	public String getMessage() {

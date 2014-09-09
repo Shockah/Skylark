@@ -7,7 +7,7 @@ import scommands.Command;
 import shocky3.BotManager;
 import shocky3.Shocky;
 import shocky3.pircbotx.Bot;
-import shocky3.pircbotx.GenericUserMessageEvent;
+import shocky3.pircbotx.event.GenericUserMessageEvent;
 import sident.IdentHandler;
 
 public class CmdTell extends Command {

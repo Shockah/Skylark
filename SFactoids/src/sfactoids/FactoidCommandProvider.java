@@ -8,7 +8,7 @@ import scommands.ICommand;
 import shocky3.JSONUtil;
 import shocky3.Shocky;
 import shocky3.pircbotx.Bot;
-import shocky3.pircbotx.GenericUserMessageEvent;
+import shocky3.pircbotx.event.GenericUserMessageEvent;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 

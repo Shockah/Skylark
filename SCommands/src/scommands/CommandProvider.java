@@ -4,7 +4,7 @@ import java.util.List;
 import pl.shockah.Pair;
 import shocky3.Shocky;
 import shocky3.pircbotx.Bot;
-import shocky3.pircbotx.GenericUserMessageEvent;
+import shocky3.pircbotx.event.GenericUserMessageEvent;
 
 public abstract class CommandProvider {
 	public static enum EPriority {

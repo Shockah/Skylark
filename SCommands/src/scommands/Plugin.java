@@ -13,7 +13,7 @@ import scommands.CommandProvider.EPriority;
 import shocky3.PluginInfo;
 import shocky3.Shocky;
 import shocky3.pircbotx.Bot;
-import shocky3.pircbotx.GenericUserMessageEvent;
+import shocky3.pircbotx.event.GenericUserMessageEvent;
 
 public class Plugin extends shocky3.ListenerPlugin {
 	@Dependency protected static sident.Plugin pluginIdent;
