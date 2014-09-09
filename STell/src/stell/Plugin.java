@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.ListIterator;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.MessageEvent;
-import shocky3.Bot;
 import shocky3.JSONUtil;
 import shocky3.PluginInfo;
+import shocky3.pircbotx.Bot;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.pircbotx.PircBotX;
 import pl.shockah.Util;
+import shocky3.pircbotx.Bot;
 
 public class BotManager {
 	public static final int

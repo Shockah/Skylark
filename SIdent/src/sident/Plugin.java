@@ -14,10 +14,10 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.types.GenericUserEvent;
 import pl.shockah.Pair;
 import pl.shockah.json.JSONObject;
-import shocky3.Bot;
 import shocky3.BotManager;
 import shocky3.JSONUtil;
 import shocky3.PluginInfo;
+import shocky3.pircbotx.Bot;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 

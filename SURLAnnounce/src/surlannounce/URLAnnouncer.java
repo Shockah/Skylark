@@ -4,8 +4,8 @@ import java.util.List;
 import org.pircbotx.hooks.events.MessageEvent;
 import pl.shockah.Pair;
 import pl.shockah.func.Func;
-import shocky3.Bot;
 import shocky3.Shocky;
+import shocky3.pircbotx.Bot;
 
 public abstract class URLAnnouncer {
 	public static enum EPriority {

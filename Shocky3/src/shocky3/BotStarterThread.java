@@ -9,6 +9,7 @@ import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.events.ConnectEvent;
+import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.CustomInputParser;
 
 public class BotStarterThread extends Thread {

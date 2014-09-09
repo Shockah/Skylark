@@ -2,9 +2,9 @@ package sfactoids;
 
 import pl.shockah.json.JSONObject;
 import scommands.Command;
-import shocky3.Bot;
 import shocky3.JSONUtil;
 import shocky3.Shocky;
+import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.GenericUserMessageEvent;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;

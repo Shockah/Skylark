@@ -3,8 +3,8 @@ package sfactoids;
 import java.util.regex.Pattern;
 import pl.shockah.json.JSONObject;
 import scommands.ICommand;
-import shocky3.Bot;
 import shocky3.Shocky;
+import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.GenericUserMessageEvent;
 
 public abstract class FactoidParser {

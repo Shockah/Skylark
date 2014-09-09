@@ -10,9 +10,9 @@ import org.pircbotx.hooks.events.PrivateMessageEvent;
 import pl.shockah.Pair;
 import pl.shockah.json.JSONObject;
 import scommands.CommandProvider.EPriority;
-import shocky3.Bot;
 import shocky3.PluginInfo;
 import shocky3.Shocky;
+import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.GenericUserMessageEvent;
 
 public class Plugin extends shocky3.ListenerPlugin {

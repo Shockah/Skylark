@@ -4,9 +4,9 @@ import java.util.LinkedList;
 import java.util.List;
 import pl.shockah.Pair;
 import scommands.Command;
-import shocky3.Bot;
 import shocky3.BotManager;
 import shocky3.Shocky;
+import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.GenericUserMessageEvent;
 import sident.IdentHandler;
 

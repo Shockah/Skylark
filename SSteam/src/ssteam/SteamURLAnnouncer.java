@@ -6,8 +6,8 @@ import java.util.regex.Pattern;
 import org.pircbotx.hooks.events.MessageEvent;
 import pl.shockah.Pair;
 import pl.shockah.func.Func;
-import shocky3.Bot;
 import shocky3.Shocky;
+import shocky3.pircbotx.Bot;
 import surlannounce.URLAnnouncer;
 
 public class SteamURLAnnouncer extends URLAnnouncer {

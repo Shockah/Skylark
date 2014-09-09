@@ -2,8 +2,8 @@ package scommands;
 
 import java.util.List;
 import pl.shockah.Pair;
-import shocky3.Bot;
 import shocky3.Shocky;
+import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.GenericUserMessageEvent;
 
 public abstract class CommandProvider {

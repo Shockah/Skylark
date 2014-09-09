@@ -8,6 +8,7 @@ import org.pircbotx.User;
 import org.pircbotx.hooks.types.GenericEvent;
 import pl.shockah.Pair;
 import pl.shockah.json.JSONObject;
+import shocky3.pircbotx.Bot;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 

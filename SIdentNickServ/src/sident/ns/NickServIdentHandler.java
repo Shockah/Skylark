@@ -7,8 +7,8 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.WhoisEvent;
 import pl.shockah.Util;
-import shocky3.Bot;
 import shocky3.BotManager;
+import shocky3.pircbotx.Bot;
 import sident.IdentHandler;
 
 public class NickServIdentHandler extends IdentHandler {

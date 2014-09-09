@@ -1,7 +1,7 @@
 package scommands;
 
-import shocky3.Bot;
 import shocky3.Shocky;
+import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.GenericUserMessageEvent;
 
 public class CmdPlugins extends Command {

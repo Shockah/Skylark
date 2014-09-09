@@ -11,8 +11,8 @@ import org.pircbotx.hooks.events.MessageEvent;
 import pl.shockah.Pair;
 import pl.shockah.func.Func;
 import pl.shockah.json.JSONObject;
-import shocky3.Bot;
 import shocky3.PluginInfo;
+import shocky3.pircbotx.Bot;
 
 public class Plugin extends shocky3.ListenerPlugin {
 	public static final Pattern

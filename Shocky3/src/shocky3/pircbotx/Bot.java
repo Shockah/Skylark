@@ -1,4 +1,4 @@
-package shocky3;
+package shocky3.pircbotx;
 
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;

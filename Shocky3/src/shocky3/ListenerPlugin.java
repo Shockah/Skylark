@@ -64,6 +64,7 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
 import org.pircbotx.hooks.types.GenericUserEvent;
 import org.pircbotx.hooks.types.GenericUserModeEvent;
 import shocky3.pircbotx.AccountNotifyEvent;
+import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.CustomListenerAdapter;
 import shocky3.pircbotx.ExtendedJoinEvent;
 
