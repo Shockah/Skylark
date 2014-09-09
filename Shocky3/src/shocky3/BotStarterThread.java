@@ -2,6 +2,7 @@ package shocky3;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.nio.charset.Charset;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.cap.EnableCapHandler;
@@ -25,6 +26,7 @@ public class BotStarterThread extends Thread {
 	public void run() {
 		try {
 			Configuration.Builder<PircBotX> cfgb = new Configuration.Builder<>()
+				.setEncoding(Charset.forName("UTF-8"))
 				.setName(manager.botName)
 				.setAutoNickChange(true)
 				.setServerHostname(manager.host)
