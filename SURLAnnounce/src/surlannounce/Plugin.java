@@ -7,11 +7,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 import pl.shockah.Pair;
 import pl.shockah.func.Func;
 import pl.shockah.json.JSONObject;
+import shocky3.Bot;
 import shocky3.PluginInfo;
 
 public class Plugin extends shocky3.ListenerPlugin {
@@ -51,7 +51,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 		announcers.clear();
 	}
 	
-	protected void onMessage(MessageEvent<PircBotX> e) {
+	protected void onMessage(MessageEvent<Bot> e) {
 		String msg = e.getMessage();
 		if (msg.matches(".*(?:https?\\://).*") || msg.matches(".*www\\..*")) {
 			String[] spl = msg.split("\\s");
@@ -82,7 +82,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 		return url;
 	}
 	
-	public String getAnnouncement(MessageEvent<PircBotX> e, String url) {
+	public String getAnnouncement(MessageEvent<Bot> e, String url) {
 		List<Pair<Func<String>, URLAnnouncer.EPriority>> list = new LinkedList<>();
 		for (URLAnnouncer urla : announcers) {
 			urla.provide(list, botApp, e, url);

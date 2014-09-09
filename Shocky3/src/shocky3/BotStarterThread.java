@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
 import org.pircbotx.Configuration;
-import org.pircbotx.PircBotX;
 import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
@@ -15,7 +14,7 @@ public class BotStarterThread extends Thread {
 	public final Shocky botApp;
 	public final BotManager manager;
 	
-	public PircBotX bot = null;
+	public Bot bot = null;
 	public boolean drop = false;
 	
 	public BotStarterThread(BotManager manager) {
@@ -25,7 +24,7 @@ public class BotStarterThread extends Thread {
 	
 	public void run() {
 		try {
-			Configuration.Builder<PircBotX> cfgb = new Configuration.Builder<>()
+			Configuration.Builder<Bot> cfgb = new Configuration.Builder<Bot>()
 				.setEncoding(Charset.forName("UTF-8"))
 				.setName(manager.botName)
 				.setAutoNickChange(true)
@@ -34,8 +33,8 @@ public class BotStarterThread extends Thread {
 				.setCapEnabled(true)
 				.addCapHandler(new EnableCapHandler("extended-join", true))
 				.addCapHandler(new EnableCapHandler("account-notify", true))
-				.addListener(new Listener<PircBotX>(){
-					public void onEvent(Event<PircBotX> e) throws Exception {
+				.addListener(new Listener<Bot>(){
+					public void onEvent(Event<Bot> e) throws Exception {
 						if (e instanceof ConnectEvent) {
 							BotStarterThread.this.bot = e.getBot();
 							drop = true;
@@ -49,7 +48,7 @@ public class BotStarterThread extends Thread {
 				}
 			}
 			
-			bot = new PircBotX(cfgb.buildConfiguration());
+			bot = new Bot(cfgb.buildConfiguration());
 			
 			try {
 				Field field = bot.getClass().getDeclaredField("inputParser");

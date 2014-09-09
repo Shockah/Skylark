@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.types.GenericEvent;
 import pl.shockah.Pair;
@@ -57,15 +56,15 @@ public class ServerManager {
 	}
 	
 	public BotManager byBot(User user) {
-		return byBot(user.getBot());
+		return byBot((Bot)user.getBot());
 	}
 	public BotManager byBot(Channel channel) {
-		return byBot(channel.getBot());
+		return byBot((Bot)channel.getBot());
 	}
-	public BotManager byBot(GenericEvent<PircBotX> e) {
+	public BotManager byBot(GenericEvent<Bot> e) {
 		return byBot(e.getBot());
 	}
-	public BotManager byBot(PircBotX bot) {
+	public BotManager byBot(Bot bot) {
 		for (BotManager manager : botManagers) {
 			if (manager.bots.contains(bot)) {
 				return manager;

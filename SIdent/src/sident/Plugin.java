@@ -9,12 +9,12 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.types.GenericUserEvent;
 import pl.shockah.Pair;
 import pl.shockah.json.JSONObject;
+import shocky3.Bot;
 import shocky3.BotManager;
 import shocky3.JSONUtil;
 import shocky3.PluginInfo;
@@ -45,7 +45,7 @@ public class Plugin extends shocky3.Plugin {
 		readConfig();
 	}
 	
-	protected void onBotStarted(BotManager manager, PircBotX bot) {
+	protected void onBotStarted(BotManager manager, Bot bot) {
 		if (!identHandlers.containsKey(manager)) {
 			identHandlers.put(manager, Collections.synchronizedList(new LinkedList<IdentHandler>()));
 		}
@@ -114,13 +114,13 @@ public class Plugin extends shocky3.Plugin {
 		return null;
 	}
 	
-	public List<IdentGroup> userIdentGroups(Event<PircBotX> e, User user) {
+	public List<IdentGroup> userIdentGroups(Event<Bot> e, User user) {
 		return userIdentGroups(e.getBot(), user);
 	}
-	public List<IdentGroup> userIdentGroups(GenericUserEvent<PircBotX> e) {
+	public List<IdentGroup> userIdentGroups(GenericUserEvent<Bot> e) {
 		return userIdentGroups(e.getBot(), e.getUser());
 	}
-	public List<IdentGroup> userIdentGroups(PircBotX bot, User user) {
+	public List<IdentGroup> userIdentGroups(Bot bot, User user) {
 		return userIdentGroups(botApp.serverManager.byBot(bot), user);
 	}
 	public List<IdentGroup> userIdentGroups(BotManager manager, User user) {
@@ -145,10 +145,10 @@ public class Plugin extends shocky3.Plugin {
 		return list;
 	}
 	
-	public List<IdentGroup> permissionIdentGroups(Event<PircBotX> e, String permission) {
+	public List<IdentGroup> permissionIdentGroups(Event<Bot> e, String permission) {
 		return permissionIdentGroups(e.getBot(), permission);
 	}
-	public List<IdentGroup> permissionIdentGroups(PircBotX bot, String permission) {
+	public List<IdentGroup> permissionIdentGroups(Bot bot, String permission) {
 		return permissionIdentGroups(botApp.serverManager.byBot(bot), permission);
 	}
 	public List<IdentGroup> permissionIdentGroups(BotManager manager, String permission) {
@@ -174,13 +174,13 @@ public class Plugin extends shocky3.Plugin {
 		return list;
 	}
 	
-	public boolean userHasPermission(Event<PircBotX> e, User user, String permission) {
+	public boolean userHasPermission(Event<Bot> e, User user, String permission) {
 		return userHasPermission(e.getBot(), user, permission);
 	}
-	public boolean userHasPermission(GenericUserEvent<PircBotX> e, String permission) {
+	public boolean userHasPermission(GenericUserEvent<Bot> e, String permission) {
 		return userHasPermission(e.getBot(), e.getUser(), permission);
 	}
-	public boolean userHasPermission(PircBotX bot, User user, String permission) {
+	public boolean userHasPermission(Bot bot, User user, String permission) {
 		return userHasPermission(botApp.serverManager.byBot(bot), user, permission);
 	}
 	public boolean userHasPermission(BotManager manager, User user, String permission) {

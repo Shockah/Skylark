@@ -11,26 +11,26 @@ import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.types.GenericChannelUserEvent;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 
-public class NullableChannelUserEvent<T extends PircBotX> extends Event<T> implements GenericMessageEvent<T>, GenericChannelUserEvent<T> {
+public class GenericUserMessageEvent<T extends PircBotX> extends Event<T> implements GenericMessageEvent<T>, GenericChannelUserEvent<T> {
 	protected final GenericMessageEvent<T> eMessage;
 	protected final GenericChannelUserEvent<T> eChannelUser;
 	
-	public NullableChannelUserEvent(MessageEvent<T> e) {
+	public GenericUserMessageEvent(MessageEvent<T> e) {
 		super(e.getBot());
 		eMessage = e;
 		eChannelUser = e;
 	}
-	public NullableChannelUserEvent(ActionEvent<T> e) {
+	public GenericUserMessageEvent(ActionEvent<T> e) {
 		super(e.getBot());
 		eMessage = e;
 		eChannelUser = e;
 	}
-	public NullableChannelUserEvent(PrivateMessageEvent<T> e) {
+	public GenericUserMessageEvent(PrivateMessageEvent<T> e) {
 		super(e.getBot());
 		eMessage = e;
 		eChannelUser = null;
 	}
-	public NullableChannelUserEvent(NoticeEvent<T> e) {
+	public GenericUserMessageEvent(NoticeEvent<T> e) {
 		super(e.getBot());
 		eMessage = e;
 		eChannelUser = null;

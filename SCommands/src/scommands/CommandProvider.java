@@ -1,10 +1,10 @@
 package scommands;
 
 import java.util.List;
-import org.pircbotx.PircBotX;
 import pl.shockah.Pair;
+import shocky3.Bot;
 import shocky3.Shocky;
-import shocky3.pircbotx.NullableChannelUserEvent;
+import shocky3.pircbotx.GenericUserMessageEvent;
 
 public abstract class CommandProvider {
 	public static enum EPriority {
@@ -23,5 +23,5 @@ public abstract class CommandProvider {
 		this.plugin = plugin;
 	}
 	
-	public abstract void provide(List<Pair<ICommand, EPriority>> candidates, Shocky botApp, NullableChannelUserEvent<PircBotX> e, String trigger, String args);
+	public abstract void provide(List<Pair<ICommand, EPriority>> candidates, Shocky botApp, GenericUserMessageEvent<Bot> e, String trigger, String args);
 }

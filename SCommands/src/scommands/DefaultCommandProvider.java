@@ -3,10 +3,10 @@ package scommands;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import org.pircbotx.PircBotX;
 import pl.shockah.Pair;
+import shocky3.Bot;
 import shocky3.Shocky;
-import shocky3.pircbotx.NullableChannelUserEvent;
+import shocky3.pircbotx.GenericUserMessageEvent;
 
 public class DefaultCommandProvider extends CommandProvider {
 	protected List<Command> list = Collections.synchronizedList(new LinkedList<Command>());
@@ -28,7 +28,7 @@ public class DefaultCommandProvider extends CommandProvider {
 		}
 	}
 	
-	public void provide(List<Pair<ICommand, EPriority>> candidates, Shocky botApp, NullableChannelUserEvent<PircBotX> e, String trigger, String args) {
+	public void provide(List<Pair<ICommand, EPriority>> candidates, Shocky botApp, GenericUserMessageEvent<Bot> e, String trigger, String args) {
 		for (Command cmd : list) {
 			if (cmd.main.equals(trigger)) {
 				candidates.add(new Pair<ICommand, EPriority>(cmd, EPriority.High));

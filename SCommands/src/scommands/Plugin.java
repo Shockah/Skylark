@@ -4,16 +4,16 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import pl.shockah.Pair;
 import pl.shockah.json.JSONObject;
 import scommands.CommandProvider.EPriority;
+import shocky3.Bot;
 import shocky3.PluginInfo;
 import shocky3.Shocky;
-import shocky3.pircbotx.NullableChannelUserEvent;
+import shocky3.pircbotx.GenericUserMessageEvent;
 
 public class Plugin extends shocky3.ListenerPlugin {
 	@Dependency protected static sident.Plugin pluginIdent;
@@ -59,17 +59,17 @@ public class Plugin extends shocky3.ListenerPlugin {
 		providers.clear();
 	}
 	
-	protected void onMessage(MessageEvent<PircBotX> e) {
-		handleCommands(new NullableChannelUserEvent<>(e));
+	protected void onMessage(MessageEvent<Bot> e) {
+		handleCommands(new GenericUserMessageEvent<>(e));
 	}
-	protected void onPrivateMessage(PrivateMessageEvent<PircBotX> e) {
-		handleCommands(new NullableChannelUserEvent<>(e));
+	protected void onPrivateMessage(PrivateMessageEvent<Bot> e) {
+		handleCommands(new GenericUserMessageEvent<>(e));
 	}
-	protected void onNotice(NoticeEvent<PircBotX> e) {
-		handleCommands(new NullableChannelUserEvent<>(e));
+	protected void onNotice(NoticeEvent<Bot> e) {
+		handleCommands(new GenericUserMessageEvent<>(e));
 	}
 	
-	 public void handleCommands(NullableChannelUserEvent<PircBotX> e) {
+	 public void handleCommands(GenericUserMessageEvent<Bot> e) {
 		String msg = e.getMessage();
 		String[] spl = botApp.settings.getStringForChannel(e.getChannel(), this, "characters").split(" ");
 		for (String s : spl) {
@@ -87,7 +87,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 		}
 	}
 	
-	public ICommand findCommand(Shocky botApp, NullableChannelUserEvent<PircBotX> e, String trigger, String args) {
+	public ICommand findCommand(Shocky botApp, GenericUserMessageEvent<Bot> e, String trigger, String args) {
 		List<Pair<ICommand, CommandProvider.EPriority>> list = new LinkedList<>();
 		for (CommandProvider cp : providers) {
 			cp.provide(list, botApp, e, trigger, args);

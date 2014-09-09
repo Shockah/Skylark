@@ -1,11 +1,11 @@
 package sfactoids;
 
 import java.util.regex.Pattern;
-import org.pircbotx.PircBotX;
 import pl.shockah.json.JSONObject;
 import scommands.ICommand;
+import shocky3.Bot;
 import shocky3.Shocky;
-import shocky3.pircbotx.NullableChannelUserEvent;
+import shocky3.pircbotx.GenericUserMessageEvent;
 
 public abstract class FactoidParser {
 	public static final int
@@ -21,10 +21,10 @@ public abstract class FactoidParser {
 	}
 	
 	public abstract int resultType();
-	public String parseStringCode(JSONObject j, Shocky botApp, NullableChannelUserEvent<PircBotX> e, String trigger, String args, String code) {
+	public String parseStringCode(JSONObject j, Shocky botApp, GenericUserMessageEvent<Bot> e, String trigger, String args, String code) {
 		return code;
 	}
-	public ICommand parseICommand(JSONObject j, Shocky botApp, NullableChannelUserEvent<PircBotX> e, String trigger, String args, String code) {
+	public ICommand parseICommand(JSONObject j, Shocky botApp, GenericUserMessageEvent<Bot> e, String trigger, String args, String code) {
 		return null;
 	}
 }

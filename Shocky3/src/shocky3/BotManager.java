@@ -15,7 +15,7 @@ public class BotManager {
 	public final String name, host;
 	public String botName = "Shocky";
 	public int channelsPerConn = -1, messageDelay = BASE_MESSAGEDELAY;
-	public final List<PircBotX> bots = Collections.synchronizedList(new LinkedList<PircBotX>());
+	public final List<Bot> bots = Collections.synchronizedList(new LinkedList<Bot>());
 	
 	public BotManager(ServerManager manager, String name, String host) {
 		this.botApp = manager.botApp;
@@ -24,7 +24,7 @@ public class BotManager {
 		this.host = host;
 	}
 	
-	public PircBotX joinChannel(String cname) {
+	public Bot joinChannel(String cname) {
 		if (channelsPerConn == 0) {
 			return null;
 		}
@@ -44,7 +44,7 @@ public class BotManager {
 			}
 		}
 		
-		for (PircBotX bot : bots) {
+		for (Bot bot : bots) {
 			if (bot.getUserBot().getChannels().size() < channelsPerConn) {
 				bot.sendIRC().joinChannel(cname);
 				return bot;
@@ -66,7 +66,7 @@ public class BotManager {
 		return false;
 	}
 	
-	public PircBotX connectNewBot() {
+	public Bot connectNewBot() {
 		final BotStarterThread botStarter = new BotStarterThread(this);
 		botStarter.start();
 		

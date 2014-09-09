@@ -3,10 +3,10 @@ package ssteam;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 import pl.shockah.Pair;
 import pl.shockah.func.Func;
+import shocky3.Bot;
 import shocky3.Shocky;
 import surlannounce.URLAnnouncer;
 
@@ -21,7 +21,7 @@ public class SteamURLAnnouncer extends URLAnnouncer {
 		pluginSteam = plugin;
 	}
 
-	public void provide(List<Pair<Func<String>, EPriority>> candidates, Shocky botApp, final MessageEvent<PircBotX> e, final String url) {
+	public void provide(List<Pair<Func<String>, EPriority>> candidates, Shocky botApp, final MessageEvent<Bot> e, final String url) {
 		final int app = appIDFromURL(url);
 		if (app != 0) {
 			candidates.add(new Pair<Func<String>, EPriority>(new Func<String>(){

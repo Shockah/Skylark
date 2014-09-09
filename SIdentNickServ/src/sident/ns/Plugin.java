@@ -10,6 +10,7 @@ import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.events.ServerResponseEvent;
 import org.pircbotx.hooks.events.WhoisEvent;
+import shocky3.Bot;
 import shocky3.BotManager;
 import shocky3.PluginInfo;
 import shocky3.pircbotx.AccountNotifyEvent;
@@ -45,12 +46,12 @@ public class Plugin extends shocky3.ListenerPlugin {
 		}
 	}
 	
-	protected void onWhois(WhoisEvent<PircBotX> e) {
+	protected void onWhois(WhoisEvent<Bot> e) {
 		if (!e.getNick().equals("NickServ")) return;
 		((NickServIdentHandler)pluginIdent.getIdentHandlerFor(botApp.serverManager.byBot(e), identHandler.id)).whois = e;
 	}
 	
-	protected void onNotice(NoticeEvent<PircBotX> e) {
+	protected void onNotice(NoticeEvent<Bot> e) {
 		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(botApp.serverManager.byBot(e), identHandler.id);
 		if (!handler.isAvailable()) return;
 		if (!e.getUser().getNick().equals("NickServ")) return;
@@ -63,7 +64,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 		}
 	}
 	
-	protected void onNickChange(NickChangeEvent<PircBotX> e) {
+	protected void onNickChange(NickChangeEvent<Bot> e) {
 		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(botApp.serverManager.byBot(e), identHandler.id);
 		if (!handler.isAvailable()) return;
 		String sold = e.getOldNick().toLowerCase();
@@ -74,7 +75,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 		}
 	}
 	
-	protected void onQuit(QuitEvent<PircBotX> e) {
+	protected void onQuit(QuitEvent<Bot> e) {
 		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(botApp.serverManager.byBot(e), identHandler.id);
 		if (!handler.isAvailable()) return;
 		String nick = e.getUser().getNick().toLowerCase();
@@ -83,7 +84,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 		}
 	}
 	
-	protected void onJoin(JoinEvent<PircBotX> e) {
+	protected void onJoin(JoinEvent<Bot> e) {
 		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(botApp.serverManager.byBot(e), identHandler.id);
 		if (handler.isAvailable() && handler.availableWHOX) {
 			if (e.getBot().getUserBot().equals(e.getUser())) {
@@ -96,7 +97,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 		}
 	}
 	
-	protected void onPart(PartEvent<PircBotX> e) {
+	protected void onPart(PartEvent<Bot> e) {
 		BotManager manager = botApp.serverManager.byBot(e);
 		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(manager, identHandler.id);
 		if (handler.isAvailable()) {
@@ -118,17 +119,17 @@ public class Plugin extends shocky3.ListenerPlugin {
 		}
 	}
 	
-	protected void onExtendedJoin(ExtendedJoinEvent<PircBotX> e) {
+	protected void onExtendedJoin(ExtendedJoinEvent<Bot> e) {
 		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(botApp.serverManager.byBot(e), identHandler.id);
 		handler.setAccount(e.getUser().getNick(), e.getAccount());
 	}
 	
-	protected void onAccountNotify(AccountNotifyEvent<PircBotX> e) {
+	protected void onAccountNotify(AccountNotifyEvent<Bot> e) {
 		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(botApp.serverManager.byBot(e), identHandler.id);
 		handler.setAccount(e.getUser().getNick(), e.getAccount());
 	}
 	
-	protected void onServerResponse(ServerResponseEvent<PircBotX> e) {
+	protected void onServerResponse(ServerResponseEvent<Bot> e) {
 		if (e.getCode() == 315 || e.getCode() == 354) {
 			NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(botApp.serverManager.byBot(e), identHandler.id);
 			if (!handler.isAvailable()) return;

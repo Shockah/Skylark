@@ -7,6 +7,7 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.WhoisEvent;
 import pl.shockah.Util;
+import shocky3.Bot;
 import shocky3.BotManager;
 import sident.IdentHandler;
 
@@ -16,7 +17,7 @@ public class NickServIdentHandler extends IdentHandler {
 		RECHECK_DELAY = 1000 * 60 * 5; //5 minutes
 	
 	public final Plugin plugin;
-	protected WhoisEvent<PircBotX> whois = null;
+	protected WhoisEvent<Bot> whois = null;
 	protected Map<String, UserEntry> map = Collections.synchronizedMap(new HashMap<String, UserEntry>());
 	protected boolean availableWHOX = false, availableExtendedJoin = false, availableAccountNotify = false;
 	protected int requests = 0;
@@ -67,7 +68,7 @@ public class NickServIdentHandler extends IdentHandler {
 			manager.connectNewBot();
 		}
 		
-		PircBotX bot = manager.bots.get(0);
+		Bot bot = manager.bots.get(0);
 		availableWHOX = bot.getServerInfo().isWhoX();
 		availableExtendedJoin = bot.getEnabledCapabilities().contains("extended-join");
 		availableAccountNotify = bot.getEnabledCapabilities().contains("account-notify");
