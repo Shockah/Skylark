@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
 import org.pircbotx.Configuration;
+import org.pircbotx.PircBotX;
 import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
@@ -51,7 +52,7 @@ public class BotStarterThread extends Thread {
 			bot = new Bot(cfgb.buildConfiguration());
 			
 			try {
-				Field field = bot.getClass().getDeclaredField("inputParser");
+				Field field = PircBotX.class.getDeclaredField("inputParser");
 				field.setAccessible(true);
 				
 				Field mfield = Field.class.getDeclaredField("modifiers");
