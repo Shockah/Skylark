@@ -174,23 +174,25 @@ public class Plugin extends shocky3.Plugin {
 		return list;
 	}
 	
-	public boolean userHasPermission(Event<Bot> e, User user, String permission) {
-		return userHasPermission(e.getBot(), user, permission);
+	public boolean userHasPermission(Event<Bot> e, User user, String... permissions) {
+		return userHasPermission(e.getBot(), user, permissions);
 	}
-	public boolean userHasPermission(GenericUserEvent<Bot> e, String permission) {
-		return userHasPermission(e.getBot(), e.getUser(), permission);
+	public boolean userHasPermission(GenericUserEvent<Bot> e, String... permissions) {
+		return userHasPermission(e.getBot(), e.getUser(), permissions);
 	}
-	public boolean userHasPermission(Bot bot, User user, String permission) {
-		return userHasPermission(botApp.serverManager.byBot(bot), user, permission);
+	public boolean userHasPermission(Bot bot, User user, String... permissions) {
+		return userHasPermission(botApp.serverManager.byBot(bot), user, permissions);
 	}
-	public boolean userHasPermission(BotManager manager, User user, String permission) {
+	public boolean userHasPermission(BotManager manager, User user, String... permissions) {
 		prepare(manager);
 		List<Pair<IdentHandler, String>> list = new LinkedList<>();
-		for (IdentGroup igroup : permissionIdentGroups(manager, permission)) {
-			for (String ident : igroup.idents) {
-				IdentHandler handler = getIdentHandlerFor(igroup.manager, ident);
-				if (handler != null) {
-					list.add(new Pair<>(handler, ident));
+		for (String permission : permissions) {
+			for (IdentGroup igroup : permissionIdentGroups(manager, permission)) {
+				for (String ident : igroup.idents) {
+					IdentHandler handler = getIdentHandlerFor(igroup.manager, ident);
+					if (handler != null) {
+						list.add(new Pair<>(handler, ident));
+					}
 				}
 			}
 		}
@@ -206,6 +208,22 @@ public class Plugin extends shocky3.Plugin {
 			}
 		}
 		return false;
+	}
+	
+	public boolean userHasPermission(Event<Bot> e, User user, shocky3.Plugin plugin, String... permissions) {
+		return userHasPermission(e.getBot(), user, plugin, permissions);
+	}
+	public boolean userHasPermission(GenericUserEvent<Bot> e, shocky3.Plugin plugin, String... permissions) {
+		return userHasPermission(e.getBot(), e.getUser(), plugin, permissions);
+	}
+	public boolean userHasPermission(Bot bot, User user, shocky3.Plugin plugin, String... permissions) {
+		return userHasPermission(botApp.serverManager.byBot(bot), user, plugin, permissions);
+	}
+	public boolean userHasPermission(BotManager manager, User user, shocky3.Plugin plugin, String... permissions) {
+		for (int i = 0; i < permissions.length; i++) {
+			permissions[i] = String.format("%s.%s", plugin.pinfo.internalName(), permissions[i]);
+		}
+		return userHasPermission(manager, user, permissions);
 	}
 	
 	public String formatIdent(User user, String format, Object... args) {

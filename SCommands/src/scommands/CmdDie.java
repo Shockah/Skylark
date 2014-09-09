@@ -10,7 +10,7 @@ public class CmdDie extends Command {
 	}
 	
 	public void call(Shocky botApp, GenericUserMessageEvent<Bot> e, String trigger, String args) {
-		if (!Plugin.pluginIdent.userHasPermission(e, "Shocky.SCommands.Die")) return;
+		if (!Plugin.pluginIdent.userHasPermission(e, plugin, "Admin.Die")) return;
 		botApp.stop();
 	}
 }
