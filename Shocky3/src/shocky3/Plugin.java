@@ -26,5 +26,7 @@ public abstract class Plugin {
 	protected void onSettingUpdated(String setting) {}
 	
 	@Retention(RetentionPolicy.RUNTIME) @Target(ElementType.FIELD)
-	public static @interface Dependency {}
+	public static @interface Dependency {
+		public String internalName() default "";
+	}
 }

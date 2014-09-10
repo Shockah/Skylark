@@ -1,13 +1,13 @@
 package syoutube;
 
-import com.github.kevinsawicki.http.HttpRequest;
 import pl.shockah.json.JSONObject;
 import pl.shockah.json.JSONParser;
 import shocky3.PluginInfo;
+import com.github.kevinsawicki.http.HttpRequest;
 
 public class Plugin extends shocky3.Plugin {
 	@Dependency protected static surlannounce.Plugin pluginURLAnnounce;
-	@Dependency protected static scommands.Plugin pluginCmd;
+	@Dependency(internalName = "Shocky.SCommands") protected static shocky3.Plugin pluginCmd;
 	
 	protected JSONObject j = null;
 	public YoutubeURLAnnouncer announcer;
@@ -24,6 +24,7 @@ public class Plugin extends shocky3.Plugin {
 	
 	protected void postLoad() {
 		if (pluginCmd != null) {
+			scommands.Plugin pluginCmd = (scommands.Plugin)Plugin.pluginCmd;
 			pluginCmd.provider.add(
 				new CmdYoutube(this)
 			);

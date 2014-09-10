@@ -22,7 +22,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 	public static final Pattern
 		REGEX_KARMA = Pattern.compile("^(\\S{2}\\S*)((?:\\+\\+)|(?:\\-\\-)|(?:==))$");
 	
-	@Dependency protected static sident.Plugin pluginIdent;
+	@Dependency(internalName = "Shocky.SIdent") protected static shocky3.Plugin pluginIdent;
 	
 	public final List<Pair<String, Integer>> karma = Collections.synchronizedList(new LinkedList<Pair<String, Integer>>());
 	
@@ -104,6 +104,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 			return target;
 		}
 		if (pluginIdent != null) {
+			sident.Plugin pluginIdent = (sident.Plugin)Plugin.pluginIdent;
 			if (e != null) {
 				L: for (User user : e.getChannel().getUsers()) {
 					if (user.getNick().equalsIgnoreCase(target)) {

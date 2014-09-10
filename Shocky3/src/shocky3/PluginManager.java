@@ -209,17 +209,34 @@ public class PluginManager {
 		for (Field field : pinfo.plugin.getClass().getDeclaredFields()) {
 			Plugin.Dependency pluginDependency = field.getAnnotation(Plugin.Dependency.class);
 			if (pluginDependency != null) {
-				L: for (Plugin plugin : plugins) {
-					if (field.getType() == plugin.getClass()) {
-						try {
-							field.setAccessible(true);
-							if (Modifier.isStatic(field.getModifiers())) {
-								field.set(null, plugin);
-							} else {
-								field.set(pinfo.plugin, plugin);
-							}
-							break L;
-						} catch (Exception e) {e.printStackTrace();}
+				String internalName = pluginDependency.internalName();
+				if (internalName.equals("")) {
+					for (Plugin plugin : plugins) {
+						if (field.getType() == plugin.getClass()) {
+							try {
+								field.setAccessible(true);
+								if (Modifier.isStatic(field.getModifiers())) {
+									field.set(null, plugin);
+								} else {
+									field.set(pinfo.plugin, plugin);
+								}
+								break;
+							} catch (Exception e) {e.printStackTrace();}
+						}
+					}
+				} else {
+					for (Plugin plugin : plugins) {
+						if (internalName.equals(plugin.pinfo.internalName())) {
+							try {
+								field.setAccessible(true);
+								if (Modifier.isStatic(field.getModifiers())) {
+									field.set(null, plugin);
+								} else {
+									field.set(pinfo.plugin, plugin);
+								}
+								break;
+							} catch (Exception e) {e.printStackTrace();}
+						}
 					}
 				}
 			}
