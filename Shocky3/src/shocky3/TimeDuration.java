@@ -7,14 +7,15 @@ public final class TimeDuration {
 		return format(date, new Date());
 	}
 	public static String format(Date date1, Date date2) {
-		return formatMiliseconds(Math.abs(date2.getTime() - date1.getTime()));
+		return formatMiliseconds(date2.getTime() - date1.getTime());
 	}
 	
 	public static String formatSeconds(int s) {
+		if (s <= 0) return "0s";
 		int m = s / 60; s %= 60;
 		int h = m / 60; m %= 60;
 		int d = h / 24; h %= 24;
-		int w = d / 7; h %= 7;
+		int w = d / 7; d %= 7;
 		
 		StringBuilder sb = new StringBuilder();
 		if (w != 0) sb.append(String.format(" %dw", w));
