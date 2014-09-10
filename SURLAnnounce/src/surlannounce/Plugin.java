@@ -23,6 +23,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 
 public class Plugin extends shocky3.ListenerPlugin {
+	public static final long THROTTLE = 1000 * 60;
 	public static final Pattern
 		REGEX_NORMALIZE = Pattern.compile("^(https?\\://)(?:www\\.)?(.*)$");
 	
@@ -85,11 +86,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 					new URL(s);
 					String s2 = normalizeURL(s);
 					
-					String announce = getAnnouncement(e, s2);
-					if (announce != null) {
-						e.respond(announce);
-					}
-					
+					String sLastLinked = null;
 					if (!lastLinked.containsKey(s2)) {
 						lastLinked.put(s2, Collections.synchronizedList(new ArrayList<Sender>()));
 					}
@@ -121,9 +118,20 @@ public class Plugin extends shocky3.ListenerPlugin {
 							"nick", newSender.nick,
 							"timestamp", (int)(newSender.date.getTime() / 1000l)
 						))));
-						e.respond(String.format("Last linked by %s, %s ago.", sender.nick, TimeDuration.format(sender.date)));
+						sLastLinked = String.format("Last linked by %s, %s ago.", sender.nick, TimeDuration.format(sender.date));
+						boolean drop = false;
+						drop = newSender.date.getTime() - sender.date.getTime() < THROTTLE;
 						sender.nick = newSender.nick;
 						sender.date = newSender.date;
+						if (drop) continue;
+					}
+					
+					String announce = getAnnouncement(e, s2);
+					if (announce != null) {
+						e.respond(announce);
+					}
+					if (sLastLinked != null) {
+						e.respond(sLastLinked);
 					}
 				} catch (Exception ex) {}
 			}
