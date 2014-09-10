@@ -20,7 +20,7 @@ import com.mongodb.DBObject;
 
 public class Plugin extends shocky3.ListenerPlugin {
 	public static final Pattern
-		REGEX_KARMA = Pattern.compile("^(\\S{2}\\S*)((?:\\+\\+)|(?:\\-\\-)|(?:==))$");
+		REGEX_KARMA = Pattern.compile("^([^\\s\\+\\-=]{2,})((?:\\+\\+)|(?:\\-\\-)|(?:==))$");
 	
 	@Dependency(internalName = "Shocky.SIdent") protected static shocky3.Plugin pluginIdent;
 	
