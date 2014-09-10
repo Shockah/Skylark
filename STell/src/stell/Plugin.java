@@ -30,12 +30,12 @@ public class Plugin extends shocky3.ListenerPlugin {
 		
 		DBCollection dbc;
 		
-		dbc = botApp.collection(String.format("%s.Settings", pinfo.internalName()));
+		dbc = botApp.collection(this, "Settings");
 		if (dbc.count() != 0) {
 			Tell.nextID = JSONUtil.fromDBObject(dbc.findOne()).getInt("nextID");
 		}
 		
-		dbc = botApp.collection(pinfo.internalName());
+		dbc = botApp.collection(this);
 		for (DBObject dbo : JSONUtil.all(dbc.find())) {
 			tells.add(Tell.read(botApp, JSONUtil.fromDBObject(dbo)));
 		}

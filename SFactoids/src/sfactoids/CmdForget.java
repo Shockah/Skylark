@@ -46,7 +46,7 @@ public class CmdForget extends Command {
 		
 		name = args;
 		
-		DBCollection dbc = botApp.collection(plugin.pinfo.internalName());
+		DBCollection dbc = botApp.collection(plugin);
 		DBCursor dbcur = dbc.find(JSONUtil.toDBObject(JSONObject.make(
 			"name", name,
 			"context", context,

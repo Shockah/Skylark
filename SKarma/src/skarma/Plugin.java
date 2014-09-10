@@ -31,7 +31,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 	}
 	
 	protected void onLoad() {
-		DBCollection dbc = botApp.collection(pinfo.internalName());
+		DBCollection dbc = botApp.collection(this);
 		for (DBObject dbo : JSONUtil.all(dbc.find())) {
 			JSONObject j = JSONUtil.fromDBObject(dbo);
 			karma.add(new Pair<>(j.getString("name"), j.getInt("karma")));

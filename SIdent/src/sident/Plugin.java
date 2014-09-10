@@ -285,7 +285,7 @@ public class Plugin extends shocky3.Plugin {
 	}
 	
 	public void readConfig() {
-		DBCollection dbc = botApp.collection(pinfo.internalName());
+		DBCollection dbc = botApp.collection(this);
 		for (DBObject dbo : JSONUtil.all(dbc.find())) {
 			JSONObject j = JSONUtil.fromDBObject(dbo);
 			

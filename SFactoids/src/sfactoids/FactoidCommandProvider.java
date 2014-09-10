@@ -23,7 +23,7 @@ public class FactoidCommandProvider extends CommandProvider {
 	}
 	
 	public void provide(List<Pair<ICommand, EPriority>> candidates, Shocky botApp, GenericUserMessageEvent<Bot> e, String trigger, String args) {
-		DBCollection dbc = botApp.collection(plugin.pinfo.internalName());
+		DBCollection dbc = botApp.collection(plugin);
 		trigger = trigger.toLowerCase();
 		
 		String serverName = botApp.serverManager.byBot(e).name;

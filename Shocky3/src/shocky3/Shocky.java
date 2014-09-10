@@ -100,4 +100,10 @@ public class Shocky {
 	public DBCollection collection(String c) {
 		return db().getCollection(c);
 	}
+	public DBCollection collection(Plugin plugin) {
+		return db().getCollection(plugin.pinfo.internalName());
+	}
+	public DBCollection collection(Plugin plugin, String sub) {
+		return db().getCollection(String.format("%s.%s", plugin.pinfo.internalName(), sub));
+	}
 }

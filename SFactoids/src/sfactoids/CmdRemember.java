@@ -64,7 +64,7 @@ public class CmdRemember extends Command {
 			}
 		}
 		
-		DBCollection dbc = botApp.collection(plugin.pinfo.internalName());
+		DBCollection dbc = botApp.collection(plugin);
 		dbc.insert(JSONUtil.toDBObject(JSONObject.make(
 			"name", name,
 			"context", context,
