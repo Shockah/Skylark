@@ -3,9 +3,9 @@
 	"version": "r1",
 	"author": "Shockah",
 	
-	"internalName": "Shocky.SYoutube",
+	"internalName": "Shocky.Youtube",
 	"baseClass": "syoutube.Plugin",
 	"dependsOn": [
-		"Shocky.SURLAnnounce"
+		"Shocky.URLAnnounce"
 	]
 }

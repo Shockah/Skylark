@@ -7,7 +7,7 @@ import com.github.kevinsawicki.http.HttpRequest;
 
 public class Plugin extends shocky3.Plugin {
 	@Dependency protected static surlannounce.Plugin pluginURLAnnounce;
-	@Dependency(internalName = "Shocky.SCommands") protected static shocky3.Plugin pluginCmd;
+	@Dependency(internalName = "Shocky.Commands") protected static shocky3.Plugin pluginCmd;
 	
 	protected JSONObject j = null;
 	public YoutubeURLAnnouncer announcer;

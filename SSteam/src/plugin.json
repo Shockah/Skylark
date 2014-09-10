@@ -3,9 +3,9 @@
 	"version": "r1",
 	"author": "Shockah",
 	
-	"internalName": "Shocky.SSteam",
+	"internalName": "Shocky.Steam",
 	"baseClass": "ssteam.Plugin",
 	"dependsOn": [
-		"Shocky.SURLAnnounce"
+		"Shocky.URLAnnounce"
 	]
 }

@@ -3,6 +3,6 @@
 	"version": "r1",
 	"author": "Shockah",
 	
-	"internalName": "Shocky.SIdent",
+	"internalName": "Shocky.Ident",
 	"baseClass": "sident.Plugin"
 }

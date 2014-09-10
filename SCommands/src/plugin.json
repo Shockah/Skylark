@@ -3,9 +3,9 @@
 	"version": "r1",
 	"author": "Shockah",
 	
-	"internalName": "Shocky.SCommands",
+	"internalName": "Shocky.Commands",
 	"baseClass": "scommands.Plugin",
 	"dependsOn": [
-		"Shocky.SIdent"
+		"Shocky.Ident"
 	]
 }

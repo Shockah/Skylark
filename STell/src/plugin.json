@@ -3,10 +3,10 @@
 	"version": "r1",
 	"author": "Shockah",
 	
-	"internalName": "Shocky.STell",
+	"internalName": "Shocky.Tell",
 	"baseClass": "stell.Plugin",
 	"dependsOn": [
-		"Shocky.SCommands",
-		"Shocky.SIdent"
+		"Shocky.Commands",
+		"Shocky.Ident"
 	]
 }

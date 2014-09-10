@@ -3,6 +3,6 @@
 	"version": "r1",
 	"author": "Shockah",
 	
-	"internalName": "Shocky.SConsole",
+	"internalName": "Shocky.Console",
 	"baseClass": "sconsole.Plugin"
 }

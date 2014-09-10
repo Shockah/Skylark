@@ -3,10 +3,10 @@
 	"version": "r1",
 	"author": "Shockah",
 	
-	"internalName": "Shocky.SFactoids",
+	"internalName": "Shocky.Factoids",
 	"baseClass": "sfactoids.Plugin",
 	"dependsOn": [
-		"Shocky.SIdent",
-		"Shocky.SCommands"
+		"Shocky.Ident",
+		"Shocky.Commands"
 	]
 }

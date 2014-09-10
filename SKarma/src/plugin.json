@@ -3,6 +3,6 @@
 	"version": "r1",
 	"author": "Shockah",
 	
-	"internalName": "Shocky.SKarma",
+	"internalName": "Shocky.Karma",
 	"baseClass": "skarma.Plugin"
 }

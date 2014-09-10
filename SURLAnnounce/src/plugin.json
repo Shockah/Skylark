@@ -3,6 +3,6 @@
 	"version": "r1",
 	"author": "Shockah",
 	
-	"internalName": "Shocky.SURLAnnounce",
+	"internalName": "Shocky.URLAnnounce",
 	"baseClass": "surlannounce.Plugin"
 }
