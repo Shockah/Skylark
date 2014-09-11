@@ -15,11 +15,9 @@ public abstract class Plugin {
 		this.pinfo = pinfo;
 	}
 	
-	protected void preLoad() {}
 	protected void onLoad() {}
 	protected void postLoad() {}
 	
-	protected void preUnload() {}
 	protected void onUnload() {}
 	
 	protected void onBotStarted(BotManager manager, PircBotX bot) {}

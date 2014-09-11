@@ -16,6 +16,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import pl.shockah.json.JSONObject;
 import pl.shockah.json.JSONParser;
+import shocky3.pircbotx.Bot;
 
 public class PluginManager {
 	public static final File
@@ -105,6 +106,15 @@ public class PluginManager {
 	
 	public void reload() {
 		synchronized (plugins) {synchronized (toLoad) {
+			synchronized (botApp.serverManager.botManagers) {for (BotManager bm : botApp.serverManager.botManagers) {
+				for (Bot bot : bm.bots) {
+					for (Plugin plugin : plugins) {
+						if (plugin instanceof ListenerPlugin) {
+							bot.getConfiguration().getListenerManager().removeListener(((ListenerPlugin)plugin).listener);
+						}
+					}
+				}
+			}}
 			while (!plugins.isEmpty()) {
 				actualUnload(plugins.get(plugins.size() - 1));
 			}
@@ -170,6 +180,15 @@ public class PluginManager {
 			for (Plugin plugin : plugins) {
 				setReflectionFields(plugin.pinfo);
 			}
+			synchronized (botApp.serverManager.botManagers) {for (BotManager bm : botApp.serverManager.botManagers) {
+				for (Bot bot : bm.bots) {
+					for (Plugin plugin : plugins) {
+						if (plugin instanceof ListenerPlugin) {
+							bot.getConfiguration().getListenerManager().addListener(((ListenerPlugin)plugin).listener);
+						}
+					}
+				}
+			}}
 			for (Plugin plugin : plugins) {
 				plugin.onLoad();
 			}
@@ -197,14 +216,12 @@ public class PluginManager {
 		if (pinfo.loaded()) return;
 		try {
 			pinfo.plugin = (Plugin)currentClassLoader.loadClass(pinfo.baseClass()).getConstructor(PluginInfo.class).newInstance(pinfo);
-			pinfo.plugin.preLoad();
 			plugins.add(pinfo.plugin);
 		} catch (Exception e) {e.printStackTrace();}
 	}
 	private void actualUnload(Plugin plugin) {
 		try {
 			plugins.remove(plugin);
-			plugin.preUnload();
 			plugin.onUnload();
 			plugin.pinfo.plugin = null;
 			System.out.println("Unloaded plugin: " + plugin.pinfo.internalName());

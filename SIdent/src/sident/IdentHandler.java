@@ -53,7 +53,7 @@ public abstract class IdentHandler {
 		return getClass() == h.getClass() && Util.equals(manager, h.manager);
 	}
 	
-	public final boolean isAvailable() {
+	public boolean isAvailable() {
 		if (available == null) {
 			available = new Box<>(checkAvailability());
 		}

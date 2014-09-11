@@ -29,19 +29,21 @@ public class Plugin extends shocky3.ListenerPlugin {
 		pluginIdent.add(
 			identHandler = new NickServIdentHandler(this)
 		);
-		
+	}
+	
+	protected void postLoad() {
 		synchronized (botApp.serverManager.botManagers) {for (BotManager manager : botApp.serverManager.botManagers) {
 			NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(manager, identHandler.id);
-			if (manager.inAnyChannels()) {
+			synchronized (manager.bots) {if (manager.inAnyChannels()) {
 				if (handler.isAvailable() && handler.availableWHOX) {
-					synchronized (manager.bots) {for (Bot bot : manager.bots) {
+					for (Bot bot : manager.bots) {
 						for (Channel channel : bot.getUserBot().getChannels()) {
 							handler.requests++;
 							bot.sendRaw().rawLine(String.format("WHO %s %%na", channel.getName()));
 						}
-					}}
+					}
 				}
-			}
+			}}
 		}}
 	}
 	

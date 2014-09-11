@@ -81,21 +81,6 @@ public abstract class ListenerPlugin extends Plugin {
 		listener = new MyListener(this);
 	}
 	
-	protected void preLoad() {
-		synchronized (botApp.serverManager.botManagers) {for (BotManager bm : botApp.serverManager.botManagers) {
-			for (Bot bot : bm.bots) {
-				bot.getConfiguration().getListenerManager().addListener(listener);
-			}
-		}}
-	}
-	protected void preUnload() {
-		synchronized (botApp.serverManager.botManagers) {for (BotManager bm : botApp.serverManager.botManagers) {
-			for (Bot bot : bm.bots) {
-				bot.getConfiguration().getListenerManager().removeListener(listener);
-			}
-		}}
-	}
-	
 	protected void onEvent(Event<Bot> e) {}
 	protected void onAction(ActionEvent<Bot> e) {}
 	protected void onChannelInfo(ChannelInfoEvent<Bot> e) {}
