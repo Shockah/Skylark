@@ -29,7 +29,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 	
 	protected JSONObject j = null;
 	public final DefaultURLAnnouncer announcer;
-	protected List<URLAnnouncer> announcers = new LinkedList<>();
+	protected List<URLAnnouncer> announcers = Collections.synchronizedList(new LinkedList<URLAnnouncer>());
 	public Map<String, List<Sender>> lastLinked = Collections.synchronizedMap(new HashMap<String, List<Sender>>());
 	
 	public Plugin(PluginInfo pinfo) {
@@ -38,38 +38,40 @@ public class Plugin extends shocky3.ListenerPlugin {
 	}
 	
 	public void add(URLAnnouncer... urlas) {
-		for (URLAnnouncer urla : urlas) {
+		synchronized (announcers) {for (URLAnnouncer urla : urlas) {
 			if (!announcers.contains(urla)) {
 				announcers.add(urla);
 			}
-		}
+		}}
 	}
 	public void remove(URLAnnouncer... urlas) {
-		for (URLAnnouncer urla : urlas) {
+		synchronized (announcers) {for (URLAnnouncer urla : urlas) {
 			announcers.remove(urla);
-		}
+		}}
 	}
 	
 	protected void onLoad() {
 		botApp.settings.add(this, "characters", ".");
-		announcers.clear();
-		
-		add(announcer);
-		
-		DBCollection dbc = botApp.collection(this);
-		for (DBObject dbo : JSONUtil.all(dbc.find())) {
-			JSONObject j = JSONUtil.fromDBObject(dbo);
-			String url = j.getString("url");
-			if (!lastLinked.containsKey(url)) {
-				lastLinked.put(url, Collections.synchronizedList(new ArrayList<Sender>()));
+		synchronized (announcers) {synchronized (lastLinked) {
+			announcers.clear();
+			
+			add(announcer);
+			
+			DBCollection dbc = botApp.collection(this);
+			for (DBObject dbo : JSONUtil.all(dbc.find())) {
+				JSONObject j = JSONUtil.fromDBObject(dbo);
+				String url = j.getString("url");
+				if (!lastLinked.containsKey(url)) {
+					lastLinked.put(url, Collections.synchronizedList(new ArrayList<Sender>()));
+				}
+				lastLinked.get(url).add(new Sender(
+					botApp.serverManager.byServerName(j.getString("server")),
+					j.getString("channel"),
+					j.getString("nick"),
+					new Date(j.getInt("timestamp") * 1000l)
+				));
 			}
-			lastLinked.get(url).add(new Sender(
-				botApp.serverManager.byServerName(j.getString("server")),
-				j.getString("channel"),
-				j.getString("nick"),
-				new Date(j.getInt("timestamp") * 1000l)
-			));
-		}
+		}}
 	}
 	
 	protected void onUnload() {
@@ -87,43 +89,45 @@ public class Plugin extends shocky3.ListenerPlugin {
 					String s2 = normalizeURL(s);
 					
 					String sLastLinked = null;
-					if (!lastLinked.containsKey(s2)) {
-						lastLinked.put(s2, Collections.synchronizedList(new ArrayList<Sender>()));
-					}
-					List<Sender> senders = lastLinked.get(s2);
-					Sender newSender = new Sender(
-						botApp.serverManager.byBot(e),
-						e.getChannel().getName(),
-						e.getUser().getNick(),
-						new Date()
-					);
-					int index = senders.indexOf(newSender);
-					DBCollection dbc = botApp.collection(this);
-					if (index == -1) {
-						senders.add(newSender);
-						dbc.insert(JSONUtil.toDBObject(JSONObject.make(
-							"url", s2,
-							"server", newSender.manager.name,
-							"channel", newSender.channel,
-							"nick", newSender.nick,
-							"timestamp", (int)(newSender.date.getTime() / 1000l)
-						)));
-					} else {
-						Sender sender = senders.get(index);
-						dbc.update(JSONUtil.toDBObject(JSONObject.make(
-							"url", s2,
-							"server", sender.manager.name,
-							"channel", sender.channel
-						)), JSONUtil.toDBObject(JSONObject.make("$set", JSONObject.make(
-							"nick", newSender.nick,
-							"timestamp", (int)(newSender.date.getTime() / 1000l)
-						))));
-						sLastLinked = String.format("Last linked by %s, %s ago.", sender.nick, TimeDuration.format(sender.date));
-						boolean drop = false;
-						drop = newSender.date.getTime() - sender.date.getTime() < THROTTLE;
-						sender.nick = newSender.nick;
-						sender.date = newSender.date;
-						if (drop) continue;
+					synchronized (lastLinked) {
+						if (!lastLinked.containsKey(s2)) {
+							lastLinked.put(s2, Collections.synchronizedList(new ArrayList<Sender>()));
+						}
+						List<Sender> senders = lastLinked.get(s2);
+						Sender newSender = new Sender(
+							botApp.serverManager.byBot(e),
+							e.getChannel().getName(),
+							e.getUser().getNick(),
+							new Date()
+						);
+						int index = senders.indexOf(newSender);
+						DBCollection dbc = botApp.collection(this);
+						if (index == -1) {
+							senders.add(newSender);
+							dbc.insert(JSONUtil.toDBObject(JSONObject.make(
+								"url", s2,
+								"server", newSender.manager.name,
+								"channel", newSender.channel,
+								"nick", newSender.nick,
+								"timestamp", (int)(newSender.date.getTime() / 1000l)
+							)));
+						} else {
+							Sender sender = senders.get(index);
+							dbc.update(JSONUtil.toDBObject(JSONObject.make(
+								"url", s2,
+								"server", sender.manager.name,
+								"channel", sender.channel
+							)), JSONUtil.toDBObject(JSONObject.make("$set", JSONObject.make(
+								"nick", newSender.nick,
+								"timestamp", (int)(newSender.date.getTime() / 1000l)
+							))));
+							sLastLinked = String.format("Last linked by %s, %s ago.", sender.nick, TimeDuration.format(sender.date));
+							boolean drop = false;
+							drop = newSender.date.getTime() - sender.date.getTime() < THROTTLE;
+							sender.nick = newSender.nick;
+							sender.date = newSender.date;
+							if (drop) continue;
+						}
 					}
 					
 					String announce = getAnnouncement(e, s2);
@@ -153,9 +157,9 @@ public class Plugin extends shocky3.ListenerPlugin {
 	
 	public String getAnnouncement(MessageEvent<Bot> e, String url) {
 		List<Pair<Func<String>, URLAnnouncer.EPriority>> list = new LinkedList<>();
-		for (URLAnnouncer urla : announcers) {
+		synchronized (announcers) {for (URLAnnouncer urla : announcers) {
 			urla.provide(list, botApp, e, url);
-		}
+		}}
 		
 		if (!list.isEmpty()) {
 			Collections.sort(list, new Comparator<Pair<Func<String>, URLAnnouncer.EPriority>>(){
