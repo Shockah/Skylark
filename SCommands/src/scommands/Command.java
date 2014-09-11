@@ -12,6 +12,8 @@ public abstract class Command implements ICommand {
 	public Command(shocky3.Plugin plugin, String main, String... alts) {
 		this.plugin = plugin;
 		this.main = main.toLowerCase();
-		for (String alt : alts) this.alt.add(alt.toLowerCase());
+		synchronized (this.alt) {for (String alt : alts) {
+			this.alt.add(alt.toLowerCase());
+		}}
 	}
 }

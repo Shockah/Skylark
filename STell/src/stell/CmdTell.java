@@ -57,7 +57,7 @@ public class CmdTell extends Command {
 			}
 			
 			Tell tell = Tell.create(manager, e.getUser(), list, args);
-			pluginTell.tells.add(tell);
+			synchronized (pluginTell.tells) {pluginTell.tells.add(tell);}
 			e.getUser().send().notice("I'll pass that along.");
 			Tell.writeDB(plugin, tell);
 			Tell.updateIDDB(plugin);

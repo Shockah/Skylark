@@ -89,12 +89,12 @@ public class Tell {
 	
 	public static List<Pair<IdentHandler, String>> createData(BotManager manager, User user) {
 		List<Pair<IdentHandler, String>> list = new LinkedList<>();
-		for (IdentHandler handler : Plugin.pluginIdent.identHandlers.get(null)) {
+		synchronized (Plugin.pluginIdent.identHandlers) {for (IdentHandler handler : Plugin.pluginIdent.identHandlers.get(null)) {
 			IdentHandler handler2 = Plugin.pluginIdent.getIdentHandlerFor(manager, handler.id);
 			if (handler2.isAvailable()) {
 				list.add(new Pair<>(handler2, handler2.account(user)));
 			}
-		}
+		}}
 		return list;
 	}
 	public static Tell create(BotManager manager, User sender, List<Pair<IdentHandler, String>> dataReceiver, String message) {

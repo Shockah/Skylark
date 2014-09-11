@@ -20,7 +20,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 	
 	protected JSONObject j = null;
 	public final DefaultCommandProvider provider;
-	protected List<CommandProvider> providers = new LinkedList<>();
+	protected List<CommandProvider> providers = Collections.synchronizedList(new LinkedList<CommandProvider>());
 	
 	public Plugin(PluginInfo pinfo) {
 		super(pinfo);
@@ -28,16 +28,16 @@ public class Plugin extends shocky3.ListenerPlugin {
 	}
 	
 	public void add(CommandProvider... cps) {
-		for (CommandProvider cp : cps) {
+		synchronized (providers) {for (CommandProvider cp : cps) {
 			if (!providers.contains(cp)) {
 				providers.add(cp);
 			}
-		}
+		}}
 	}
 	public void remove(CommandProvider... cps) {
-		for (CommandProvider cp : cps) {
+		synchronized (providers) {for (CommandProvider cp : cps) {
 			providers.remove(cp);
-		}
+		}}
 	}
 	
 	protected void onLoad() {
@@ -89,9 +89,9 @@ public class Plugin extends shocky3.ListenerPlugin {
 	
 	public ICommand findCommand(Shocky botApp, GenericUserMessageEvent<Bot> e, String trigger, String args) {
 		List<Pair<ICommand, CommandProvider.EPriority>> list = new LinkedList<>();
-		for (CommandProvider cp : providers) {
+		synchronized (providers) {for (CommandProvider cp : providers) {
 			cp.provide(list, botApp, e, trigger, args);
-		}
+		}}
 		
 		if (!list.isEmpty()) {
 			Collections.sort(list, new Comparator<Pair<ICommand, CommandProvider.EPriority>>(){

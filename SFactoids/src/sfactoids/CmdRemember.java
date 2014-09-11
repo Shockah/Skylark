@@ -54,7 +54,7 @@ public class CmdRemember extends Command {
 		
 		JSONObject jAuthor = new JSONObject();
 		BotManager bm = botApp.serverManager.byBot(e);
-		for (IdentHandler handler : Plugin.pluginIdent.identHandlers.get(null)) {
+		synchronized (Plugin.pluginIdent.identHandlers) {for (IdentHandler handler : Plugin.pluginIdent.identHandlers.get(null)) {
 			IdentHandler handler2 = Plugin.pluginIdent.getIdentHandlerFor(bm, handler.id);
 			if (handler2.isAvailable()) {
 				String account = handler2.account(e.getUser());
@@ -62,7 +62,7 @@ public class CmdRemember extends Command {
 					jAuthor.put(handler.id, account);
 				}
 			}
-		}
+		}}
 		
 		DBCollection dbc = botApp.collection(plugin);
 		dbc.insert(JSONUtil.toDBObject(JSONObject.make(

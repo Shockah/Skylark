@@ -34,80 +34,87 @@ public class Plugin extends shocky3.Plugin {
 	}
 	
 	protected void onLoad() {
-		identHandlers.put(null, Collections.synchronizedList(new LinkedList<IdentHandler>()));
-		identGroups.put(null, Collections.synchronizedList(new LinkedList<IdentGroup>()));
-		add(
-			handlerServer = new ServerIdentHandler(),
-			handlerNick = new NickIdentHandler(),
-			handlerHost = new HostIdentHandler()
-		);
-		
-		readConfig();
+		synchronized (identHandlers) {synchronized (identGroups) {
+			identHandlers.put(null, Collections.synchronizedList(new LinkedList<IdentHandler>()));
+			identGroups.put(null, Collections.synchronizedList(new LinkedList<IdentGroup>()));
+			add(
+				handlerServer = new ServerIdentHandler(),
+				handlerNick = new NickIdentHandler(),
+				handlerHost = new HostIdentHandler()
+			);
+			readConfig();
+		}}
 	}
 	
 	protected void onBotStarted(BotManager manager, Bot bot) {
-		if (!identHandlers.containsKey(manager)) {
-			identHandlers.put(manager, Collections.synchronizedList(new LinkedList<IdentHandler>()));
-		}
-		List<IdentHandler> handlers = identHandlers.get(manager);
-		for (IdentHandler h : identHandlers.get(null)) {
-			IdentHandler copy = h.copy(manager);
-			if (!handlers.contains(copy)) {
-				handlers.add(copy);
+		synchronized (identHandlers) {
+			if (!identHandlers.containsKey(manager)) {
+				identHandlers.put(manager, Collections.synchronizedList(new LinkedList<IdentHandler>()));
+			}
+			List<IdentHandler> handlers = identHandlers.get(manager);
+			for (IdentHandler h : identHandlers.get(null)) {
+				IdentHandler copy = h.copy(manager);
+				if (!handlers.contains(copy)) {
+					handlers.add(copy);
+				}
 			}
 		}
 	}
 	
 	public void add(IdentHandler... hs) {
-		for (Map.Entry<BotManager, List<IdentHandler>> entry : identHandlers.entrySet()) {
+		synchronized (identHandlers) {for (Map.Entry<BotManager, List<IdentHandler>> entry : identHandlers.entrySet()) {
 			for (IdentHandler h : hs) {
 				IdentHandler copy = h.copy(entry.getKey());
 				if (!entry.getValue().contains(copy)) {
 					entry.getValue().add(copy);
 				}
 			}
-		}
+		}}
 	}
 	public void remove(IdentHandler... hs) {
-		for (Map.Entry<BotManager, List<IdentHandler>> entry : identHandlers.entrySet()) {
+		synchronized (identHandlers) {for (Map.Entry<BotManager, List<IdentHandler>> entry : identHandlers.entrySet()) {
 			for (IdentHandler h : hs) {
 				IdentHandler copy = h.copy(entry.getKey());
 				entry.getValue().remove(copy);
 			}
-		}
+		}}
 	}
 	
 	public void prepare(BotManager manager) {
 		if (manager == null) return;
 		
-		if (!identHandlers.containsKey(manager)) {
-			identHandlers.put(manager, Collections.synchronizedList(new LinkedList<IdentHandler>()));
-		}
-		List<IdentHandler> listNull = identHandlers.get(null);
-		List<IdentHandler> list = identHandlers.get(manager);
-		for (IdentHandler handler : listNull) {
-			IdentHandler copy = handler.copy(manager);
-			if (!list.contains(copy)) {
-				list.add(copy);
+		synchronized (identHandlers) {
+			if (!identHandlers.containsKey(manager)) {
+				identHandlers.put(manager, Collections.synchronizedList(new LinkedList<IdentHandler>()));
+			}
+			List<IdentHandler> listNull = identHandlers.get(null);
+			List<IdentHandler> list = identHandlers.get(manager);
+			for (IdentHandler handler : listNull) {
+				IdentHandler copy = handler.copy(manager);
+				if (!list.contains(copy)) {
+					list.add(copy);
+				}
 			}
 		}
 	}
 	
 	public IdentHandler getIdentHandlerFor(BotManager manager, String account) {
-		prepare(manager);
-		int index = account.indexOf(':');
-		String id = index == -1 ? account : account.substring(0, index);
-		for (IdentHandler h : identHandlers.get(manager)) {
-			if (h.id.equals(id)) {
-				return h;
-			}
-		}
-		if (manager != null) {
-			for (IdentHandler h : identHandlers.get(null)) {
+		synchronized (identHandlers) {
+			prepare(manager);
+			int index = account.indexOf(':');
+			String id = index == -1 ? account : account.substring(0, index);
+			for (IdentHandler h : identHandlers.get(manager)) {
 				if (h.id.equals(id)) {
-					IdentHandler newh = h.copy(manager);
-					identHandlers.get(manager).add(newh);
-					return newh;
+					return h;
+				}
+			}
+			if (manager != null) {
+				for (IdentHandler h : identHandlers.get(null)) {
+					if (h.id.equals(id)) {
+						IdentHandler newh = h.copy(manager);
+						identHandlers.get(manager).add(newh);
+						return newh;
+					}
 				}
 			}
 		}
@@ -124,25 +131,27 @@ public class Plugin extends shocky3.Plugin {
 		return userIdentGroups(botApp.serverManager.byBot(bot), user);
 	}
 	public List<IdentGroup> userIdentGroups(BotManager manager, User user) {
-		List<IdentGroup> list = new LinkedList<>();
-		if (manager != null) {
-			if (identGroups.containsKey(manager)) {
-				for (IdentGroup igroup : identGroups.get(manager)) {
+		synchronized (identGroups) {
+			List<IdentGroup> list = new LinkedList<>();
+			if (manager != null) {
+				if (identGroups.containsKey(manager)) {
+					for (IdentGroup igroup : identGroups.get(manager)) {
+						if (igroup.userBelongs(user)) {
+							list.add(igroup);
+						}
+					}
+				}
+				manager = null;
+			}
+			if (manager == null) {
+				for (IdentGroup igroup : identGroups.get(null)) {
 					if (igroup.userBelongs(user)) {
 						list.add(igroup);
 					}
 				}
 			}
-			manager = null;
+			return list;
 		}
-		if (manager == null) {
-			for (IdentGroup igroup : identGroups.get(null)) {
-				if (igroup.userBelongs(user)) {
-					list.add(igroup);
-				}
-			}
-		}
-		return list;
 	}
 	
 	public List<IdentGroup> permissionIdentGroups(Event<Bot> e, String permission) {
@@ -152,26 +161,28 @@ public class Plugin extends shocky3.Plugin {
 		return permissionIdentGroups(botApp.serverManager.byBot(bot), permission);
 	}
 	public List<IdentGroup> permissionIdentGroups(BotManager manager, String permission) {
-		List<IdentGroup> list = new LinkedList<>();
-		if (manager != null) {
-			if (identGroups.containsKey(manager)) {
-				for (IdentGroup igroup : identGroups.get(manager)) {
+		synchronized (identGroups) {
+			List<IdentGroup> list = new LinkedList<>();
+			if (manager != null) {
+				if (identGroups.containsKey(manager)) {
+					for (IdentGroup igroup : identGroups.get(manager)) {
+						if (igroup.hasPermission(permission)) {
+							list.add(igroup);
+						}
+					}
+				}
+				manager = null;
+			}
+			if (manager == null) {
+				for (IdentGroup igroup : identGroups.get(null)) {
 					if (igroup.hasPermission(permission)) {
 						list.add(igroup);
 					}
+					
 				}
 			}
-			manager = null;
+			return list;
 		}
-		if (manager == null) {
-			for (IdentGroup igroup : identGroups.get(null)) {
-				if (igroup.hasPermission(permission)) {
-					list.add(igroup);
-				}
-				
-			}
-		}
-		return list;
 	}
 	
 	public boolean userHasPermission(Event<Bot> e, User user, String... permissions) {
@@ -227,17 +238,19 @@ public class Plugin extends shocky3.Plugin {
 	}
 	
 	public String formatIdent(User user, String format, Object... args) {
-		BotManager manager = botApp.serverManager.byBot(user);
-		prepare(manager);
-		
-		List<Pair<IdentHandler, String>> list = new LinkedList<>();
-		for (IdentHandler handler : identHandlers.get(manager)) {
-			if (handler.isAvailable()) {
-				list.add(new Pair<>(handler, handler.account(user)));
+		synchronized (identHandlers) {
+			BotManager manager = botApp.serverManager.byBot(user);
+			prepare(manager);
+			
+			List<Pair<IdentHandler, String>> list = new LinkedList<>();
+			for (IdentHandler handler : identHandlers.get(manager)) {
+				if (handler.isAvailable()) {
+					list.add(new Pair<>(handler, handler.account(user)));
+				}
 			}
+			
+			return formatIdent(list, format, args);
 		}
-		
-		return formatIdent(list, format, args);
 	}
 	public String formatIdent(List<Pair<IdentHandler, String>> list, String format, Object... args) {
 		String cur = format;
@@ -286,22 +299,24 @@ public class Plugin extends shocky3.Plugin {
 	
 	public void readConfig() {
 		DBCollection dbc = botApp.collection(this);
-		for (DBObject dbo : JSONUtil.all(dbc.find())) {
-			JSONObject j = JSONUtil.fromDBObject(dbo);
-			
-			BotManager manager = botApp.serverManager.byServerName(j.getString("server"));
-			IdentGroup igroup = new IdentGroup(this, manager, j.getString("name"));
-			for (String s : j.getList("idents").ofStrings()) {
-				igroup.idents.add(s);
+		synchronized (identGroups) {
+			for (DBObject dbo : JSONUtil.all(dbc.find())) {
+				JSONObject j = JSONUtil.fromDBObject(dbo);
+				
+				BotManager manager = botApp.serverManager.byServerName(j.getString("server"));
+				IdentGroup igroup = new IdentGroup(this, manager, j.getString("name"));
+				for (String s : j.getList("idents").ofStrings()) {
+					igroup.idents.add(s);
+				}
+				for (String s : j.getList("permissions").ofStrings()) {
+					igroup.permissions.add(s);
+				}
+				
+				if (!identGroups.containsKey(manager)) {
+					identGroups.put(manager, Collections.synchronizedList(new LinkedList<IdentGroup>()));
+				}
+				identGroups.get(manager).add(igroup);
 			}
-			for (String s : j.getList("permissions").ofStrings()) {
-				igroup.permissions.add(s);
-			}
-			
-			if (!identGroups.containsKey(manager)) {
-				identGroups.put(manager, Collections.synchronizedList(new LinkedList<IdentGroup>()));
-			}
-			identGroups.get(manager).add(igroup);
 		}
 	}
 }

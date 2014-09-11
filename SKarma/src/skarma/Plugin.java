@@ -32,9 +32,11 @@ public class Plugin extends shocky3.ListenerPlugin {
 	
 	protected void onLoad() {
 		DBCollection dbc = botApp.collection(this);
-		for (DBObject dbo : JSONUtil.all(dbc.find())) {
-			JSONObject j = JSONUtil.fromDBObject(dbo);
-			karma.add(new Pair<>(j.getString("name"), j.getInt("karma")));
+		synchronized (karma) {
+			for (DBObject dbo : JSONUtil.all(dbc.find())) {
+				JSONObject j = JSONUtil.fromDBObject(dbo);
+				karma.add(new Pair<>(j.getString("name"), j.getInt("karma")));
+			}
 		}
 	}
 	
@@ -47,49 +49,51 @@ public class Plugin extends shocky3.ListenerPlugin {
 			Box<User> refUser = new Box<>();
 			String target = findKarmaTarget(e, inputTarget, refUser);
 			if (target != null) {
-				int karma = 0;
-				Pair<String, Integer> pair = null;
-				for (Pair<String, Integer> karmap : this.karma) {
-					if (karmap.get1().equals(target)) {
-						karma = karmap.get2();
-						pair = karmap;
-						break;
+				synchronized (this.karma) {
+					int karma = 0;
+					Pair<String, Integer> pair = null;
+					for (Pair<String, Integer> karmap : this.karma) {
+						if (karmap.get1().equals(target)) {
+							karma = karmap.get2();
+							pair = karmap;
+							break;
+						}
 					}
-				}
-				
-				boolean existed = pair != null;
-				if (pair == null) pair = new Pair<>(target, karma);
-				int karmaOld = karma;
-				
-				switch (op) {
-					case "++":
-						karma++;
-						break;
-					case "--":
-						karma--;
-						break;
-				}
-				if (karma > karmaOld && refUser != null && e.getUser().equals(refUser.value)) {
-					if (e.getChannel().isOp(e.getBot().getUserBot())) {
-						e.getChannel().send().kick(e.getUser(), e.getMessage());
-						return;
+					
+					boolean existed = pair != null;
+					if (pair == null) pair = new Pair<>(target, karma);
+					int karmaOld = karma;
+					
+					switch (op) {
+						case "++":
+							karma++;
+							break;
+						case "--":
+							karma--;
+							break;
 					}
-				}
-				e.respond(String.format("%s == %d", target.substring(target.indexOf(':') + 1), karma));
-				if (karma != karmaOld) {
-					pair.set2(karma);
-					DBCollection dbc = botApp.collection(pinfo.internalName());
-					if (existed) {
-						dbc.update(JSONUtil.toDBObject(JSONObject.make(
-							"name", target
-						)), JSONUtil.toDBObject(JSONObject.make("$set", JSONObject.make(
-							"karma", karma
-						))));
-					} else {
-						dbc.insert(JSONUtil.toDBObject(JSONObject.make(
-							"name", target,
-							"karma", karma
-						)));
+					if (karma > karmaOld && refUser != null && e.getUser().equals(refUser.value)) {
+						if (e.getChannel().isOp(e.getBot().getUserBot())) {
+							e.getChannel().send().kick(e.getUser(), e.getMessage());
+							return;
+						}
+					}
+					e.respond(String.format("%s == %d", target.substring(target.indexOf(':') + 1), karma));
+					if (karma != karmaOld) {
+						pair.set2(karma);
+						DBCollection dbc = botApp.collection(pinfo.internalName());
+						if (existed) {
+							dbc.update(JSONUtil.toDBObject(JSONObject.make(
+								"name", target
+							)), JSONUtil.toDBObject(JSONObject.make("$set", JSONObject.make(
+								"karma", karma
+							))));
+						} else {
+							dbc.insert(JSONUtil.toDBObject(JSONObject.make(
+								"name", target,
+								"karma", karma
+							)));
+						}
 					}
 				}
 			}
@@ -111,14 +115,16 @@ public class Plugin extends shocky3.ListenerPlugin {
 						if (refUser != null) {
 							refUser.value = user;
 						}
-						List<IdentHandler> handlers = new LinkedList<>(pluginIdent.identHandlers.get(botApp.serverManager.byBot(e)));
-						Collections.sort(handlers, IdentHandler.comparatorCredibility);
-						for (IdentHandler handler : handlers) {
-							if (handler.isAvailable()) {
-								String account = handler.account(user);
-								if (account != null) {
-									target = String.format("%s:%s", handler.id, account);
-									break L;
+						synchronized (pluginIdent.identHandlers) {
+							List<IdentHandler> handlers = new LinkedList<>(pluginIdent.identHandlers.get(botApp.serverManager.byBot(e)));
+							Collections.sort(handlers, IdentHandler.comparatorCredibility);
+							for (IdentHandler handler : handlers) {
+								if (handler.isAvailable()) {
+									String account = handler.account(user);
+									if (account != null) {
+										target = String.format("%s:%s", handler.id, account);
+										break L;
+									}
 								}
 							}
 						}

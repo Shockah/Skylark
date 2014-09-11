@@ -16,57 +16,59 @@ public class DefaultCommandProvider extends CommandProvider {
 	}
 	
 	public void add(Command... cmds) {
-		for (Command cmd : cmds) {
+		synchronized (list) {for (Command cmd : cmds) {
 			if (!list.contains(cmd)) {
 				list.add(cmd);
 			}
-		}
+		}}
 	}
 	public void remove(Command... cmds) {
-		for (Command cmd : cmds) {
+		synchronized (list) {for (Command cmd : cmds) {
 			list.remove(cmd);
-		}
+		}}
 	}
 	
 	public void provide(List<Pair<ICommand, EPriority>> candidates, Shocky botApp, GenericUserMessageEvent<Bot> e, String trigger, String args) {
-		for (Command cmd : list) {
-			if (cmd.main.equals(trigger)) {
-				candidates.add(new Pair<ICommand, EPriority>(cmd, EPriority.High));
-				return;
-			}
-		}
-		for (Command cmd : list) {
-			for (String alt : cmd.alt) {
-				if (alt.equals(trigger)) {
+		synchronized (list) {
+			for (Command cmd : list) {
+				if (cmd.main.equals(trigger)) {
 					candidates.add(new Pair<ICommand, EPriority>(cmd, EPriority.High));
 					return;
 				}
 			}
-		}
-		
-		Command closest = null;
-		int diff = -1;
-		for (Command cmd : list) {
-			if (cmd.main.startsWith(trigger)) {
-				int d = cmd.main.length() - trigger.length();
-				if (closest == null || d < diff) {
-					closest = cmd;
-					diff = d;
+			for (Command cmd : list) {
+				for (String alt : cmd.alt) {
+					if (alt.equals(trigger)) {
+						candidates.add(new Pair<ICommand, EPriority>(cmd, EPriority.High));
+						return;
+					}
 				}
 			}
-			for (String alt : cmd.alt) {
-				if (alt.startsWith(trigger)) {
-					int d = alt.length() - trigger.length();
+			
+			Command closest = null;
+			int diff = -1;
+			for (Command cmd : list) {
+				if (cmd.main.startsWith(trigger)) {
+					int d = cmd.main.length() - trigger.length();
 					if (closest == null || d < diff) {
 						closest = cmd;
 						diff = d;
 					}
 				}
+				for (String alt : cmd.alt) {
+					if (alt.startsWith(trigger)) {
+						int d = alt.length() - trigger.length();
+						if (closest == null || d < diff) {
+							closest = cmd;
+							diff = d;
+						}
+					}
+				}
 			}
-		}
-		
-		if (closest != null) {
-			candidates.add(new Pair<ICommand, EPriority>(closest, EPriority.Low));
+			
+			if (closest != null) {
+				candidates.add(new Pair<ICommand, EPriority>(closest, EPriority.Low));
+			}
 		}
 	}
 }

@@ -2,7 +2,6 @@ package sident.ns;
 
 import java.util.List;
 import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.NoticeEvent;
@@ -31,19 +30,19 @@ public class Plugin extends shocky3.ListenerPlugin {
 			identHandler = new NickServIdentHandler(this)
 		);
 		
-		for (BotManager manager : botApp.serverManager.botManagers) {
+		synchronized (botApp.serverManager.botManagers) {for (BotManager manager : botApp.serverManager.botManagers) {
 			NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(manager, identHandler.id);
 			if (manager.inAnyChannels()) {
 				if (handler.isAvailable() && handler.availableWHOX) {
-					for (PircBotX bot : manager.bots) {
+					synchronized (manager.bots) {for (Bot bot : manager.bots) {
 						for (Channel channel : bot.getUserBot().getChannels()) {
 							handler.requests++;
 							bot.sendRaw().rawLine(String.format("WHO %s %%na", channel.getName()));
 						}
-					}
+					}}
 				}
 			}
-		}
+		}}
 	}
 	
 	protected void onWhois(WhoisEvent<Bot> e) {
@@ -69,9 +68,11 @@ public class Plugin extends shocky3.ListenerPlugin {
 		if (!handler.isAvailable()) return;
 		String sold = e.getOldNick().toLowerCase();
 		String snew = e.getNewNick().toLowerCase();
-		if (handler.map.containsKey(sold)) {
-			handler.map.put(snew, handler.map.get(sold));
-			handler.map.remove(sold);
+		synchronized (handler.map) {
+			if (handler.map.containsKey(sold)) {
+				handler.map.put(snew, handler.map.get(sold));
+				handler.map.remove(sold);
+			}
 		}
 	}
 	
@@ -79,8 +80,10 @@ public class Plugin extends shocky3.ListenerPlugin {
 		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(botApp.serverManager.byBot(e), identHandler.id);
 		if (!handler.isAvailable()) return;
 		String nick = e.getUser().getNick().toLowerCase();
-		if (handler.map.containsKey(nick)) {
-			handler.map.remove(nick);
+		synchronized (handler.map) {
+			if (handler.map.containsKey(nick)) {
+				handler.map.remove(nick);
+			}
 		}
 	}
 	
@@ -102,18 +105,20 @@ public class Plugin extends shocky3.ListenerPlugin {
 		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(manager, identHandler.id);
 		if (handler.isAvailable()) {
 			boolean foundUser = false;
-			L: for (PircBotX bot : manager.bots) {
+			synchronized (manager.bots) {L: for (Bot bot : manager.bots) {
 				for (Channel channel : bot.getUserBot().getChannels()) {
 					if (channel.getUsers().contains(e.getUser())) {
 						foundUser = true;
 						break L;
 					}
 				}
-			}
+			}}
 			if (!foundUser) {
 				String nick = e.getUser().getNick().toLowerCase();
-				if (handler.map.containsKey(nick)) {
-					handler.map.remove(nick);
+				synchronized (handler.map) {
+					if (handler.map.containsKey(nick)) {
+						handler.map.remove(nick);
+					}
 				}
 			}
 		}

@@ -3,7 +3,6 @@ package sident.ns;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.WhoisEvent;
 import pl.shockah.Util;
@@ -50,10 +49,12 @@ public class NickServIdentHandler extends IdentHandler {
 		}
 		nick = nick.toLowerCase();
 		
-		if (map.containsKey(nick)) {
-			map.remove(nick);
+		synchronized (map) {
+			if (map.containsKey(nick)) {
+				map.remove(nick);
+			}
+			map.put(nick, new UserEntry(account, trust));
 		}
-		map.put(nick, new UserEntry(account, trust));
 	}
 	
 	protected void onServerResponseEntry(String nick, String account) {
@@ -89,33 +90,37 @@ public class NickServIdentHandler extends IdentHandler {
 	}
 	
 	public String account(User user) {
-		String nick = user.getNick().toLowerCase();
-		if (map.containsKey(nick)) {
+		synchronized (map) {
+			String nick = user.getNick().toLowerCase();
+			if (map.containsKey(nick)) {
+				UserEntry ue = map.get(nick);
+				if (ue.isStillValid()) {
+					return ue.acc;
+				} else {
+					map.remove(nick);
+				}
+			}
+			
+			synchronized (manager.bots) {
+				if (manager.bots.isEmpty()) {
+					manager.connectNewBot();
+				}
+			}
+			Bot bot = manager.bots.get(0);
+			long sentAt = System.currentTimeMillis();
+			bot.sendIRC().message("NickServ", String.format("acc %s *", nick));
+			while (!map.containsKey(nick)) {
+				long now = System.currentTimeMillis();
+				if (now - sentAt >= MAX_WAIT_TIME) return null;
+				Util.sleep(50);
+			}
+			
 			UserEntry ue = map.get(nick);
-			if (ue.isStillValid()) {
-				return ue.acc;
-			} else {
+			if (ue.acc == null) {
 				map.remove(nick);
 			}
+			return ue.acc;
 		}
-		
-		if (manager.bots.isEmpty()) {
-			manager.connectNewBot();
-		}
-		PircBotX bot = manager.bots.get(0);
-		long sentAt = System.currentTimeMillis();
-		bot.sendIRC().message("NickServ", String.format("acc %s *", nick));
-		while (!map.containsKey(nick)) {
-			long now = System.currentTimeMillis();
-			if (now - sentAt >= MAX_WAIT_TIME) return null;
-			Util.sleep(50);
-		}
-		
-		UserEntry ue = map.get(nick);
-		if (ue.acc == null) {
-			map.remove(nick);
-		}
-		return ue.acc;
 	}
 	
 	public boolean isAccount(User user, String account) {

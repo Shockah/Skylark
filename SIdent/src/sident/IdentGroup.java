@@ -23,7 +23,7 @@ public class IdentGroup {
 	}
 	
 	public boolean userBelongs(User user) {
-		for (String ident : idents) {
+		synchronized (idents) {for (String ident : idents) {
 			if (ident.equals("*")) {
 				return true;
 			}
@@ -33,13 +33,13 @@ public class IdentGroup {
 					return handler.isAccount(user, ident.split(":")[1]);
 				}
 			}
-		}
+		}}
 		return false;
 	}
 	
 	public boolean hasPermission(String permission) {
 		String[] spl = permission.split("\\.");
-		for (String permission2 : permissions) {
+		synchronized (permissions) {for (String permission2 : permissions) {
 			String[] spl2 = permission2.split("\\.");
 			boolean pass = true;
 			for (int i = 0; i < spl.length; i++) {
@@ -59,7 +59,7 @@ public class IdentGroup {
 			if (pass) {
 				return true;
 			}
-		}
+		}}
 		return false;
 	}
 }

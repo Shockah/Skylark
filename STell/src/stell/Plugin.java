@@ -36,33 +36,37 @@ public class Plugin extends shocky3.ListenerPlugin {
 		}
 		
 		dbc = botApp.collection(this);
-		for (DBObject dbo : JSONUtil.all(dbc.find())) {
-			tells.add(Tell.read(botApp, JSONUtil.fromDBObject(dbo)));
+		synchronized (tells) {
+			for (DBObject dbo : JSONUtil.all(dbc.find())) {
+				tells.add(Tell.read(botApp, JSONUtil.fromDBObject(dbo)));
+			}
 		}
 	}
 	
 	protected void onMessage(MessageEvent<Bot> e) {
-		ListIterator<Tell> lit = tells.listIterator();
-		while (lit.hasNext()) {
-			Tell tell = lit.next();
-			if (tell.matches(botApp.serverManager.byBot(e), e.getUser())) {
-				String[] spl = tell.buildMessage().split("\\n");
-				for (String s : spl) {
-					e.getUser().send().notice(s);
+		synchronized (tells) {
+			ListIterator<Tell> lit = tells.listIterator();
+			while (lit.hasNext()) {
+				Tell tell = lit.next();
+				if (tell.matches(botApp.serverManager.byBot(e), e.getUser())) {
+					String[] spl = tell.buildMessage().split("\\n");
+					for (String s : spl) {
+						e.getUser().send().notice(s);
+					}
+					Tell.removeDB(this, tell);
+					lit.remove();
 				}
-				Tell.removeDB(this, tell);
-				lit.remove();
 			}
 		}
 	}
 	
 	protected void onJoin(JoinEvent<Bot> e) {
 		int count = 0;
-		for (Tell tell : tells) {
+		synchronized (tells) {for (Tell tell : tells) {
 			if (tell.matches(botApp.serverManager.byBot(e), e.getUser())) {
 				count++;
 			}
-		}
+		}}
 		
 		if (count != 0) {
 			e.getUser().send().notice(String.format("You have %d unread .tell%s. Become active or use the .tells command to read them.", count, count == 1 ? "" : "s"));
