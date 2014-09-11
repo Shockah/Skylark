@@ -58,17 +58,21 @@ public class Settings {
 	}
 	
 	public <T> void add(Plugin plugin, String setting, T defaultValue) {
-		setting = plugin.pinfo.internalName() + "|" + setting;
-		if (settings.containsKey(setting)) return;
-		settings.put(setting, new Setting<T>(defaultValue, plugin));
+		setting = String.format("%s|%s", plugin.pinfo.internalName(), setting);
+		synchronized (settings) {
+			if (settings.containsKey(setting)) return;
+			settings.put(setting, new Setting<T>(defaultValue, plugin));
+		}
 	}
 	public <T> void add(String setting, T defaultValue) {
-		if (settings.containsKey(setting)) return;
-		settings.put(setting, new Setting<T>(defaultValue));
+		synchronized (settings) {
+			if (settings.containsKey(setting)) return;
+			settings.put(setting, new Setting<T>(defaultValue));
+		}
 	}
 	
 	public String getStringForChannel(Channel channel, Plugin plugin, String setting) {
-		return getStringForChannel(channel, plugin.pinfo.internalName() + "|" + setting);
+		return getStringForChannel(channel, String.format("%s|%s", plugin.pinfo.internalName(), setting));
 	}
 	public String getStringForChannel(Channel channel, String setting) {
 		return getStringForChannel(channel.getBot().getConfiguration().getServerHostname(), channel.getName(), setting);
@@ -78,15 +82,18 @@ public class Settings {
 	}
 	
 	public Object getForChannel(Channel channel, Plugin plugin, String setting) {
-		return getForChannel(channel, plugin.pinfo.internalName() + "|" + setting);
+		return getForChannel(channel, String.format("%s|%s", plugin.pinfo.internalName(), setting));
 	}
 	public Object getForChannel(Channel channel, String setting) {
 		return getForChannel(channel.getBot().getConfiguration().getServerHostname(), channel.getName(), setting);
 	}
 	public Object getForChannel(String server, String channel, String setting) {
-		Setting<?> s = settings.get(setting);
-		if (s.custom.containsKey(server + "|" + channel)) return s.custom.get(server + "|" + channel);
-		return s.defaultValue;
+		synchronized (settings) {
+			Setting<?> s = settings.get(setting);
+			String key = String.format("%s|%s", server, channel);
+			if (s.custom.containsKey(key)) return s.custom.get(key);
+			return s.defaultValue;
+		}
 	}
 	
 	private class Setting<T> {

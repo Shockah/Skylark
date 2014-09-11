@@ -21,6 +21,7 @@ public class NickServIdentHandler extends IdentHandler {
 	protected Map<String, UserEntry> map = Collections.synchronizedMap(new HashMap<String, UserEntry>());
 	protected boolean availableWHOX = false, availableExtendedJoin = false, availableAccountNotify = false;
 	protected int requests = 0;
+	protected final Object lock = new Object();
 	
 	public NickServIdentHandler(Plugin plugin) {
 		this(plugin, null);
@@ -64,25 +65,27 @@ public class NickServIdentHandler extends IdentHandler {
 	
 	public boolean checkAvailability() {
 		if (manager == null) return false;
-		if (manager.bots.isEmpty()) {
-			manager.connectNewBot();
+		synchronized (lock) {
+			if (manager.bots.isEmpty()) {
+				manager.connectNewBot();
+			}
+			
+			Bot bot = manager.bots.get(0);
+			availableWHOX = bot.getServerInfo().isWhoX();
+			availableExtendedJoin = bot.getEnabledCapabilities().contains("extended-join");
+			availableAccountNotify = bot.getEnabledCapabilities().contains("account-notify");
+			
+			whois = null;
+			long sentAt = System.currentTimeMillis();
+			bot.sendRaw().rawLine("WHOIS NickServ");
+			while (whois == null) {
+				long now = System.currentTimeMillis();
+				if (now - sentAt >= MAX_WAIT_TIME) return false;
+				Util.sleep(50);
+			}
+			
+			return whois != null;
 		}
-		
-		Bot bot = manager.bots.get(0);
-		availableWHOX = bot.getServerInfo().isWhoX();
-		availableExtendedJoin = bot.getEnabledCapabilities().contains("extended-join");
-		availableAccountNotify = bot.getEnabledCapabilities().contains("account-notify");
-		
-		whois = null;
-		long sentAt = System.currentTimeMillis();
-		bot.sendRaw().rawLine("WHOIS NickServ");
-		while (whois == null) {
-			long now = System.currentTimeMillis();
-			if (now - sentAt >= MAX_WAIT_TIME) return false;
-			Util.sleep(50);
-		}
-		
-		return whois != null;
 	}
 	
 	public String account(User user) {

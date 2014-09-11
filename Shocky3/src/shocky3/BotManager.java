@@ -3,7 +3,6 @@ package shocky3;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import org.pircbotx.PircBotX;
 import pl.shockah.Util;
 import shocky3.pircbotx.Bot;
 
@@ -29,41 +28,43 @@ public class BotManager {
 		if (channelsPerConn == 0) {
 			return null;
 		}
-		if (channelsPerConn < 0) {
-			if (bots.isEmpty()) {
-				connectNewBot();
-			}
-			if (!bots.isEmpty()) {
-				try {
-					channelsPerConn = Integer.parseInt(bots.get(0).getServerInfo().getChanlimit());
-					if (channelsPerConn < 0) {
+		synchronized (bots) {
+			if (channelsPerConn < 0) {
+				if (bots.isEmpty()) {
+					connectNewBot();
+				}
+				if (!bots.isEmpty()) {
+					try {
+						channelsPerConn = Integer.parseInt(bots.get(0).getServerInfo().getChanlimit());
+						if (channelsPerConn < 0) {
+							channelsPerConn = BASE_CHANNELLIMIT;
+						}
+					} catch (Exception e) {
 						channelsPerConn = BASE_CHANNELLIMIT;
 					}
-				} catch (Exception e) {
-					channelsPerConn = BASE_CHANNELLIMIT;
 				}
 			}
-		}
-		
-		for (Bot bot : bots) {
-			if (bot.getUserBot().getChannels().size() < channelsPerConn) {
-				bot.sendIRC().joinChannel(cname);
-				return bot;
+			
+			for (Bot bot : bots) {
+				if (bot.getUserBot().getChannels().size() < channelsPerConn) {
+					bot.sendIRC().joinChannel(cname);
+					return bot;
+				}
 			}
+			
+			connectNewBot();
 		}
-		
-		connectNewBot();
 		return joinChannel(cname);
 	}
 	
 	public boolean inAnyChannels() {
-		for (PircBotX bot : bots) {
+		synchronized (bots) {for (Bot bot : bots) {
 			if (bot.isConnected()) {
 				if (!bot.getUserBot().getChannels().isEmpty()) {
 					return true;
 				}
 			}
-		}
+		}}
 		return false;
 	}
 	
@@ -77,10 +78,12 @@ public class BotManager {
 		}
 		
 		try {
-			if (botStarter.bot != null) {
-				bots.add(botStarter.bot);
-				for (Plugin plugin : botApp.pluginManager.plugins()) {
-					plugin.onBotStarted(this, botStarter.bot);
+			synchronized (bots) {
+				if (botStarter.bot != null) {
+					bots.add(botStarter.bot);
+					synchronized (botApp.pluginManager.plugins) {for (Plugin plugin : botApp.pluginManager.plugins) {
+						plugin.onBotStarted(this, botStarter.bot);
+					}}
 				}
 			}
 		} catch (Exception e) {e.printStackTrace();}

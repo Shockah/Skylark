@@ -132,8 +132,8 @@ public class Plugin extends shocky3.ListenerPlugin {
 	protected void onServerResponse(ServerResponseEvent<Bot> e) {
 		if (e.getCode() == 315 || e.getCode() == 354) {
 			NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(botApp.serverManager.byBot(e), identHandler.id);
-			if (!handler.isAvailable()) return;
 			if (handler.requests != 0) {
+				if (!handler.isAvailable()) return;
 				if (e.getCode() == 315) {
 					handler.onServerResponseEnd();
 				} else if (e.getCode() == 354) {

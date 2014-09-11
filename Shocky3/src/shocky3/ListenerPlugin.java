@@ -71,6 +71,7 @@ import shocky3.pircbotx.event.OutActionEvent;
 import shocky3.pircbotx.event.OutMessageEvent;
 import shocky3.pircbotx.event.OutNoticeEvent;
 import shocky3.pircbotx.event.OutPrivateMessageEvent;
+import shocky3.pircbotx.event.ServerNoticeEvent;
 
 public abstract class ListenerPlugin extends Plugin {
 	public final Listener<Bot> listener;
@@ -81,18 +82,18 @@ public abstract class ListenerPlugin extends Plugin {
 	}
 	
 	protected void preLoad() {
-		for (BotManager bm : botApp.serverManager.botManagers) {
+		synchronized (botApp.serverManager.botManagers) {for (BotManager bm : botApp.serverManager.botManagers) {
 			for (Bot bot : bm.bots) {
 				bot.getConfiguration().getListenerManager().addListener(listener);
 			}
-		}
+		}}
 	}
 	protected void preUnload() {
-		for (BotManager bm : botApp.serverManager.botManagers) {
+		synchronized (botApp.serverManager.botManagers) {for (BotManager bm : botApp.serverManager.botManagers) {
 			for (Bot bot : bm.bots) {
 				bot.getConfiguration().getListenerManager().removeListener(listener);
 			}
-		}
+		}}
 	}
 	
 	protected void onEvent(Event<Bot> e) {}
@@ -164,6 +165,7 @@ public abstract class ListenerPlugin extends Plugin {
 	protected void onOutMessage(OutMessageEvent<Bot> e) {}
 	protected void onOutNotice(OutNoticeEvent<Bot> e) {}
 	protected void onOutPrivateMessage(OutPrivateMessageEvent<Bot> e) {}
+	protected void onServerNotice(ServerNoticeEvent<Bot> e) {}
 	
 	protected class MyListener extends CustomListenerAdapter<Bot> {
 		public final ListenerPlugin plugin;
@@ -246,5 +248,6 @@ public abstract class ListenerPlugin extends Plugin {
 		public void onOutMessage(OutMessageEvent<Bot> e) { plugin.onOutMessage(e); }
 		public void onOutNotice(OutNoticeEvent<Bot> e) { plugin.onOutNotice(e); }
 		public void onOutPrivateMessage(OutPrivateMessageEvent<Bot> e) { plugin.onOutPrivateMessage(e); }
+		public void onServerNotice(ServerNoticeEvent<Bot> e) { plugin.onServerNotice(e); }
 	}
 }

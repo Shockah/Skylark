@@ -40,19 +40,19 @@ public class ServerManager {
 	}
 	
 	public BotManager byServerName(String name) {
-		for (BotManager manager : botManagers) {
+		synchronized (botManagers) {for (BotManager manager : botManagers) {
 			if (manager.name.equals(name)) {
 				return manager;
 			}
-		}
+		}}
 		return null;
 	}
 	public BotManager byServerHost(String name) {
-		for (BotManager manager : botManagers) {
+		synchronized (botManagers) {for (BotManager manager : botManagers) {
 			if (manager.host.equals(name)) {
 				return manager;
 			}
-		}
+		}}
 		return null;
 	}
 	
@@ -66,11 +66,11 @@ public class ServerManager {
 		return byBot(e.getBot());
 	}
 	public BotManager byBot(Bot bot) {
-		for (BotManager manager : botManagers) {
+		synchronized (botManagers) {for (BotManager manager : botManagers) {
 			if (manager.bots.contains(bot)) {
 				return manager;
 			}
-		}
+		}}
 		return null;
 	}
 }

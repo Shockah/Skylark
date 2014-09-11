@@ -44,11 +44,11 @@ public class BotStarterThread extends Thread {
 					}
 				}
 			);
-			for (Plugin plugin : botApp.pluginManager.plugins()) {
+			synchronized (botApp.pluginManager.plugins) {for (Plugin plugin : botApp.pluginManager.plugins) {
 				if (plugin instanceof ListenerPlugin) {
 					cfgb.addListener(((ListenerPlugin)plugin).listener);
 				}
-			}
+			}}
 			
 			bot = new Bot(cfgb.buildConfiguration());
 			

@@ -2,12 +2,12 @@ package shocky3;
 
 import java.io.File;
 import java.util.List;
-import org.pircbotx.PircBotX;
 import pl.shockah.FileIO;
 import pl.shockah.Pair;
 import pl.shockah.Util;
 import pl.shockah.json.JSONObject;
 import pl.shockah.json.JSONParser;
+import shocky3.pircbotx.Bot;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
@@ -71,12 +71,12 @@ public class Shocky {
 			}
 		} catch (Exception e) {e.printStackTrace();}
 		
-		for (BotManager bm : serverManager.botManagers) {
-			for (PircBotX bot : bm.bots) {
+		synchronized (serverManager.botManagers) {for (BotManager bm : serverManager.botManagers) {
+			for (Bot bot : bm.bots) {
 				bot.stopBotReconnect();
 				bot.sendIRC().quitServer();
 			}
-		}
+		}}
 	}
 	
 	private void initializeMongo(JSONObject j) {

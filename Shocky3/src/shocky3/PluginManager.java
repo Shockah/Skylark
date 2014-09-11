@@ -64,7 +64,7 @@ public class PluginManager {
 	
 	public final Shocky botApp;
 	protected List<PluginInfo> pluginInfos = Collections.synchronizedList(new LinkedList<PluginInfo>());
-	protected List<Plugin> plugins = Collections.synchronizedList(new LinkedList<Plugin>());
+	public List<Plugin> plugins = Collections.synchronizedList(new LinkedList<Plugin>());
 	protected List<PluginInfo> toLoad = Collections.synchronizedList(new LinkedList<PluginInfo>());
 	protected URLClassLoader currentClassLoader = null;
 	
@@ -77,114 +77,120 @@ public class PluginManager {
 			pluginsDir.mkdir();
 		}
 		
-		List<File> toCheck = new LinkedList<>();
-		toCheck.add(pluginsDir);
-		while (!toCheck.isEmpty()) {
-			File file = toCheck.remove(0);
-			if (file.isDirectory()) {
-				for (File file2 : file.listFiles()) toCheck.add(file2);
-			} else if (file.getName().endsWith(".jar") || file.getName().endsWith(".zip")) {
-				try (ZipFile zf = new ZipFile(file)) {
-					ZipEntry ze = zf.getEntry("plugin.json");
-					if (ze == null) continue;
-					
-					JSONObject j = new JSONParser().parseObject(IOUtils.toString(zf.getInputStream(ze), "UTF-8"));
-					PluginInfo pinfo = new PluginInfo(this, file);
-					pinfo.jInfo = j;
-					pluginInfos.add(pinfo);
-				} catch (Exception e) {}
+		synchronized (pluginInfos) {synchronized (toLoad) {
+			List<File> toCheck = new LinkedList<>();
+			toCheck.add(pluginsDir);
+			while (!toCheck.isEmpty()) {
+				File file = toCheck.remove(0);
+				if (file.isDirectory()) {
+					for (File file2 : file.listFiles()) toCheck.add(file2);
+				} else if (file.getName().endsWith(".jar") || file.getName().endsWith(".zip")) {
+					try (ZipFile zf = new ZipFile(file)) {
+						ZipEntry ze = zf.getEntry("plugin.json");
+						if (ze == null) continue;
+						
+						JSONObject j = new JSONParser().parseObject(IOUtils.toString(zf.getInputStream(ze), "UTF-8"));
+						PluginInfo pinfo = new PluginInfo(this, file);
+						pinfo.jInfo = j;
+						pluginInfos.add(pinfo);
+					} catch (Exception e) {}
+				}
 			}
-		}
-		
-		for (PluginInfo pinfo : pluginInfos) {
-			if (pinfo.defaultState()) toLoad.add(pinfo);
-		}
+			
+			for (PluginInfo pinfo : pluginInfos) {
+				if (pinfo.defaultState()) toLoad.add(pinfo);
+			}
+		}}
 	}
 	
 	public void reload() {
-		while (!plugins.isEmpty()) {
-			actualUnload(plugins.get(plugins.size() - 1));
-		}
-		if (currentClassLoader != null) {
-			try {
-				currentClassLoader.close();
-			} catch (Exception e) {
-				e.printStackTrace();
+		synchronized (plugins) {synchronized (toLoad) {
+			while (!plugins.isEmpty()) {
+				actualUnload(plugins.get(plugins.size() - 1));
 			}
-			currentClassLoader = null;
-		}
-		
-		List<PluginInfo> dontLoad = new LinkedList<>();
-		
-		Map<PluginInfo, List<PluginInfo>> plugindeps = new HashMap<>();
-		L: for (PluginInfo pinfo : toLoad) {
-			List<PluginInfo> deps = new LinkedList<PluginInfo>();
-			for (String s : pinfo.dependsOn()) {
-				PluginInfo pinfo2 = byPluginInfoInternalName(s);
-				if (pinfo2 == null) {
-					dontLoad.add(pinfo);
-					System.out.println(String.format("Couldn't load %s: missing dependency %s", pinfo.internalName(), s));
-					continue L;
-				} else {
-					deps.add(pinfo2);
+			if (currentClassLoader != null) {
+				try {
+					currentClassLoader.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				currentClassLoader = null;
+			}
+			
+			List<PluginInfo> dontLoad = new LinkedList<>();
+			
+			Map<PluginInfo, List<PluginInfo>> plugindeps = new HashMap<>();
+			L: for (PluginInfo pinfo : toLoad) {
+				List<PluginInfo> deps = new LinkedList<PluginInfo>();
+				for (String s : pinfo.dependsOn()) {
+					PluginInfo pinfo2 = byPluginInfoInternalName(s);
+					if (pinfo2 == null) {
+						dontLoad.add(pinfo);
+						System.out.println(String.format("Couldn't load %s: missing dependency %s", pinfo.internalName(), s));
+						continue L;
+					} else {
+						deps.add(pinfo2);
+					}
+				}
+				plugindeps.put(pinfo, deps);
+			}
+			toLoad.removeAll(dontLoad);
+			
+			List<PluginInfo> order = new LinkedList<>();
+			while (!toLoad.isEmpty()) {
+				int lastCount = toLoad.size();
+				List<PluginInfo> toRemove = new LinkedList<>();
+				
+				for (PluginInfo pinfo : toLoad) {
+					List<PluginInfo> deps = plugindeps.get(pinfo);
+					if (deps.isEmpty()) {
+						order.add(pinfo);
+						toRemove.add(pinfo);
+					}
+				}
+				
+				for (PluginInfo pinfo : toRemove) {
+					toLoad.remove(pinfo);
+					for (Map.Entry<PluginInfo, List<PluginInfo>> entry : plugindeps.entrySet()) {
+						entry.getValue().remove(pinfo);
+					}
+				}
+				
+				if (lastCount == toLoad.size()) {
+					break;
 				}
 			}
-			plugindeps.put(pinfo, deps);
-		}
-		toLoad.removeAll(dontLoad);
-		
-		List<PluginInfo> order = new LinkedList<>();
-		while (!toLoad.isEmpty()) {
-			int lastCount = toLoad.size();
-			List<PluginInfo> toRemove = new LinkedList<>();
+			toLoad.clear();
+			toLoad.addAll(order);
 			
+			currentClassLoader = makeClassLoader();
 			for (PluginInfo pinfo : toLoad) {
-				List<PluginInfo> deps = plugindeps.get(pinfo);
-				if (deps.isEmpty()) {
-					order.add(pinfo);
-					toRemove.add(pinfo);
-				}
+				actualLoad(pinfo);
 			}
-			
-			for (PluginInfo pinfo : toRemove) {
-				toLoad.remove(pinfo);
-				for (Map.Entry<PluginInfo, List<PluginInfo>> entry : plugindeps.entrySet()) {
-					entry.getValue().remove(pinfo);
-				}
+			for (Plugin plugin : plugins) {
+				setReflectionFields(plugin.pinfo);
 			}
-			
-			if (lastCount == toLoad.size()) {
-				break;
+			for (Plugin plugin : plugins) {
+				plugin.onLoad();
 			}
-		}
-		toLoad.clear();
-		toLoad.addAll(order);
-		
-		currentClassLoader = makeClassLoader();
-		for (PluginInfo pinfo : toLoad) {
-			actualLoad(pinfo);
-		}
-		for (Plugin plugin : plugins) {
-			setReflectionFields(plugin.pinfo);
-		}
-		for (Plugin plugin : plugins) {
-			plugin.onLoad();
-		}
-		for (Plugin plugin : plugins) {
-			plugin.postLoad();
-			System.out.println("Loaded plugin: " + plugin.pinfo.internalName());
-		}
+			for (Plugin plugin : plugins) {
+				plugin.postLoad();
+				System.out.println("Loaded plugin: " + plugin.pinfo.internalName());
+			}
+		}}
 	}
 	
 	public void markLoad(PluginInfo pinfo) {
-		if (toLoad.contains(pinfo)) return;
-		toLoad.add(pinfo);
+		synchronized (toLoad) {
+			if (toLoad.contains(pinfo)) return;
+			toLoad.add(pinfo);
+		}
 	}
 	public void markUnload(PluginInfo pinfo) {
-		toLoad.remove(pinfo);
+		synchronized (toLoad) {toLoad.remove(pinfo);}
 	}
 	public boolean markedForLoading(PluginInfo pinfo) {
-		return toLoad.contains(pinfo);
+		synchronized (toLoad) {return toLoad.contains(pinfo);}
 	}
 	
 	private void actualLoad(PluginInfo pinfo) {
@@ -206,36 +212,38 @@ public class PluginManager {
 	}
 	
 	private void setReflectionFields(PluginInfo pinfo) {
-		for (Field field : pinfo.plugin.getClass().getDeclaredFields()) {
-			Plugin.Dependency pluginDependency = field.getAnnotation(Plugin.Dependency.class);
-			if (pluginDependency != null) {
-				String internalName = pluginDependency.internalName();
-				if (internalName.equals("")) {
-					for (Plugin plugin : plugins) {
-						if (field.getType() == plugin.getClass()) {
-							try {
-								field.setAccessible(true);
-								if (Modifier.isStatic(field.getModifiers())) {
-									field.set(null, plugin);
-								} else {
-									field.set(pinfo.plugin, plugin);
-								}
-								break;
-							} catch (Exception e) {e.printStackTrace();}
+		synchronized (plugins) {
+			for (Field field : pinfo.plugin.getClass().getDeclaredFields()) {
+				Plugin.Dependency pluginDependency = field.getAnnotation(Plugin.Dependency.class);
+				if (pluginDependency != null) {
+					String internalName = pluginDependency.internalName();
+					if (internalName.equals("")) {
+						for (Plugin plugin : plugins) {
+							if (field.getType() == plugin.getClass()) {
+								try {
+									field.setAccessible(true);
+									if (Modifier.isStatic(field.getModifiers())) {
+										field.set(null, plugin);
+									} else {
+										field.set(pinfo.plugin, plugin);
+									}
+									break;
+								} catch (Exception e) {e.printStackTrace();}
+							}
 						}
-					}
-				} else {
-					for (Plugin plugin : plugins) {
-						if (internalName.equals(plugin.pinfo.internalName())) {
-							try {
-								field.setAccessible(true);
-								if (Modifier.isStatic(field.getModifiers())) {
-									field.set(null, plugin);
-								} else {
-									field.set(pinfo.plugin, plugin);
-								}
-								break;
-							} catch (Exception e) {e.printStackTrace();}
+					} else {
+						for (Plugin plugin : plugins) {
+							if (internalName.equals(plugin.pinfo.internalName())) {
+								try {
+									field.setAccessible(true);
+									if (Modifier.isStatic(field.getModifiers())) {
+										field.set(null, plugin);
+									} else {
+										field.set(pinfo.plugin, plugin);
+									}
+									break;
+								} catch (Exception e) {e.printStackTrace();}
+							}
 						}
 					}
 				}
@@ -243,25 +251,21 @@ public class PluginManager {
 		}
 	}
 	
-	public List<Plugin> plugins() {
-		return Collections.unmodifiableList(plugins);
-	}
-	
 	public PluginInfo byPluginInfoInternalName(String name) {
-		for (PluginInfo pinfo : pluginInfos) {
+		synchronized (pluginInfos) {for (PluginInfo pinfo : pluginInfos) {
 			if (pinfo.internalName().equals(name)) {
 				return pinfo;
 			}
-		}
+		}}
 		return null;
 	}
 	
 	@SuppressWarnings("unchecked") public <T extends Plugin> T byInternalName(String name) {
-		for (Plugin plugin : plugins) {
+		synchronized (plugins) {for (Plugin plugin : plugins) {
 			if (plugin.pinfo.internalName().equals(name)) {
 				return (T)plugin;
 			}
-		}
+		}}
 		return null;
 	}
 }
