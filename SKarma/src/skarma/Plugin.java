@@ -111,7 +111,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 						if (refUser != null) {
 							refUser.value = user;
 						}
-						List<IdentHandler> handlers = new LinkedList<>(pluginIdent.identHandlers.get(botApp.serverManager.byBot(e)));
+						List<IdentHandler> handlers = new LinkedList<>(pluginIdent.identHandlers.get(e.getBot().manager));
 						Collections.sort(handlers, IdentHandler.comparatorCredibility);
 						for (IdentHandler handler : handlers) {
 							if (handler.isAvailable()) {

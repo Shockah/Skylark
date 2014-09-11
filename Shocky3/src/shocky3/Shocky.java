@@ -72,10 +72,10 @@ public class Shocky {
 		} catch (Exception e) {e.printStackTrace();}
 		
 		synchronized (serverManager.botManagers) {for (BotManager bm : serverManager.botManagers) {
-			for (Bot bot : bm.bots) {
+			synchronized (bm.bots) {for (Bot bot : bm.bots) {
 				bot.stopBotReconnect();
 				bot.sendIRC().quitServer();
-			}
+			}}
 		}}
 	}
 	

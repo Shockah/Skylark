@@ -45,7 +45,7 @@ public class CmdTell extends Command {
 			if (!hasOther) {
 				return;
 			}
-			BotManager manager = botApp.serverManager.byBot(e);
+			BotManager manager = e.getBot().manager;
 			if (hasServer == null) {
 				hasServer = manager.name;
 				list.add(new Pair<>(Plugin.pluginIdent.handlerServer, String.format("%s (%s)", manager.name, manager.host)));

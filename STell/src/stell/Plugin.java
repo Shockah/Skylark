@@ -48,7 +48,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 			ListIterator<Tell> lit = tells.listIterator();
 			while (lit.hasNext()) {
 				Tell tell = lit.next();
-				if (tell.matches(botApp.serverManager.byBot(e), e.getUser())) {
+				if (tell.matches(e.getBot().manager, e.getUser())) {
 					String[] spl = tell.buildMessage().split("\\n");
 					for (String s : spl) {
 						e.getUser().send().notice(s);
@@ -63,7 +63,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 	protected void onJoin(JoinEvent<Bot> e) {
 		int count = 0;
 		synchronized (tells) {for (Tell tell : tells) {
-			if (tell.matches(botApp.serverManager.byBot(e), e.getUser())) {
+			if (tell.matches(e.getBot().manager, e.getUser())) {
 				count++;
 			}
 		}}

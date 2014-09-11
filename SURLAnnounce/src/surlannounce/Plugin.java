@@ -95,7 +95,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 						}
 						List<Sender> senders = lastLinked.get(s2);
 						Sender newSender = new Sender(
-							botApp.serverManager.byBot(e),
+							e.getBot().manager,
 							e.getChannel().getName(),
 							e.getUser().getNick(),
 							new Date()

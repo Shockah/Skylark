@@ -107,13 +107,13 @@ public class PluginManager {
 	public void reload() {
 		synchronized (plugins) {synchronized (toLoad) {
 			synchronized (botApp.serverManager.botManagers) {for (BotManager bm : botApp.serverManager.botManagers) {
-				for (Bot bot : bm.bots) {
+				synchronized (bm.bots) {for (Bot bot : bm.bots) {
 					for (Plugin plugin : plugins) {
 						if (plugin instanceof ListenerPlugin) {
 							bot.getConfiguration().getListenerManager().removeListener(((ListenerPlugin)plugin).listener);
 						}
 					}
-				}
+				}}
 			}}
 			while (!plugins.isEmpty()) {
 				actualUnload(plugins.get(plugins.size() - 1));
@@ -181,13 +181,13 @@ public class PluginManager {
 				setReflectionFields(plugin.pinfo);
 			}
 			synchronized (botApp.serverManager.botManagers) {for (BotManager bm : botApp.serverManager.botManagers) {
-				for (Bot bot : bm.bots) {
+				synchronized (bm.bots) {for (Bot bot : bm.bots) {
 					for (Plugin plugin : plugins) {
 						if (plugin instanceof ListenerPlugin) {
 							bot.getConfiguration().getListenerManager().addListener(((ListenerPlugin)plugin).listener);
 						}
 					}
-				}
+				}}
 			}}
 			for (Plugin plugin : plugins) {
 				plugin.onLoad();

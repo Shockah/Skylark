@@ -36,7 +36,7 @@ public class CmdRemember extends Command {
 			}
 			
 			if (!context.equals("global")) {
-				String serverName = botApp.serverManager.byBot(e).name;
+				String serverName = e.getBot().manager.name;
 				if (context.equals("server")) {
 					context = "server:" + serverName;
 				} else if (context.equals("channel") && e.getChannel() != null) {
@@ -53,7 +53,7 @@ public class CmdRemember extends Command {
 		String code = args;
 		
 		JSONObject jAuthor = new JSONObject();
-		BotManager bm = botApp.serverManager.byBot(e);
+		BotManager bm = e.getBot().manager;
 		synchronized (Plugin.pluginIdent.identHandlers) {for (IdentHandler handler : Plugin.pluginIdent.identHandlers.get(null)) {
 			IdentHandler handler2 = Plugin.pluginIdent.getIdentHandlerFor(bm, handler.id);
 			if (handler2.isAvailable()) {

@@ -18,7 +18,7 @@ public class CmdTells extends Command {
 		ListIterator<Tell> lit = pluginTell.tells.listIterator();
 		while (lit.hasNext()) {
 			Tell tell = lit.next();
-			if (tell.matches(botApp.serverManager.byBot(e), e.getUser())) {
+			if (tell.matches(e.getBot().manager, e.getUser())) {
 				String[] spl = tell.buildMessage().split("\\n");
 				for (String s : spl) {
 					e.getUser().send().notice(s);

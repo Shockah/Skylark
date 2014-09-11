@@ -128,7 +128,7 @@ public class Plugin extends shocky3.Plugin {
 		return userIdentGroups(e.getBot(), e.getUser());
 	}
 	public List<IdentGroup> userIdentGroups(Bot bot, User user) {
-		return userIdentGroups(botApp.serverManager.byBot(bot), user);
+		return userIdentGroups(bot.manager, user);
 	}
 	public List<IdentGroup> userIdentGroups(BotManager manager, User user) {
 		synchronized (identGroups) {
@@ -158,7 +158,7 @@ public class Plugin extends shocky3.Plugin {
 		return permissionIdentGroups(e.getBot(), permission);
 	}
 	public List<IdentGroup> permissionIdentGroups(Bot bot, String permission) {
-		return permissionIdentGroups(botApp.serverManager.byBot(bot), permission);
+		return permissionIdentGroups(bot.manager, permission);
 	}
 	public List<IdentGroup> permissionIdentGroups(BotManager manager, String permission) {
 		synchronized (identGroups) {
@@ -192,7 +192,7 @@ public class Plugin extends shocky3.Plugin {
 		return userHasPermission(e.getBot(), e.getUser(), permissions);
 	}
 	public boolean userHasPermission(Bot bot, User user, String... permissions) {
-		return userHasPermission(botApp.serverManager.byBot(bot), user, permissions);
+		return userHasPermission(bot.manager, user, permissions);
 	}
 	public boolean userHasPermission(BotManager manager, User user, String... permissions) {
 		prepare(manager);
@@ -228,7 +228,7 @@ public class Plugin extends shocky3.Plugin {
 		return userHasPermission(e.getBot(), e.getUser(), plugin, permissions);
 	}
 	public boolean userHasPermission(Bot bot, User user, shocky3.Plugin plugin, String... permissions) {
-		return userHasPermission(botApp.serverManager.byBot(bot), user, plugin, permissions);
+		return userHasPermission(bot.manager, user, plugin, permissions);
 	}
 	public boolean userHasPermission(BotManager manager, User user, shocky3.Plugin plugin, String... permissions) {
 		for (int i = 0; i < permissions.length; i++) {
@@ -239,7 +239,7 @@ public class Plugin extends shocky3.Plugin {
 	
 	public String formatIdent(User user, String format, Object... args) {
 		synchronized (identHandlers) {
-			BotManager manager = botApp.serverManager.byBot(user);
+			BotManager manager = ((Bot)user.getBot()).manager;
 			prepare(manager);
 			
 			List<Pair<IdentHandler, String>> list = new LinkedList<>();

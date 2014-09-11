@@ -49,11 +49,11 @@ public class Plugin extends shocky3.ListenerPlugin {
 	
 	protected void onWhois(WhoisEvent<Bot> e) {
 		if (!e.getNick().equals("NickServ")) return;
-		((NickServIdentHandler)pluginIdent.getIdentHandlerFor(botApp.serverManager.byBot(e), identHandler.id)).whois = e;
+		((NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.getBot().manager, identHandler.id)).whois = e;
 	}
 	
 	protected void onNotice(NoticeEvent<Bot> e) {
-		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(botApp.serverManager.byBot(e), identHandler.id);
+		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.getBot().manager, identHandler.id);
 		if (!handler.isAvailable()) return;
 		if (!e.getUser().getNick().equals("NickServ")) return;
 		
@@ -66,7 +66,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 	}
 	
 	protected void onNickChange(NickChangeEvent<Bot> e) {
-		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(botApp.serverManager.byBot(e), identHandler.id);
+		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.getBot().manager, identHandler.id);
 		if (!handler.isAvailable()) return;
 		String sold = e.getOldNick().toLowerCase();
 		String snew = e.getNewNick().toLowerCase();
@@ -79,7 +79,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 	}
 	
 	protected void onQuit(QuitEvent<Bot> e) {
-		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(botApp.serverManager.byBot(e), identHandler.id);
+		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.getBot().manager, identHandler.id);
 		if (!handler.isAvailable()) return;
 		String nick = e.getUser().getNick().toLowerCase();
 		synchronized (handler.map) {
@@ -90,7 +90,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 	}
 	
 	protected void onJoin(JoinEvent<Bot> e) {
-		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(botApp.serverManager.byBot(e), identHandler.id);
+		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.getBot().manager, identHandler.id);
 		if (handler.isAvailable() && handler.availableWHOX) {
 			if (e.getBot().getUserBot().equals(e.getUser())) {
 				handler.requests++;
@@ -103,7 +103,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 	}
 	
 	protected void onPart(PartEvent<Bot> e) {
-		BotManager manager = botApp.serverManager.byBot(e);
+		BotManager manager = e.getBot().manager;
 		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(manager, identHandler.id);
 		if (handler.isAvailable()) {
 			boolean foundUser = false;
@@ -127,18 +127,18 @@ public class Plugin extends shocky3.ListenerPlugin {
 	}
 	
 	protected void onExtendedJoin(ExtendedJoinEvent<Bot> e) {
-		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(botApp.serverManager.byBot(e), identHandler.id);
+		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.getBot().manager, identHandler.id);
 		handler.setAccount(e.getUser().getNick(), e.getAccount());
 	}
 	
 	protected void onAccountNotify(AccountNotifyEvent<Bot> e) {
-		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(botApp.serverManager.byBot(e), identHandler.id);
+		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.getBot().manager, identHandler.id);
 		handler.setAccount(e.getUser().getNick(), e.getAccount());
 	}
 	
 	protected void onServerResponse(ServerResponseEvent<Bot> e) {
 		if (e.getCode() == 315 || e.getCode() == 354) {
-			NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(botApp.serverManager.byBot(e), identHandler.id);
+			NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.getBot().manager, identHandler.id);
 			if (handler.requests != 0) {
 				if (!handler.isAvailable()) return;
 				if (e.getCode() == 315) {

@@ -3,12 +3,8 @@ package shocky3;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import org.pircbotx.Channel;
-import org.pircbotx.User;
-import org.pircbotx.hooks.types.GenericEvent;
 import pl.shockah.Pair;
 import pl.shockah.json.JSONObject;
-import shocky3.pircbotx.Bot;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 
@@ -50,24 +46,6 @@ public class ServerManager {
 	public BotManager byServerHost(String name) {
 		synchronized (botManagers) {for (BotManager manager : botManagers) {
 			if (manager.host.equals(name)) {
-				return manager;
-			}
-		}}
-		return null;
-	}
-	
-	public BotManager byBot(User user) {
-		return byBot((Bot)user.getBot());
-	}
-	public BotManager byBot(Channel channel) {
-		return byBot((Bot)channel.getBot());
-	}
-	public BotManager byBot(GenericEvent<Bot> e) {
-		return byBot(e.getBot());
-	}
-	public BotManager byBot(Bot bot) {
-		synchronized (botManagers) {for (BotManager manager : botManagers) {
-			if (manager.bots.contains(bot)) {
 				return manager;
 			}
 		}}

@@ -26,7 +26,7 @@ public class FactoidCommandProvider extends CommandProvider {
 		DBCollection dbc = botApp.collection(plugin);
 		trigger = trigger.toLowerCase();
 		
-		String serverName = botApp.serverManager.byBot(e).name;
+		String serverName = e.getBot().manager.name;
 		String contextServer = "server:" + serverName;
 		String contextChannel = String.format("channel:%s@%s", e.getChannel().getName(), serverName);
 		

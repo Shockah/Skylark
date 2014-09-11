@@ -40,7 +40,7 @@ public class CmdInfo extends Command {
 			}
 			
 			if (!context.equals("global")) {
-				String serverName = botApp.serverManager.byBot(e).name;
+				String serverName = e.getBot().manager.name;
 				if (context.equals("server")) {
 					context = "server:" + serverName;
 				} else if (context.equals("channel") && e.getChannel() != null) {
