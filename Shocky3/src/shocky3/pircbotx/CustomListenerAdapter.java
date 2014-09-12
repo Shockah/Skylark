@@ -20,11 +20,11 @@ public class CustomListenerAdapter<T extends PircBotX> extends ListenerAdapter<T
 			onAccountNotify((AccountNotifyEvent<T>)event);
 		} else if (event instanceof OutActionEvent<?>) {
 			onOutAction((OutActionEvent<T>)event);
-		} else if (event instanceof OutActionEvent<?>) {
+		} else if (event instanceof OutMessageEvent<?>) {
 			onOutMessage((OutMessageEvent<T>)event);
-		} else if (event instanceof OutActionEvent<?>) {
+		} else if (event instanceof OutNoticeEvent<?>) {
 			onOutNotice((OutNoticeEvent<T>)event);
-		} else if (event instanceof OutActionEvent<?>) {
+		} else if (event instanceof OutPrivateMessageEvent<?>) {
 			onOutPrivateMessage((OutPrivateMessageEvent<T>)event);
 		}
 		

@@ -2,12 +2,14 @@ package sconsole;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.LinkedList;
+import java.util.List;
+import pl.shockah.Util;
 import com.googlecode.lanterna.TerminalFacade;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.ScreenWriter;
 import com.googlecode.lanterna.terminal.Terminal.Color;
 import com.googlecode.lanterna.terminal.swing.SwingTerminal;
-import pl.shockah.Util;
 
 public class ConsoleThread extends Thread {
 	public final Plugin plugin;
@@ -18,6 +20,7 @@ public class ConsoleThread extends Thread {
 	public ConsoleView view = null;
 	public ConsoleViewTabs viewTabs = null;
 	public ConsoleViewTab viewTab = null;
+	public List<ConsoleView> focusStack = new LinkedList<>();
 	
 	public ConsoleThread(Plugin plugin) {
 		this.plugin = plugin;
@@ -54,6 +57,9 @@ public class ConsoleThread extends Thread {
 		viewTabs = cvt.view = cvtt;
 		
 		ScreenWriter sw = new ScreenWriter(screen);
+		synchronized (plugin.listeners) {for (IConsolePluginListener listener : plugin.listeners) {
+			listener.onConsoleEnabled();
+		}}
 		while (plugin.botApp.running && plugin.running) {
 			if (screen.resizePending()) {
 				screen.completeRefresh();
@@ -65,7 +71,18 @@ public class ConsoleThread extends Thread {
 			sw.setForegroundColor(Color.WHITE);
 			sw.fillScreen(' ');
 			
-			if (view != null) {
+			if (view == null) {
+				setFocus(null);
+			} else {
+				if (focusStack.isEmpty()) {
+					if (view.focusable()) {
+						setFocus(view);
+					}
+				} else {
+					while (!focusStack.isEmpty() && !focus().focusable()) {
+						popFocus();
+					}
+				}
 				view.rect.x = 0;
 				view.rect.y = 0;
 				view.rect.w = rect.w;
@@ -79,10 +96,70 @@ public class ConsoleThread extends Thread {
 			screen.getTerminal().setCursorVisible(false);
 			Util.sleep(50);
 		}
+		synchronized (plugin.listeners) {for (IConsolePluginListener listener : plugin.listeners) {
+			listener.onConsoleDisabled();
+		}}
 		
 		cvo.restore();
 		
 		screen.stopScreen();
 		plugin.stopped = true;
+	}
+	
+	public ConsoleView focus() {
+		return focusStack.isEmpty() ? null : focusStack.get(focusStack.size() - 1);
+	}
+	public void setFocus(ConsoleView view) {
+		ConsoleView focus = focus();
+		if (focus != null) {
+			if (view == focus) return;
+			focus.onLoseFocus();
+		}
+		
+		if (view == null) {
+			focusStack.clear();
+		} else {
+			if (focusStack.contains(view)) {
+				while (focus() != view) {
+					focusStack.remove(focusStack.size() - 1);
+				}
+			} else {
+				focusStack.add(view);
+			}
+			
+			focus = focus();
+			if (view != focus) {
+				focusStack.add(view);
+			}
+			view.onFocus();
+		}
+	}
+	public void replaceFocus(ConsoleView view) {
+		if (view == null) {
+			popFocus();
+		} else {
+			if (focusStack.isEmpty()) {
+				setFocus(view);
+			} else {
+				focus().onLoseFocus();
+				focusStack.set(focusStack.size() - 1, view);
+				view.onFocus();
+			}
+		}
+	}
+	public void popFocus() {
+		if (!focusStack.isEmpty()) {
+			ConsoleView focus = focus();
+			focus.onLoseFocus();
+			focus = null;
+			while (!focusStack.isEmpty()) {
+				focus = focusStack.remove(focusStack.size() - 1);
+				if (focus.focusable()) break;
+				focus = null;
+			}
+			if (focus != null) {
+				focus.onFocus();
+			}
+		}
 	}
 }

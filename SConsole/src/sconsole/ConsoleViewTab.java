@@ -7,7 +7,27 @@ public class ConsoleViewTab extends ConsoleView {
 		super(thread);
 	}
 	
+	public boolean focusable() {
+		if (view == null) return false;
+		ConsoleTab tab = view.tabs.getCurrent();
+		if (tab != null && tab.view != null && tab.view.focusable()) return true;
+		return false;
+	}
+	public void onFocus() {
+		if (view == null) {
+			rect.thread.popFocus();
+			return;
+		}
+		ConsoleTab tab = view.tabs.getCurrent();
+		if (tab != null && tab.view != null && tab.view.focusable()) {
+			rect.thread.replaceFocus(tab.view);
+			return;
+		}
+		rect.thread.popFocus();
+	}
+	
 	public void update(ConsoleViewSplitter.Side side) {
+		super.update(side);
 		if (view == null) return;
 		ConsoleTab tab = view.tabs.getCurrent();
 		if (tab == null || tab.view == null) return;

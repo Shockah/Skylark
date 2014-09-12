@@ -52,11 +52,6 @@ public class Plugin extends shocky3.ListenerPlugin {
 		);
 	}
 	
-	protected void onUnload() {
-		provider.list.clear();
-		providers.clear();
-	}
-	
 	protected void onMessage(MessageEvent<Bot> e) {
 		handleCommands(new GenericUserMessageEvent<>(e));
 	}

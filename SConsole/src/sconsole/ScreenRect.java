@@ -5,7 +5,7 @@ import com.googlecode.lanterna.terminal.Terminal.Color;
 import com.googlecode.lanterna.terminal.TerminalSize;
 
 public class ScreenRect {
-	protected final ConsoleThread thread;
+	public final ConsoleThread thread;
 	public int x, y, w, h;
 	
 	public ScreenRect(ConsoleThread thread) {
@@ -34,9 +34,6 @@ public class ScreenRect {
 		return String.format("[ScreenRect: %d,%d %dx%d]", x, y, w, h);
 	}
 	
-	public ConsoleThread thread() {
-		return thread;
-	}
 	public Screen screen() {
 		return thread.screen;
 	}

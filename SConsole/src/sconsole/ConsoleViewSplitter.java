@@ -41,7 +41,23 @@ public class ConsoleViewSplitter extends ConsoleView {
 		this.off = off;
 	}
 	
+	public boolean focusable() {
+		if (main != null && main.focusable()) return true;
+		if (off != null && off.focusable()) return true;
+		return false;
+	}
+	public void onFocus() {
+		if (main != null && main.focusable()) {
+			rect.thread.replaceFocus(main);
+		} else if (off != null && off.focusable()) {
+			rect.thread.replaceFocus(off);
+		} else {
+			rect.thread.popFocus();
+		}
+	}
+	
 	public void update(ConsoleViewSplitter.Side side) {
+		super.update(side);
 		if (this.side == null) return;
 		if (main == null && off == null) return;
 		

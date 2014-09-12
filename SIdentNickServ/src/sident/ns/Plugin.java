@@ -32,18 +32,22 @@ public class Plugin extends shocky3.ListenerPlugin {
 	}
 	
 	protected void postLoad() {
-		synchronized (botApp.serverManager.botManagers) {for (BotManager manager : botApp.serverManager.botManagers) {
-			NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(manager, identHandler.id);
-			synchronized (manager.bots) {if (manager.inAnyChannels()) {
-				if (handler.isAvailable() && handler.availableWHOX) {
-					for (Bot bot : manager.bots) {
-						for (Channel channel : bot.getUserBot().getChannels()) {
-							bot.sendRaw().rawLine(String.format("WHO %s %%na", channel.getName()));
+		new Thread(){
+			public void run() {
+				synchronized (botApp.serverManager.botManagers) {for (BotManager manager : botApp.serverManager.botManagers) {
+					NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(manager, identHandler.id);
+					synchronized (manager.bots) {if (manager.inAnyChannels()) {
+						if (handler.isAvailable() && handler.availableWHOX) {
+							for (Bot bot : manager.bots) {
+								for (Channel channel : bot.getUserBot().getChannels()) {
+									bot.sendRaw().rawLine(String.format("WHO %s %%na", channel.getName()));
+								}
+							}
 						}
-					}
-				}
-			}}
-		}}
+					}}
+				}}
+			}
+		}.start();
 	}
 	
 	protected void onWhois(WhoisEvent<Bot> e) {
