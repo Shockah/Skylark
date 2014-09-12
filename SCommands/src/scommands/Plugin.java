@@ -11,7 +11,6 @@ import pl.shockah.Pair;
 import pl.shockah.json.JSONObject;
 import scommands.CommandProvider.EPriority;
 import shocky3.PluginInfo;
-import shocky3.Shocky;
 import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
@@ -77,7 +76,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 				String trigger = msg.split("\\s")[0].toLowerCase();
 				String args = msg.equals(trigger) ? "" : msg.substring(trigger.length() + 1).trim();
 				
-				ICommand cmd = findCommand(botApp, e, trigger, args);
+				ICommand cmd = findCommand(e, trigger, args);
 				if (cmd != null) {
 					cmd.call(e, trigger, args);
 				}
@@ -86,7 +85,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 		}
 	}
 	
-	public ICommand findCommand(Shocky botApp, GenericUserMessageEvent<Bot> e, String trigger, String args) {
+	public ICommand findCommand(GenericUserMessageEvent<Bot> e, String trigger, String args) {
 		List<Pair<ICommand, CommandProvider.EPriority>> list = new LinkedList<>();
 		synchronized (providers) {for (CommandProvider cp : providers) {
 			cp.provide(list, e, trigger, args);

@@ -48,10 +48,10 @@ public class FactoidCommandBuilder {
 				} else {
 					switch (fp.resultType()) {
 						case FactoidParser.TYPE_STRING_CODE:
-							code = fp.parseStringCode(j, e.getBot().botApp, e, trigger, args, code);
+							code = fp.parseStringCode(j, e, trigger, args, code);
 							break;
 						case FactoidParser.TYPE_ICOMMAND:
-							return fp.parseICommand(j, e.getBot().botApp, e, trigger, args, code);
+							return fp.parseICommand(j, e, trigger, args, code);
 					}
 				}
 			} else {
