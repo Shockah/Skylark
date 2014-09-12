@@ -7,12 +7,14 @@ public class Sender {
 	public BotManager manager;
 	public String channel, nick;
 	public Date date;
+	public int counter;
 	
-	public Sender(BotManager manager, String channel, String nick, Date date) {
+	public Sender(BotManager manager, String channel, String nick, Date date, int counter) {
 		this.manager = manager;
 		this.channel = channel;
 		this.nick = nick;
 		this.date = date;
+		this.counter = counter;
 	}
 	
 	public boolean equals(Object other) {

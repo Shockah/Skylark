@@ -68,7 +68,8 @@ public class Plugin extends shocky3.ListenerPlugin {
 					botApp.serverManager.byServerName(j.getString("server")),
 					j.getString("channel"),
 					j.getString("nick"),
-					new Date(j.getInt("timestamp") * 1000l)
+					new Date(j.getInt("timestamp") * 1000l),
+					j.getInt("counter")
 				));
 			}
 		}}
@@ -98,7 +99,8 @@ public class Plugin extends shocky3.ListenerPlugin {
 							e.getBot().manager,
 							e.getChannel().getName(),
 							e.getUser().getNick(),
-							new Date()
+							new Date(),
+							0
 						);
 						int index = senders.indexOf(newSender);
 						DBCollection dbc = botApp.collection(this);
@@ -109,19 +111,22 @@ public class Plugin extends shocky3.ListenerPlugin {
 								"server", newSender.manager.name,
 								"channel", newSender.channel,
 								"nick", newSender.nick,
-								"timestamp", (int)(newSender.date.getTime() / 1000l)
+								"timestamp", (int)(newSender.date.getTime() / 1000l),
+								"counter", 0
 							)));
 						} else {
 							Sender sender = senders.get(index);
+							sender.counter++;
 							dbc.update(JSONUtil.toDBObject(JSONObject.make(
 								"url", s2,
 								"server", sender.manager.name,
 								"channel", sender.channel
 							)), JSONUtil.toDBObject(JSONObject.make("$set", JSONObject.make(
 								"nick", newSender.nick,
-								"timestamp", (int)(newSender.date.getTime() / 1000l)
+								"timestamp", (int)(newSender.date.getTime() / 1000l),
+								"counter", sender.counter
 							))));
-							sLastLinked = String.format("Last linked by %s, %s ago.", sender.nick, TimeDuration.format(sender.date));
+							sLastLinked = String.format("Last linked by %s, %s ago; %d times total.", sender.nick, TimeDuration.format(sender.date), sender.counter);
 							boolean drop = false;
 							drop = newSender.date.getTime() - sender.date.getTime() < THROTTLE;
 							sender.nick = newSender.nick;
