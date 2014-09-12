@@ -3,6 +3,7 @@ package shocky3;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import org.pircbotx.Channel;
 import pl.shockah.Util;
 import shocky3.pircbotx.Bot;
 
@@ -24,11 +25,14 @@ public class BotManager {
 		this.host = host;
 	}
 	
-	public Bot joinChannel(String cname) {
+	public Bot joinChannel(String channelName) {
 		if (channelsPerConn == 0) {
 			return null;
 		}
 		synchronized (bots) {
+			Bot existing = botForChannel(channelName);
+			if (existing != null) return existing;
+			
 			if (channelsPerConn < 0) {
 				if (bots.isEmpty()) {
 					connectNewBot();
@@ -47,16 +51,47 @@ public class BotManager {
 			
 			for (Bot bot : bots) {
 				if (bot.getUserBot().getChannels().size() < channelsPerConn) {
-					bot.sendIRC().joinChannel(cname);
+					bot.sendIRC().joinChannel(channelName);
 					return bot;
 				}
 			}
 			
 			connectNewBot();
 		}
-		return joinChannel(cname);
+		return joinChannel(channelName);
+	}
+	public Bot partChannel(String channelName) {
+		synchronized (bots) {
+			Bot bot = botForChannel(channelName);
+			if (bot != null) {
+				for (Channel channel : bot.getUserBot().getChannels()) {
+					if (channel.getName().equalsIgnoreCase(channelName)) {
+						channel.send().part();
+						return bot;
+					}
+				}
+			}
+			return bot;
+		}
 	}
 	
+	public boolean inChannel(String channelName) {
+		return botForChannel(channelName) != null;
+	}
+	public Bot botForChannel(String channelName) {
+		synchronized (bots) {
+			for (Bot bot : bots) {
+				if (bot.isConnected()) {
+					for (Channel channel : bot.getUserBot().getChannels()) {
+						if (channel.getName().equalsIgnoreCase(channelName)) {
+							return bot;
+						}
+					}
+				}
+			}
+			return null;
+		}
+	}
 	public boolean inAnyChannels() {
 		synchronized (bots) {for (Bot bot : bots) {
 			if (bot.isConnected()) {

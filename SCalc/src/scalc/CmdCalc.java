@@ -10,7 +10,6 @@ import net.objecthunter.exp4j.ValidationResult;
 import pl.shockah.Box;
 import pl.shockah.Strings;
 import scommands.Command;
-import shocky3.Shocky;
 import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
@@ -22,7 +21,7 @@ public class CmdCalc extends Command {
 		super(plugin, "calc");
 	}
 	
-	public void call(Shocky botApp, GenericUserMessageEvent<Bot> e, String trigger, String args) {
+	public void call(GenericUserMessageEvent<Bot> e, String trigger, String args) {
 		String[] spl = args.split(";");
 		
 		String expression = null;

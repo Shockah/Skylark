@@ -5,7 +5,6 @@ import pl.shockah.json.JSONObject;
 import scommands.Command;
 import shocky3.BotManager;
 import shocky3.JSONUtil;
-import shocky3.Shocky;
 import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 import sident.IdentHandler;
@@ -16,7 +15,7 @@ public class CmdRemember extends Command {
 		super(plugin, "remember", "r");
 	}
 	
-	public void call(Shocky botApp, GenericUserMessageEvent<Bot> e, String trigger, String args) {
+	public void call(GenericUserMessageEvent<Bot> e, String trigger, String args) {
 		//String originalArgs = args;
 		String[] spl = args.split("\\s");
 		String context = "global";
@@ -64,7 +63,7 @@ public class CmdRemember extends Command {
 			}
 		}}
 		
-		DBCollection dbc = botApp.collection(plugin);
+		DBCollection dbc = e.getBot().botApp.collection(plugin);
 		dbc.insert(JSONUtil.toDBObject(JSONObject.make(
 			"name", name,
 			"context", context,

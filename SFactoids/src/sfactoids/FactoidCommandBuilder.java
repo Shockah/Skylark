@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import pl.shockah.json.JSONObject;
 import scommands.ICommand;
-import shocky3.Shocky;
 import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
@@ -34,7 +33,7 @@ public class FactoidCommandBuilder {
 		return null;
 	}
 	
-	public ICommand build(JSONObject j, Shocky botApp, GenericUserMessageEvent<Bot> e, String trigger, String args) {
+	public ICommand build(JSONObject j, GenericUserMessageEvent<Bot> e, String trigger, String args) {
 		//String original = message;
 		String originalCode = j.getString("code");
 		String code = originalCode;
@@ -49,10 +48,10 @@ public class FactoidCommandBuilder {
 				} else {
 					switch (fp.resultType()) {
 						case FactoidParser.TYPE_STRING_CODE:
-							code = fp.parseStringCode(j, botApp, e, trigger, args, code);
+							code = fp.parseStringCode(j, e.getBot().botApp, e, trigger, args, code);
 							break;
 						case FactoidParser.TYPE_ICOMMAND:
-							return fp.parseICommand(j, botApp, e, trigger, args, code);
+							return fp.parseICommand(j, e.getBot().botApp, e, trigger, args, code);
 					}
 				}
 			} else {
@@ -64,7 +63,7 @@ public class FactoidCommandBuilder {
 		}
 		final String fcode = code;
 		return new ICommand(){
-			public void call(Shocky botApp, GenericUserMessageEvent<Bot> e, String trigger, String args) {
+			public void call(GenericUserMessageEvent<Bot> e, String trigger, String args) {
 				e.respond(fcode);
 			}
 		};

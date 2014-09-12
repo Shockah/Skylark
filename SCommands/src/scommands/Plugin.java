@@ -49,7 +49,6 @@ public class Plugin extends shocky3.ListenerPlugin {
 			provider
 		);
 		provider.add(
-			new CmdDie(this),
 			new CmdPlugins(this)
 		);
 	}
@@ -80,7 +79,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 				
 				ICommand cmd = findCommand(botApp, e, trigger, args);
 				if (cmd != null) {
-					cmd.call(botApp, e, trigger, args);
+					cmd.call(e, trigger, args);
 				}
 				break;
 			}
@@ -90,7 +89,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 	public ICommand findCommand(Shocky botApp, GenericUserMessageEvent<Bot> e, String trigger, String args) {
 		List<Pair<ICommand, CommandProvider.EPriority>> list = new LinkedList<>();
 		synchronized (providers) {for (CommandProvider cp : providers) {
-			cp.provide(list, botApp, e, trigger, args);
+			cp.provide(list, e, trigger, args);
 		}}
 		
 		if (!list.isEmpty()) {

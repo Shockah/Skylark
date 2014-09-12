@@ -2,7 +2,6 @@ package stell;
 
 import java.util.ListIterator;
 import scommands.Command;
-import shocky3.Shocky;
 import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
@@ -14,7 +13,7 @@ public class CmdTells extends Command {
 		pluginTell = plugin;
 	}
 	
-	public void call(Shocky botApp, GenericUserMessageEvent<Bot> e, String trigger, String args) {
+	public void call(GenericUserMessageEvent<Bot> e, String trigger, String args) {
 		ListIterator<Tell> lit = pluginTell.tells.listIterator();
 		while (lit.hasNext()) {
 			Tell tell = lit.next();

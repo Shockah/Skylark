@@ -2,7 +2,6 @@ package scommands;
 
 import java.util.List;
 import pl.shockah.Pair;
-import shocky3.Shocky;
 import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
@@ -23,5 +22,5 @@ public abstract class CommandProvider {
 		this.plugin = plugin;
 	}
 	
-	public abstract void provide(List<Pair<ICommand, EPriority>> candidates, Shocky botApp, GenericUserMessageEvent<Bot> e, String trigger, String args);
+	public abstract void provide(List<Pair<ICommand, EPriority>> candidates, GenericUserMessageEvent<Bot> e, String trigger, String args);
 }

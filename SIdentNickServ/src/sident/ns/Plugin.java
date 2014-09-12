@@ -38,7 +38,6 @@ public class Plugin extends shocky3.ListenerPlugin {
 				if (handler.isAvailable() && handler.availableWHOX) {
 					for (Bot bot : manager.bots) {
 						for (Channel channel : bot.getUserBot().getChannels()) {
-							handler.requests++;
 							bot.sendRaw().rawLine(String.format("WHO %s %%na", channel.getName()));
 						}
 					}
@@ -93,10 +92,8 @@ public class Plugin extends shocky3.ListenerPlugin {
 		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.getBot().manager, identHandler.id);
 		if (handler.isAvailable() && handler.availableWHOX) {
 			if (e.getBot().getUserBot().equals(e.getUser())) {
-				handler.requests++;
 				e.getBot().sendRaw().rawLine(String.format("WHO %s %%na", e.getChannel().getName()));
 			} else if (!handler.availableExtendedJoin) {
-				handler.requests++;
 				e.getBot().sendRaw().rawLine(String.format("WHO %s %%na", e.getUser().getNick()));
 			}
 		}
@@ -137,18 +134,12 @@ public class Plugin extends shocky3.ListenerPlugin {
 	}
 	
 	protected void onServerResponse(ServerResponseEvent<Bot> e) {
-		if (e.getCode() == 315 || e.getCode() == 354) {
+		if (e.getCode() == 354) {
 			NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.getBot().manager, identHandler.id);
-			if (handler.requests != 0) {
-				if (!handler.isAvailable()) return;
-				if (e.getCode() == 315) {
-					handler.onServerResponseEnd();
-				} else if (e.getCode() == 354) {
-					List<String> list = e.getParsedResponse();
-					if (list.size() == 3) {
-						handler.onServerResponseEntry(list.get(1), list.get(2));
-					}
-				}
+			if (!handler.isAvailable()) return;
+			List<String> list = e.getParsedResponse();
+			if (list.size() == 3) {
+				handler.onServerResponseEntry(list.get(1), list.get(2));
 			}
 		}
 	}

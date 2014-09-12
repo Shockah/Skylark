@@ -1,0 +1,11 @@
+{
+	"name": "Shocky - Bot Control",
+	"version": "r1",
+	"author": "Shockah",
+	
+	"internalName": "Shocky.BotControl",
+	"baseClass": "sbotcontrol.Plugin",
+	"dependsOn": [
+		"Shocky.Ident"
+	]
+}

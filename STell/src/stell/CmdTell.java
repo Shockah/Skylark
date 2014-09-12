@@ -5,7 +5,6 @@ import java.util.List;
 import pl.shockah.Pair;
 import scommands.Command;
 import shocky3.BotManager;
-import shocky3.Shocky;
 import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 import sident.IdentHandler;
@@ -18,7 +17,7 @@ public class CmdTell extends Command {
 		pluginTell = plugin;
 	}
 	
-	public void call(Shocky botApp, GenericUserMessageEvent<Bot> e, String trigger, String args) {
+	public void call(GenericUserMessageEvent<Bot> e, String trigger, String args) {
 		String[] spl = args.split("\\s");
 		if (spl.length >= 2) {
 			String target = spl[0];
@@ -51,7 +50,7 @@ public class CmdTell extends Command {
 				list.add(new Pair<>(Plugin.pluginIdent.handlerServer, String.format("%s (%s)", manager.name, manager.host)));
 			}
 			
-			BotManager managerReceiver = botApp.serverManager.byServerName(hasServer);
+			BotManager managerReceiver = e.getBot().botApp.serverManager.byServerName(hasServer);
 			for (Pair<IdentHandler, String> pair : list) {
 				pair.set1(pair.get1().copy(managerReceiver));
 			}

@@ -19,7 +19,6 @@ public class NickServIdentHandler extends IdentHandler {
 	protected WhoisEvent<Bot> whois = null;
 	protected Map<String, UserEntry> map = Collections.synchronizedMap(new HashMap<String, UserEntry>());
 	protected boolean availableWHOX = false, availableExtendedJoin = false, availableAccountNotify = false;
-	protected int requests = 0;
 	
 	public NickServIdentHandler(Plugin plugin) {
 		this(plugin, null);
@@ -58,9 +57,6 @@ public class NickServIdentHandler extends IdentHandler {
 	
 	protected void onServerResponseEntry(String nick, String account) {
 		setAccount(nick, account);
-	}
-	protected void onServerResponseEnd() {
-		requests = Math.max(requests - 1, 0);
 	}
 	
 	public boolean isAvailable() {

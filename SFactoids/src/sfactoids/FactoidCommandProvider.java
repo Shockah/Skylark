@@ -6,7 +6,6 @@ import pl.shockah.json.JSONObject;
 import scommands.CommandProvider;
 import scommands.ICommand;
 import shocky3.JSONUtil;
-import shocky3.Shocky;
 import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 import com.mongodb.DBCollection;
@@ -22,8 +21,8 @@ public class FactoidCommandProvider extends CommandProvider {
 		);
 	}
 	
-	public void provide(List<Pair<ICommand, EPriority>> candidates, Shocky botApp, GenericUserMessageEvent<Bot> e, String trigger, String args) {
-		DBCollection dbc = botApp.collection(plugin);
+	public void provide(List<Pair<ICommand, EPriority>> candidates, GenericUserMessageEvent<Bot> e, String trigger, String args) {
+		DBCollection dbc = e.getBot().botApp.collection(plugin);
 		trigger = trigger.toLowerCase();
 		
 		String serverName = e.getBot().manager.name;
@@ -60,7 +59,7 @@ public class FactoidCommandProvider extends CommandProvider {
 		
 		JSONObject j = jChannel != null ? jChannel : (jServer != null ? jServer : (jGlobal != null ? jGlobal : null));
 		if (j != null) {
-			ICommand built = builder.build(j, botApp, e, trigger, args);
+			ICommand built = builder.build(j, e, trigger, args);
 			if (built != null) {
 				candidates.add(new Pair<ICommand, EPriority>(built, EPriority.Medium));
 			}
