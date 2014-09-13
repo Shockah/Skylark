@@ -15,7 +15,7 @@ public class ConsoleView {
 	public void onLoseFocus() {}
 	
 	public void update(ConsoleViewSplitter.Side side) {
-		if (rect.thread.focus() == this) {
+		if (rect.thread.plugin.running && !rect.thread.plugin.stopped && rect.thread.focus() == this) {
 			Key key;
 			while ((key = rect.screen().readInput()) != null) {
 				handleInput(side, key);

@@ -1,6 +1,6 @@
 package sconsole;
 
-public class ConsoleTab {
+public class ConsoleTab implements IConsoleViewSelectList {
 	public final ConsoleView view;
 	public String caption;
 	
@@ -10,4 +10,5 @@ public class ConsoleTab {
 	}
 	
 	public void updateTabView(ConsoleViewSplitter.Side side, boolean active) {}
+	public String caption() {return caption;}
 }

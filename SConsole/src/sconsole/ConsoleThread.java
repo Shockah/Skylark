@@ -9,6 +9,7 @@ import com.googlecode.lanterna.TerminalFacade;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.ScreenWriter;
 import com.googlecode.lanterna.terminal.Terminal.Color;
+import com.googlecode.lanterna.terminal.TerminalPosition;
 import com.googlecode.lanterna.terminal.swing.SwingTerminal;
 
 public class ConsoleThread extends Thread {
@@ -16,6 +17,7 @@ public class ConsoleThread extends Thread {
 	
 	public Screen screen = null;
 	public ScreenRect rect = null;
+	public TerminalPosition cursor = new TerminalPosition(-1, -1);
 	public Borders borders = null;
 	public ConsoleView view = null;
 	public ConsoleViewTabs viewTabs = null;
@@ -92,8 +94,18 @@ public class ConsoleThread extends Thread {
 			}
 			
 			borders.drawAndClear(rect);
+			if (cursor.getColumn() != -1 && cursor.getRow() != -1) {
+				screen.getTerminal().setCursorVisible(true);
+				screen.setCursorPosition(cursor);
+			}
 			screen.refresh();
-			screen.getTerminal().setCursorVisible(false);
+			if (cursor.getColumn() == -1 || cursor.getRow() == -1) {
+				screen.getTerminal().setCursorVisible(false);
+			} else {
+				screen.getTerminal().setCursorVisible(true);
+				cursor.setColumn(-1);
+				cursor.setRow(-1);
+			}
 			Util.sleep(50);
 		}
 		synchronized (plugin.listeners) {for (IConsolePluginListener listener : plugin.listeners) {

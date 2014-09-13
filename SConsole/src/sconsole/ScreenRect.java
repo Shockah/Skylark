@@ -64,6 +64,7 @@ public class ScreenRect {
 	public void draw(int x, int y, String text, Color cForeground, Color cBackground) {
 		String[] spl = text.split("\\r?\\n");
 		int wleft = w - x;
+		if (wleft < 0) return;
 		for (int i = 0; i < spl.length; i++) {
 			if (spl[i].length() > wleft) spl[i] = spl[i].substring(0, wleft);
 			if (inRect(x, y + i)) screen().putString(this.x + x, this.y + y + i, spl[i], cForeground, cBackground);
@@ -72,6 +73,11 @@ public class ScreenRect {
 	public void draw(int x, int y, char c) {draw(x,y,c,Color.WHITE,Color.BLACK);}
 	public void draw(int x, int y, char c, Color cForeground, Color cBackground) {
 		if (inRect(x,y)) screen().putString(this.x+x,this.y+y,""+c,cForeground,cBackground);
+	}
+	
+	public void setCursor(int x, int y) {
+		thread.cursor.setColumn(this.x + x);
+		thread.cursor.setRow(this.y + y);
 	}
 	
 	public void setBorder(int x, int y) {

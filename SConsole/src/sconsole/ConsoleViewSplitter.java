@@ -22,9 +22,9 @@ public class ConsoleViewSplitter extends ConsoleView {
 		}
 	}
 	
-	protected ConsoleView main = null, off = null;
-	protected Side side = null;
-	protected int length = 0;
+	public ConsoleView main = null, off = null;
+	public Side side = null;
+	public int length = 0;
 	
 	public ConsoleViewSplitter(ConsoleThread thread) {
 		super(thread);
