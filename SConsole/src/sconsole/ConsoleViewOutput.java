@@ -1,16 +1,12 @@
 package sconsole;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Locale;
 import pl.shockah.ZeroOutputStream;
 import shocky3.Shocky;
 
-public class ConsoleViewOutput extends ConsoleView {
+public class ConsoleViewOutput extends ConsoleViewTextarea {
 	public final PrintStream printStream, original;
-	public List<String> lines = Collections.synchronizedList(new ArrayList<String>());
 	public StringBuffer sb = new StringBuffer();
 	
 	public ConsoleViewOutput(ConsoleThread thread) {
@@ -24,17 +20,6 @@ public class ConsoleViewOutput extends ConsoleView {
 	}
 	public void restore() {
 		Shocky.sysout.other = original;
-	}
-	
-	public void draw(ConsoleViewSplitter.Side side) {
-		int yy = rect.h - 1;
-		if (sb.length() > 0) rect.draw(0, yy--, sb.toString());
-		
-		while (lines.size() > 500) lines.remove(0);
-		for (int i = lines.size() - 1; i >= 0; i--) {
-			rect.draw(0, yy--, lines.get(i));
-			if (yy < 0) break;
-		}
 	}
 	
 	public class MyPrintStream extends PrintStream {
@@ -52,9 +37,6 @@ public class ConsoleViewOutput extends ConsoleView {
 		public int charsLeft() {
 			return rect.w - sb.length();
 		}
-		private void checkNextLine() {
-			if (sb.length() == rect.w) nextLine();
-		}
 		private void nextLine() {
 			lines.add(sb.toString());
 			sb = new StringBuffer();
@@ -67,7 +49,6 @@ public class ConsoleViewOutput extends ConsoleView {
 				lastChar = c;
 				return this;
 			}
-			checkNextLine();
 			sb.append(c);
 			lastChar = c;
 			return this;

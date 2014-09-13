@@ -36,7 +36,14 @@ public class Bot extends PircBotX {
 				configuration.getListenerManager().dispatchEvent(new OutPrivateMessageEvent<PircBotX>(this, recipient, message));
 			} else {
 				if (message.startsWith("\u0001") && message.endsWith("\u0001")) {
-					configuration.getListenerManager().dispatchEvent(new OutActionEvent<PircBotX>(this, channel, message));
+					message = message.substring(1, message.length() - 1);
+					spl = message.split("\\s");
+					spl[0] = spl[0].toUpperCase();
+					message = message.substring(spl[0].length() + 1);
+					
+					if (spl[0].equals("ACTION")) {
+						configuration.getListenerManager().dispatchEvent(new OutActionEvent<PircBotX>(this, channel, message));
+					}
 				} else {
 					configuration.getListenerManager().dispatchEvent(new OutMessageEvent<PircBotX>(this, channel, message));
 				}

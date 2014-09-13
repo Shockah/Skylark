@@ -11,6 +11,7 @@ import com.googlecode.lanterna.input.Key;
 public class ConsoleViewChannelUserList extends ConsoleViewSelectList<CSSLUser> {
 	public final Channel channel;
 	public ConsoleViewChannelInput view;
+	public boolean markUpdate = true;
 	
 	public ConsoleViewChannelUserList(ConsoleThread thread, Channel channel) {
 		super(thread);
@@ -31,11 +32,14 @@ public class ConsoleViewChannelUserList extends ConsoleViewSelectList<CSSLUser> 
 	}
 
 	public void preUpdate(ConsoleViewSplitter.Side side) {
-		tabs.clear();
-		for (User user : channel.getUsers()) {
-			tabs.add(new CSSLUser(channel, user));
+		if (markUpdate) {
+			markUpdate = false;
+			tabs.clear();
+			for (User user : channel.getUsers()) {
+				tabs.add(new CSSLUser(channel, user));
+			}
+			Collections.sort(tabs);
 		}
-		Collections.sort(tabs);
 	}
 	public void onAction(CSSLUser tab) {}
 }
