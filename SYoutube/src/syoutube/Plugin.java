@@ -33,7 +33,7 @@ public class Plugin extends shocky3.Plugin {
 	
 	public VideoInfo getVideoSearch(String query) {
 		try {
-			HttpRequest req = HttpRequest.get(String.format("http://gdata.youtube.com/feeds/api/videos"), true,
+			HttpRequest req = HttpRequest.get("http://gdata.youtube.com/feeds/api/videos", true,
 				"v", 2,
 				"alt", "jsonc",
 				"max-results", 1,

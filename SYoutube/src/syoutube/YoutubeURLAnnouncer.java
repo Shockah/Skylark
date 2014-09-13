@@ -13,7 +13,7 @@ import surlannounce.URLAnnouncer;
 
 public class YoutubeURLAnnouncer extends URLAnnouncer {
 	public static final Pattern
-		REGEX_URL1 = Pattern.compile("https?\\://youtube\\.com/watch.*[\\?&]v=([^\\?&]+).*"),
+		REGEX_URL1 = Pattern.compile("https?\\://youtube\\.com/watch.*[\\?&]v=([^\\?&#]+).*"),
 		REGEX_URL2 = Pattern.compile("https?\\://youtu\\.be/(.*)");
 	
 	protected final Plugin pluginYoutube;
