@@ -14,6 +14,7 @@ import shocky3.pircbotx.event.OutActionEvent;
 import shocky3.pircbotx.event.OutMessageEvent;
 import shocky3.pircbotx.event.OutNoticeEvent;
 import shocky3.pircbotx.event.OutPrivateMessageEvent;
+import shocky3.pircbotx.event.QuitEvent2;
 import shocky3.pircbotx.event.ServerNoticeEvent;
 
 public class CustomListenerAdapter<T extends PircBotX> extends ListenerAdapter<T> {
@@ -54,6 +55,8 @@ public class CustomListenerAdapter<T extends PircBotX> extends ListenerAdapter<T
 				
 				mfield.setInt(field, field.getModifiers() | Modifier.FINAL);
 			} catch (Exception ex) {ex.printStackTrace();}
+		} else if (event instanceof QuitEvent2<?>) {
+			onQuit2((QuitEvent2<T>)event);
 		}
 		
 		super.onEvent(event);
@@ -66,4 +69,5 @@ public class CustomListenerAdapter<T extends PircBotX> extends ListenerAdapter<T
 	public void onOutNotice(OutNoticeEvent<T> event) {}
 	public void onOutPrivateMessage(OutPrivateMessageEvent<T> event) {}
 	public void onServerNotice(ServerNoticeEvent<T> event) {}
+	public void onQuit2(QuitEvent2<T> event) {}
 }

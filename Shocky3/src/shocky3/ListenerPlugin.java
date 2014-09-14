@@ -71,6 +71,7 @@ import shocky3.pircbotx.event.OutActionEvent;
 import shocky3.pircbotx.event.OutMessageEvent;
 import shocky3.pircbotx.event.OutNoticeEvent;
 import shocky3.pircbotx.event.OutPrivateMessageEvent;
+import shocky3.pircbotx.event.QuitEvent2;
 import shocky3.pircbotx.event.ServerNoticeEvent;
 
 public abstract class ListenerPlugin extends Plugin {
@@ -151,6 +152,7 @@ public abstract class ListenerPlugin extends Plugin {
 	protected void onOutNotice(OutNoticeEvent<Bot> e) {}
 	protected void onOutPrivateMessage(OutPrivateMessageEvent<Bot> e) {}
 	protected void onServerNotice(ServerNoticeEvent<Bot> e) {}
+	protected void onQuit2(QuitEvent2<Bot> e) {}
 	
 	protected class MyListener extends CustomListenerAdapter<Bot> {
 		public final ListenerPlugin plugin;
@@ -234,5 +236,6 @@ public abstract class ListenerPlugin extends Plugin {
 		public void onOutNotice(OutNoticeEvent<Bot> e) { plugin.onOutNotice(e); }
 		public void onOutPrivateMessage(OutPrivateMessageEvent<Bot> e) { plugin.onOutPrivateMessage(e); }
 		public void onServerNotice(ServerNoticeEvent<Bot> e) { plugin.onServerNotice(e); }
+		public void onQuit2(QuitEvent2<Bot> e) { plugin.onQuit2(e); }
 	}
 }
