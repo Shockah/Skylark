@@ -13,7 +13,9 @@ import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.NickChangeEvent;
+import org.pircbotx.hooks.events.OpEvent;
 import org.pircbotx.hooks.events.PartEvent;
+import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.types.GenericChannelEvent;
 import sconsole.ConsoleTab;
 import sconsole.ConsoleViewSplitter;
@@ -175,5 +177,16 @@ public class Plugin extends shocky3.ListenerPlugin implements IConsolePluginList
 			set.output.add(String.format("[%s] %s is now known as %s", format.format(new Date()), e.getOldNick(), e.getNewNick()));
 			set.userlist.markUpdate = true;
 		}
+	}
+	
+	protected void onVoice(VoiceEvent<Bot> e) {
+		ConsoleViewSet set = prepareChannelTab(e);
+		set.output.add(String.format("[%s] %s %s %s", format.format(new Date()), e.getUser().getNick(), e.hasVoice() ? "gives voice to" : "removes voice from", e.getRecipient().getNick()));
+		set.userlist.markUpdate = true;
+	}
+	protected void onOp(OpEvent<Bot> e) {
+		ConsoleViewSet set = prepareChannelTab(e);
+		set.output.add(String.format("[%s] %s %s %s", format.format(new Date()), e.getUser().getNick(), e.isOp() ? "gives channel operator status to" : "removes channel operator status from", e.getRecipient().getNick()));
+		set.userlist.markUpdate = true;
 	}
 }
