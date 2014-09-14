@@ -163,7 +163,7 @@ public abstract class ListenerPlugin extends Plugin {
 			try {
 				plugin.onEvent(e);
 				super.onEvent(e);
-			} catch (Exception ex) {}
+			} catch (Exception ex) {ex.printStackTrace();}
 		}
 		public void onAction(ActionEvent<Bot> e) { plugin.onAction(e); }
 		public void onChannelInfo(ChannelInfoEvent<Bot> e) { plugin.onChannelInfo(e); }

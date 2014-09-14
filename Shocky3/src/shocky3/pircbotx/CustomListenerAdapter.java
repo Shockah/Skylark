@@ -1,9 +1,13 @@
 package shocky3.pircbotx;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.NoticeEvent;
+import org.pircbotx.hooks.events.QuitEvent;
+import org.pircbotx.snapshot.UserSnapshot;
 import shocky3.pircbotx.event.AccountNotifyEvent;
 import shocky3.pircbotx.event.ExtendedJoinEvent;
 import shocky3.pircbotx.event.OutActionEvent;
@@ -34,6 +38,22 @@ public class CustomListenerAdapter<T extends PircBotX> extends ListenerAdapter<T
 				onServerNotice(new ServerNoticeEvent<T>(e.getBot(), e.getUser(), e.getMessage()));
 				return;
 			}
+		}
+		
+		if (event instanceof QuitEvent<?>) {
+			QuitEvent<T> e = (QuitEvent<T>)event;
+			try {
+				Field field = UserSnapshot.class.getDeclaredField("dao");
+				field.setAccessible(true);
+				
+				Field mfield = Field.class.getDeclaredField("modifiers");
+				mfield.setAccessible(true);
+				mfield.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+				
+				field.set(e.getUser(), e.getDaoSnapshot());
+				
+				mfield.setInt(field, field.getModifiers() | Modifier.FINAL);
+			} catch (Exception ex) {ex.printStackTrace();}
 		}
 		
 		super.onEvent(event);

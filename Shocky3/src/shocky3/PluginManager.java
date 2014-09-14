@@ -175,7 +175,9 @@ public class PluginManager {
 			
 			currentClassLoader = makeClassLoader();
 			for (PluginInfo pinfo : toLoad) {
-				actualLoad(pinfo);
+				try {
+					actualLoad(pinfo);
+				} catch (Exception e) {e.printStackTrace();}
 			}
 			for (Plugin plugin : plugins) {
 				setReflectionFields(plugin.pinfo);
@@ -190,11 +192,15 @@ public class PluginManager {
 				}}
 			}}
 			for (Plugin plugin : plugins) {
-				plugin.onLoad();
+				try {
+					plugin.onLoad();
+				} catch (Exception e) {e.printStackTrace();}
 			}
 			for (Plugin plugin : plugins) {
-				plugin.postLoad();
-				System.out.println("Loaded plugin: " + plugin.pinfo.internalName());
+				try {
+					plugin.postLoad();
+					System.out.println("Loaded plugin: " + plugin.pinfo.internalName());
+				} catch (Exception e) {e.printStackTrace();}
 			}
 		}}
 	}
