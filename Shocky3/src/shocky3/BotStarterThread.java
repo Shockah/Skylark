@@ -1,9 +1,9 @@
 package shocky3;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
 import org.pircbotx.Configuration;
+import org.pircbotx.Configuration.BotFactory;
+import org.pircbotx.InputParser;
 import org.pircbotx.PircBotX;
 import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.hooks.Event;
@@ -27,6 +27,11 @@ public class BotStarterThread extends Thread {
 	public void run() {
 		try {
 			Configuration.Builder<Bot> cfgb = new Configuration.Builder<Bot>()
+				.setBotFactory(new BotFactory(){
+					public InputParser createInputParser(PircBotX bot) {
+						return new CustomInputParser(bot);
+					}
+				})
 				.setEncoding(Charset.forName("UTF-8"))
 				.setName(manager.botName)
 				.setAutoNickChange(true)
@@ -52,20 +57,6 @@ public class BotStarterThread extends Thread {
 			}}
 			
 			bot = new Bot(cfgb.buildConfiguration(), manager);
-			
-			try {
-				Field field = PircBotX.class.getDeclaredField("inputParser");
-				field.setAccessible(true);
-				
-				Field mfield = Field.class.getDeclaredField("modifiers");
-				mfield.setAccessible(true);
-				mfield.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-				
-				field.set(bot, new CustomInputParser(bot));
-				
-				mfield.setInt(field, field.getModifiers() | Modifier.FINAL);
-			} catch (Exception e) {e.printStackTrace();}
-			
 			bot.startBot();
 		} catch (Exception e) {
 			this.bot = null;
