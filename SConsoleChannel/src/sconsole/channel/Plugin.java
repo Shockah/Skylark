@@ -20,7 +20,6 @@ import sconsole.ConsoleTab;
 import sconsole.ConsoleViewSplitter;
 import sconsole.ConsoleViewTab;
 import sconsole.ConsoleViewTabs;
-import sconsole.ConsoleViewTextarea;
 import sconsole.IConsolePluginListener;
 import shocky3.BotManager;
 import shocky3.PluginInfo;
@@ -33,7 +32,7 @@ public class Plugin extends shocky3.ListenerPlugin implements IConsolePluginList
 	
 	@Dependency protected static sconsole.Plugin pluginConsole;
 	public Map<BotManager, ConsoleTab> tabsServer = Collections.synchronizedMap(new HashMap<BotManager, ConsoleTab>());
-	public Map<ConsoleTab, Map<Channel, ConsoleTab>> tabsChannel = Collections.synchronizedMap(new HashMap<ConsoleTab, Map<Channel, ConsoleTab>>());
+	public Map<ConsoleTab, Map<Channel, ConsoleViewSet>> tabsChannel = Collections.synchronizedMap(new HashMap<ConsoleTab, Map<Channel, ConsoleViewSet>>());
 	
 	public Plugin(PluginInfo pinfo) {
 		super(pinfo);
@@ -86,101 +85,95 @@ public class Plugin extends shocky3.ListenerPlugin implements IConsolePluginList
 			return tab;
 		}
 	}
-	public ConsoleTab prepareChannelTab(BotManager manager, Channel channel) {
+	public ConsoleViewSet prepareChannelTab(GenericChannelEvent<Bot> e) {
+		return prepareChannelTab(e.getBot().manager, e.getChannel());
+	}
+	public ConsoleViewSet prepareChannelTab(BotManager manager, Channel channel) {
 		synchronized (tabsServer) {synchronized (tabsChannel) {
 			return prepareChannelTab(prepareServerTab(manager), channel);
 		}}
 	}
-	public ConsoleTab prepareChannelTab(ConsoleTab tabServer, Channel channel) {
+	public ConsoleViewSet prepareChannelTab(ConsoleTab tabServer, Channel channel) {
 		synchronized (tabsChannel) {
 			if (tabsChannel.containsKey(tabServer) && tabsChannel.get(tabServer).containsKey(channel)) {
 				return tabsChannel.get(tabServer).get(channel);
 			}
 			
 			if (!tabsChannel.containsKey(tabServer)) {
-				tabsChannel.put(tabServer, Collections.synchronizedMap(new HashMap<Channel, ConsoleTab>()));
+				tabsChannel.put(tabServer, Collections.synchronizedMap(new HashMap<Channel, ConsoleViewSet>()));
 			}
-			Map<Channel, ConsoleTab> map = tabsChannel.get(tabServer);
+			Map<Channel, ConsoleViewSet> map = tabsChannel.get(tabServer);
 			
-			ConsoleViewSplitter cvs = new ConsoleViewSplitter(pluginConsole.thread);
 			ConsoleViewChannelUserList cvcul = new ConsoleViewChannelUserList(pluginConsole.thread, channel);
 			ConsoleViewSplitter cvs2 = new ConsoleViewSplitter(pluginConsole.thread);
-			ConsoleViewTextarea cva = new ConsoleViewTextarea(pluginConsole.thread);
-			ConsoleViewChannelInput cvci = new ConsoleViewChannelInput(pluginConsole.thread, channel);
+			ConsoleViewChannelOutput cvco = new ConsoleViewChannelOutput(pluginConsole.thread);
+			final ConsoleViewChannelInput cvci = new ConsoleViewChannelInput(pluginConsole.thread, channel);
+			ConsoleViewSplitter cvs = new ConsoleViewSplitter(pluginConsole.thread){
+				public void onFocus() {
+					rect.thread.replaceFocus(cvci);
+				}
+			};
 			
 			cvs2.setMain(cvci, ConsoleViewSplitter.Side.Bottom);
-			cvs2.setOff(cva);
-			
-			cvcul.view = cvci;
-			cvci.view = cvcul;
+			cvs2.setOff(cvco);
 			
 			cvs.setMain(cvcul, ConsoleViewSplitter.Side.Right);
 			cvs.setOff(cvs2);
 			
 			ConsoleTab tab = new ConsoleTab(channel.getName(), cvs);
-			map.put(channel, tab);
+			ConsoleViewSet set = new ConsoleViewSet(tab, cvcul, cvci, cvco);
+			cvcul.set = set;
+			cvci.set = set;
+			cvco.set = set;
+			
+			map.put(channel, set);
 			((ConsoleViewTabs)((ConsoleViewSplitter)tabServer.view).main).tabs.add(tab);
-			return tab;
+			return set;
 		}
-	}
-	
-	public ConsoleViewChannelUserList getConsoleViewChannelUserList(GenericChannelEvent<Bot> e) {
-		return getConsoleViewChannelUserList(prepareChannelTab(e.getBot().manager, e.getChannel()));
-	}
-	public ConsoleViewChannelUserList getConsoleViewChannelUserList(BotManager manager, Channel channel) {
-		return getConsoleViewChannelUserList(prepareChannelTab(manager, channel));
-	}
-	public ConsoleViewChannelUserList getConsoleViewChannelUserList(ConsoleTab tabChannel) {
-		return (ConsoleViewChannelUserList)((ConsoleViewSplitter)tabChannel.view).main;
-	}
-	
-	public ConsoleViewTextarea getConsoleViewTextarea(GenericChannelEvent<Bot> e) {
-		return getConsoleViewTextarea(prepareChannelTab(e.getBot().manager, e.getChannel()));
-	}
-	public ConsoleViewTextarea getConsoleViewTextarea(BotManager manager, Channel channel) {
-		return getConsoleViewTextarea(prepareChannelTab(manager, channel));
-	}
-	public ConsoleViewTextarea getConsoleViewTextarea(ConsoleTab tabChannel) {
-		return (ConsoleViewTextarea)((ConsoleViewSplitter)((ConsoleViewSplitter)tabChannel.view).off).off;
 	}
 	
 	protected void onMessage(MessageEvent<Bot> e) {
-		getConsoleViewTextarea(e).lines.add(String.format("[%s] <%s> %s", format.format(new Date()), e.getUser().getNick(), Colors.removeFormattingAndColors(e.getMessage())));
+		prepareChannelTab(e).output.add(String.format("[%s] <%s> %s", format.format(new Date()), e.getUser().getNick(), Colors.removeFormattingAndColors(e.getMessage())));
 	}
 	protected void onOutMessage(OutMessageEvent<Bot> e) {
-		getConsoleViewTextarea(e).lines.add(String.format("[%s] <%s> %s", format.format(new Date()), e.getUser().getNick(), Colors.removeFormattingAndColors(e.getMessage())));
+		prepareChannelTab(e).output.add(String.format("[%s] <%s> %s", format.format(new Date()), e.getUser().getNick(), Colors.removeFormattingAndColors(e.getMessage())));
 	}
 	
 	protected void onAction(ActionEvent<Bot> e) {
-		getConsoleViewTextarea(e).lines.add(String.format("[%s] *%s %s", format.format(new Date()), e.getUser().getNick(), Colors.removeFormattingAndColors(e.getMessage())));
+		prepareChannelTab(e).output.add(String.format("[%s] *%s %s", format.format(new Date()), e.getUser().getNick(), Colors.removeFormattingAndColors(e.getMessage())));
 	}
 	protected void onOutAction(OutActionEvent<Bot> e) {
-		getConsoleViewTextarea(e).lines.add(String.format("[%s] *%s %s", format.format(new Date()), e.getUser().getNick(), Colors.removeFormattingAndColors(e.getMessage())));
+		prepareChannelTab(e).output.add(String.format("[%s] *%s %s", format.format(new Date()), e.getUser().getNick(), Colors.removeFormattingAndColors(e.getMessage())));
 	}
 	
 	protected void onJoin(JoinEvent<Bot> e) {
-		getConsoleViewTextarea(e).lines.add(String.format("[%s] %s has joined", format.format(new Date()), e.getUser().getNick()));
-		getConsoleViewChannelUserList(e).markUpdate = true;
+		ConsoleViewSet set = prepareChannelTab(e);
+		set.output.add(String.format("[%s] %s has joined", format.format(new Date()), e.getUser().getNick()));
+		set.userlist.markUpdate = true;
 	}
 	protected void onPart(PartEvent<Bot> e) {
-		getConsoleViewTextarea(e).lines.add(String.format("[%s] %s has left", format.format(new Date()), e.getUser().getNick()));
-		getConsoleViewChannelUserList(e).markUpdate = true;
+		ConsoleViewSet set = prepareChannelTab(e);
+		set.output.add(String.format("[%s] %s has left", format.format(new Date()), e.getUser().getNick()));
+		set.userlist.markUpdate = true;
 	}
 	protected void onQuit(QuitEvent<Bot> e) {
 		for (Channel channel : e.getUser().getChannels()) {
-			getConsoleViewTextarea(e.getBot().manager, channel).lines.add(String.format("[%s] %s has quit", format.format(new Date()), e.getUser().getNick()));
-			getConsoleViewChannelUserList(e.getBot().manager, channel).markUpdate = true;
+			ConsoleViewSet set = prepareChannelTab(e.getBot().manager, channel);
+			set.output.add(String.format("[%s] %s has quit", format.format(new Date()), e.getUser().getNick()));
+			set.userlist.markUpdate = true;
 		}
 	}
 	protected void onKick(KickEvent<Bot> e) {
-		getConsoleViewTextarea(e).lines.add(String.format("[%s] %s has kicked %s (%s)", format.format(new Date()), e.getUser().getNick(), e.getRecipient().getNick(), Colors.removeFormattingAndColors(e.getReason())));
-		getConsoleViewChannelUserList(e).markUpdate = true;
+		ConsoleViewSet set = prepareChannelTab(e);
+		set.output.add(String.format("[%s] %s has kicked %s (%s)", format.format(new Date()), e.getUser().getNick(), e.getRecipient().getNick(), Colors.removeFormattingAndColors(e.getReason())));
+		set.userlist.markUpdate = true;
 	}
 	
 	protected void onNickChange(NickChangeEvent<Bot> e) {
 		for (Channel channel : e.getUser().getChannels()) {
-			getConsoleViewTextarea(e.getBot().manager, channel).lines.add(String.format("[%s] %s is now known as %s", format.format(new Date()), e.getOldNick(), e.getNewNick()));
-			getConsoleViewChannelUserList(e.getBot().manager, channel).markUpdate = true;
+			ConsoleViewSet set = prepareChannelTab(e.getBot().manager, channel);
+			set.output.add(String.format("[%s] %s is now known as %s", format.format(new Date()), e.getOldNick(), e.getNewNick()));
+			set.userlist.markUpdate = true;
 		}
 	}
 }

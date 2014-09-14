@@ -35,6 +35,7 @@ public class BotStarterThread extends Thread {
 				.setCapEnabled(true)
 				.addCapHandler(new EnableCapHandler("extended-join", true))
 				.addCapHandler(new EnableCapHandler("account-notify", true))
+				.setAutoReconnect(true)
 				.addListener(new Listener<Bot>(){
 					public void onEvent(Event<Bot> e) throws Exception {
 						if (e instanceof ConnectEvent) {

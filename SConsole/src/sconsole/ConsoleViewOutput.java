@@ -38,7 +38,7 @@ public class ConsoleViewOutput extends ConsoleViewTextarea {
 			return rect.w - sb.length();
 		}
 		private void nextLine() {
-			lines.add(sb.toString());
+			add(sb.toString());
 			sb = new StringBuffer();
 		}
 		

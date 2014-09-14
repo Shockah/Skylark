@@ -4,6 +4,7 @@ import com.googlecode.lanterna.terminal.Terminal.Color;
 
 public class Borders {
 	public static final char[] chars = "   ═ ╝╚╩ ╗╔╦║╣╠╬".toCharArray();
+	public static final char[] charsBar = " ░▒▓█".toCharArray();
 	
 	public static char sides(boolean l, boolean r, boolean u, boolean d) {
 		return chars[(l ? 1 : 0) + (r ? 2 : 0) + (u ? 4 : 0) + (d ? 8 : 0)];

@@ -10,7 +10,7 @@ import com.googlecode.lanterna.input.Key;
 
 public class ConsoleViewChannelUserList extends ConsoleViewSelectList<CSSLUser> {
 	public final Channel channel;
-	public ConsoleViewChannelInput view;
+	public ConsoleViewSet set;
 	public boolean markUpdate = true;
 	
 	public ConsoleViewChannelUserList(ConsoleThread thread, Channel channel) {
@@ -21,8 +21,8 @@ public class ConsoleViewChannelUserList extends ConsoleViewSelectList<CSSLUser> 
 	public void handleInput(ConsoleViewSplitter.Side side, Key key) {
 		switch (key.getKind()) {
 			case Tab:
-				if (view != null) {
-					rect.thread.replaceFocus(view);
+				if (set != null) {
+					rect.thread.replaceFocus(set.output);
 				}
 				break;
 			default:

@@ -33,8 +33,10 @@ public class CSSLUser implements IConsoleViewSelectList, Comparable<CSSLUser> {
 	}
 
 	public int compareTo(CSSLUser o) {
-		if (isOp ^ o.isOp) return isOp ? -1 : 1;
-		if (isVoiced ^ o.isVoiced) return isVoiced ? -1 : 1;
-		return user.getNick().compareTo(o.user.getNick());
+		if (isOp && o.isOp) return user.getNick().compareToIgnoreCase(o.user.getNick());
+		else if (isOp != o.isOp) return isOp ? -1 : 1;
+		if (isVoiced && o.isVoiced) return user.getNick().compareToIgnoreCase(o.user.getNick());
+		else if (isVoiced != o.isVoiced) return isVoiced ? -1 : 1;
+		return user.getNick().compareToIgnoreCase(o.user.getNick());
 	}
 }

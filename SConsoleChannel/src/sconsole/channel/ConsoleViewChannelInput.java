@@ -9,7 +9,7 @@ import com.googlecode.lanterna.input.Key;
 public class ConsoleViewChannelInput extends ConsoleView {
 	public final Channel channel;
 	public StringBuilder sb = new StringBuilder();
-	public ConsoleViewChannelUserList view;
+	public ConsoleViewSet set;
 	
 	public ConsoleViewChannelInput(ConsoleThread thread, Channel channel) {
 		super(thread);
@@ -26,8 +26,8 @@ public class ConsoleViewChannelInput extends ConsoleView {
 	public void handleInput(ConsoleViewSplitter.Side side, Key key) {
 		switch (key.getKind()) {
 			case Tab:
-				if (view != null) {
-					rect.thread.replaceFocus(view);
+				if (set != null) {
+					rect.thread.replaceFocus(set.userlist);
 				}
 				break;
 			case NormalKey:

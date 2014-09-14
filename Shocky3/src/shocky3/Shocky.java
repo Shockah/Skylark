@@ -73,8 +73,10 @@ public class Shocky {
 		
 		synchronized (serverManager.botManagers) {for (BotManager bm : serverManager.botManagers) {
 			synchronized (bm.bots) {for (Bot bot : bm.bots) {
-				bot.stopBotReconnect();
-				bot.sendIRC().quitServer();
+				if (bot.isConnected()) {
+					bot.stopBotReconnect();
+					bot.sendIRC().quitServer();
+				}
 			}}
 		}}
 	}
