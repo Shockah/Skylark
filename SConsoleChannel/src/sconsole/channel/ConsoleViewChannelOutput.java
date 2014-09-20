@@ -1,11 +1,11 @@
 package sconsole.channel;
 
-import com.googlecode.lanterna.input.Key;
 import sconsole.ConsoleThread;
 import sconsole.ConsoleViewSplitter;
-import sconsole.ConsoleViewTextarea;
+import sconsole.ConsoleViewTextareaIRCColors;
+import com.googlecode.lanterna.input.Key;
 
-public class ConsoleViewChannelOutput extends ConsoleViewTextarea {
+public class ConsoleViewChannelOutput extends ConsoleViewTextareaIRCColors {
 	public ConsoleViewSet set;
 	
 	public ConsoleViewChannelOutput(ConsoleThread thread) {

@@ -3,7 +3,9 @@ package sconsole;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import pl.shockah.Box;
 import com.googlecode.lanterna.input.Key;
+import com.googlecode.lanterna.terminal.Terminal.Color;
 import com.googlecode.lanterna.terminal.TerminalSize;
 
 public class ConsoleViewTextarea extends ConsoleView {
@@ -92,8 +94,9 @@ public class ConsoleViewTextarea extends ConsoleView {
 				if (line.wrapped.isEmpty()) {
 					line.reinit(indent);
 				}
+				Box<Color> colorBackground = new Box<>(Color.BLACK), colorForeground = new Box<>(Color.WHITE);
 				for (int j = line.wrapped.size() - 1; j >= 0; j--) {
-					rect.draw(0, yy--, line.wrapped.get(j));
+					drawLine(0, yy--, line.wrapped.get(j), colorBackground, colorForeground);
 					if (yy < 0) break;
 				}
 				if (yy < 0) break;
@@ -110,6 +113,9 @@ public class ConsoleViewTextarea extends ConsoleView {
 			rect.draw(rect.w - 1, i, ((rect.h - i) > iSbarScroll && (rect.h - i) <= iSbarScroll + iSbarSize) ? Borders.charsBar[focus ? 4 : 3] : Borders.charsBar[1]);
 		}
 	}
+	public void drawLine(int x, int y, String line, Box<Color> colorBackground, Box<Color> colorForeground) {
+		rect.draw(x, y, line, colorForeground.value, colorBackground.value);
+	}
 	
 	public List<String> linewrap(String line, String indent) {
 		cachedList.clear();
@@ -121,8 +127,8 @@ public class ConsoleViewTextarea extends ConsoleView {
 		
 		for (int i = 0; i < spl.length; i++) {
 			String s = spl[i];
-			int len = sb.length();
-			int len2 = s.length();
+			int len = length(sb);
+			int len2 = length(s);
 			if (len + len2 <= rect.w - 1 || len == 0) {
 				sb.append(s);
 			} else {
@@ -137,6 +143,9 @@ public class ConsoleViewTextarea extends ConsoleView {
 			cachedList.add(sb.toString());
 		}
 		return cachedList;
+	}
+	public int length(CharSequence s) {
+		return s.length();
 	}
 	
 	public class TextareaLine {

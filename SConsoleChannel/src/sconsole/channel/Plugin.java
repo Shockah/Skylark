@@ -135,17 +135,17 @@ public class Plugin extends shocky3.ListenerPlugin implements IConsolePluginList
 	}
 	
 	protected void onMessage(MessageEvent<Bot> e) {
-		prepareChannelTab(e).output.add(String.format("[%s] <%s> %s", format.format(new Date()), e.getUser().getNick(), Colors.removeFormattingAndColors(e.getMessage())));
+		prepareChannelTab(e).output.add(String.format("[%s] <%s> %s", format.format(new Date()), e.getUser().getNick(), Colors.removeFormatting(e.getMessage())));
 	}
 	protected void onOutMessage(OutMessageEvent<Bot> e) {
-		prepareChannelTab(e).output.add(String.format("[%s] <%s> %s", format.format(new Date()), e.getUser().getNick(), Colors.removeFormattingAndColors(e.getMessage())));
+		prepareChannelTab(e).output.add(String.format("[%s] <%s> %s", format.format(new Date()), e.getUser().getNick(), Colors.removeFormatting(e.getMessage())));
 	}
 	
 	protected void onAction(ActionEvent<Bot> e) {
-		prepareChannelTab(e).output.add(String.format("[%s] *%s %s", format.format(new Date()), e.getUser().getNick(), Colors.removeFormattingAndColors(e.getMessage())));
+		prepareChannelTab(e).output.add(String.format("[%s] *%s %s", format.format(new Date()), e.getUser().getNick(), Colors.removeFormatting(e.getMessage())));
 	}
 	protected void onOutAction(OutActionEvent<Bot> e) {
-		prepareChannelTab(e).output.add(String.format("[%s] *%s %s", format.format(new Date()), e.getUser().getNick(), Colors.removeFormattingAndColors(e.getMessage())));
+		prepareChannelTab(e).output.add(String.format("[%s] *%s %s", format.format(new Date()), e.getUser().getNick(), Colors.removeFormatting(e.getMessage())));
 	}
 	
 	protected void onJoin(JoinEvent<Bot> e) {
