@@ -85,6 +85,10 @@ public class ConsoleViewTextareaIRCColors extends ConsoleViewTextarea {
 					}
 					
 					break;
+				case 15:
+					colorForeground.value = baseForeground;
+					colorBackground.value = baseBackground;
+					break;
 				default:
 					rect.draw(x++, y, c, colorForeground.value, colorBackground.value);
 					break;
@@ -135,6 +139,8 @@ public class ConsoleViewTextareaIRCColors extends ConsoleViewTextarea {
 						}
 					}
 					
+					break;
+				case 15:
 					break;
 				default:
 					length++;
