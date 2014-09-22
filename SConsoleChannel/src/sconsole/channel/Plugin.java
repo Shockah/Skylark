@@ -31,6 +31,10 @@ import shocky3.pircbotx.event.QuitEvent2;
 
 public class Plugin extends shocky3.ListenerPlugin implements IConsolePluginListener {
 	public static final DateFormat format = new SimpleDateFormat("HH:mm:ss");
+	public static final String[] colors = {
+		Colors.BLUE, Colors.CYAN, Colors.GREEN,
+		Colors.MAGENTA, Colors.RED, Colors.YELLOW
+	};
 	
 	@Dependency protected static sconsole.Plugin pluginConsole;
 	public Map<BotManager, ConsoleTab> tabsServer = Collections.synchronizedMap(new HashMap<BotManager, ConsoleTab>());
@@ -135,17 +139,17 @@ public class Plugin extends shocky3.ListenerPlugin implements IConsolePluginList
 	}
 	
 	protected void onMessage(MessageEvent<Bot> e) {
-		prepareChannelTab(e).output.add(String.format("[%s] <%s> %s", format.format(new Date()), e.getUser().getNick(), Colors.removeFormatting(e.getMessage())));
+		prepareChannelTab(e).output.add(String.format("[%s] <%s%s%s> %s", format.format(new Date()), colors[Math.abs(e.getUser().getNick().hashCode() % colors.length)], e.getUser().getNick(), Colors.NORMAL, Colors.removeFormatting(e.getMessage())));
 	}
 	protected void onOutMessage(OutMessageEvent<Bot> e) {
-		prepareChannelTab(e).output.add(String.format("[%s] <%s> %s", format.format(new Date()), e.getUser().getNick(), Colors.removeFormatting(e.getMessage())));
+		prepareChannelTab(e).output.add(String.format("[%s] <%s%s%s> %s", format.format(new Date()), colors[Math.abs(e.getUser().getNick().hashCode() % colors.length)], e.getUser().getNick(), Colors.NORMAL, Colors.removeFormatting(e.getMessage())));
 	}
 	
 	protected void onAction(ActionEvent<Bot> e) {
-		prepareChannelTab(e).output.add(String.format("[%s] *%s %s", format.format(new Date()), e.getUser().getNick(), Colors.removeFormatting(e.getMessage())));
+		prepareChannelTab(e).output.add(String.format("[%s] *%s%s%s %s", format.format(new Date()), colors[Math.abs(e.getUser().getNick().hashCode() % colors.length)], e.getUser().getNick(), Colors.NORMAL, Colors.removeFormatting(e.getMessage())));
 	}
 	protected void onOutAction(OutActionEvent<Bot> e) {
-		prepareChannelTab(e).output.add(String.format("[%s] *%s %s", format.format(new Date()), e.getUser().getNick(), Colors.removeFormatting(e.getMessage())));
+		prepareChannelTab(e).output.add(String.format("[%s] *%s%s%s %s", format.format(new Date()), colors[Math.abs(e.getUser().getNick().hashCode() % colors.length)], e.getUser().getNick(), Colors.NORMAL, Colors.removeFormatting(e.getMessage())));
 	}
 	
 	protected void onJoin(JoinEvent<Bot> e) {
