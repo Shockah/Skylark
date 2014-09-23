@@ -133,7 +133,6 @@ public class ConsoleViewTextareaIRCColors extends ConsoleViewTextarea {
 									strb.seek(m.end() - m.start());
 								} else if (sb.length() != 0 && sb.charAt(0) == ',') {
 									strb.seek(1);
-								} else {
 								}
 							}
 						}
