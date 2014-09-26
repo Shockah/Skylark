@@ -23,7 +23,7 @@ public class CmdTell extends Command {
 			String target = spl[0];
 			args = args.substring(target.length() + 1);
 			
-			String[] targetSpl = target.split("\\|");
+			String[] targetSpl = target.split(";");
 			List<Pair<IdentHandler, String>> list = new LinkedList<>();
 			String hasServer = null;
 			boolean hasOther = false;
@@ -56,6 +56,7 @@ public class CmdTell extends Command {
 			}
 			
 			Tell tell = Tell.create(manager, e.getUser(), list, args);
+			tell = Tell.read(plugin.botApp, Tell.write(tell)); //TODO: figure out why the fuck does it break without serialize cycling
 			synchronized (pluginTell.tells) {pluginTell.tells.add(tell);}
 			e.getUser().send().notice("I'll pass that along.");
 			Tell.writeDB(plugin, tell);

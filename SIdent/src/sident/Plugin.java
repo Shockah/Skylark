@@ -23,7 +23,7 @@ import com.mongodb.DBObject;
 
 public class Plugin extends shocky3.Plugin {
 	public static final Pattern
-		REGEX_IDENT_FORMATTER = Pattern.compile(".*%([^%]+?)%.*");
+		REGEX_IDENT_FORMATTER = Pattern.compile("%([^%]+?)%");
 	
 	public final Map<BotManager, List<IdentHandler>> identHandlers = Collections.synchronizedMap(new HashMap<BotManager, List<IdentHandler>>());
 	public final Map<BotManager, List<IdentGroup>> identGroups = Collections.synchronizedMap(new HashMap<BotManager, List<IdentGroup>>());
@@ -264,7 +264,8 @@ public class Plugin extends shocky3.Plugin {
 				try {
 					int index = Integer.parseInt(hid);
 					if (index < args.length) {
-						cur = m.replaceAll(args[index] == null ? "null" : args[index].toString());
+						cur = m.replaceFirst(args[index] == null ? "null" : args[index].toString());
+						didChange = true;
 						continue;
 					}
 				} catch (Exception e) {}
@@ -275,22 +276,25 @@ public class Plugin extends shocky3.Plugin {
 				for (Pair<IdentHandler, String> pair : list) {
 					sb.append(String.format(", %s: %s", pair.get1().name, pair.get2()));
 				}
-				cur = m.replaceAll(sb.toString().substring(2));
-				break;
+				cur = m.replaceFirst(sb.toString().substring(2));
+				continue;
 			}
 			
+			boolean header = hid.charAt(0) == '_';
+			if (header) hid = hid.substring(1);
 			ListIterator<Pair<IdentHandler, String>> lit = list.listIterator();
 			while (lit.hasNext()) {
 				Pair<IdentHandler, String> pair = lit.next();
 				if (pair.get1().id.equals(hid)) {
-					cur = m.replaceAll(String.format("%s: %s", pair.get1().name, pair.get2()));
+					cur = m.replaceFirst(header ? String.format("%s: %s", pair.get1().name, pair.get2()) : pair.get2());
 					lit.remove();
+					didChange = true;
 					break;
 				}
 			}
 			
 			if (!didChange) {
-				cur = m.replaceAll("");
+				cur = m.replaceFirst("");
 			}
 		}
 		

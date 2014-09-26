@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.pircbotx.User;
 import pl.shockah.Pair;
+import pl.shockah.Util;
 import pl.shockah.json.JSONList;
 import pl.shockah.json.JSONObject;
 import shocky3.BotManager;
@@ -89,12 +90,14 @@ public class Tell {
 	
 	public static List<Pair<IdentHandler, String>> createData(BotManager manager, User user) {
 		List<Pair<IdentHandler, String>> list = new LinkedList<>();
-		synchronized (Plugin.pluginIdent.identHandlers) {for (IdentHandler handler : Plugin.pluginIdent.identHandlers.get(null)) {
-			IdentHandler handler2 = Plugin.pluginIdent.getIdentHandlerFor(manager, handler.id);
-			if (handler2.isAvailable()) {
-				list.add(new Pair<>(handler2, handler2.account(user)));
+		synchronized (Plugin.pluginIdent.identHandlers) {
+			Plugin.pluginIdent.prepare(manager);
+			for (IdentHandler handler : Plugin.pluginIdent.identHandlers.get(manager)) {
+				if (handler.isAvailable()) {
+					list.add(new Pair<>(handler, handler.account(user)));
+				}
 			}
-		}}
+		}
 		return list;
 	}
 	public static Tell create(BotManager manager, User sender, List<Pair<IdentHandler, String>> dataReceiver, String message) {
@@ -150,9 +153,9 @@ public class Tell {
 	}
 	
 	public boolean matches(BotManager manager, User user) {
-		if (manager != this.managerReceiver) return false;
+		if (manager != managerReceiver) return false;
 		for (Pair<IdentHandler, String> pair : dataReceiver) {
-			if (!pair.get1().account(user).equals(pair.get2())) return false;
+			if (!Util.equals(pair.get1().account(user), pair.get2())) return false;
 		}
 		return true;
 	}

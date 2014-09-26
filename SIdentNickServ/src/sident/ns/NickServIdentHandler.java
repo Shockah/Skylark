@@ -91,8 +91,12 @@ public class NickServIdentHandler extends IdentHandler {
 	}
 	
 	public String account(User user) {
+		String nick = null;
+		long sentAt = 0;
+		
 		synchronized (map) {
-			String nick = user.getNick().toLowerCase();
+			nick = user.getNick().toLowerCase();
+			
 			if (map.containsKey(nick)) {
 				UserEntry ue = map.get(nick);
 				if (ue.isStillValid()) {
@@ -102,20 +106,25 @@ public class NickServIdentHandler extends IdentHandler {
 				}
 			}
 			
+			Bot bot = null;
 			synchronized (manager.bots) {
 				if (manager.bots.isEmpty()) {
 					manager.connectNewBot();
 				}
-			}
-			Bot bot = manager.bots.get(0);
-			long sentAt = System.currentTimeMillis();
-			bot.sendIRC().message("NickServ", String.format("acc %s *", nick));
-			while (!map.containsKey(nick)) {
-				long now = System.currentTimeMillis();
-				if (now - sentAt >= MAX_WAIT_TIME) return null;
-				Util.sleep(50);
+				bot = manager.bots.get(0);
 			}
 			
+			sentAt = System.currentTimeMillis();
+			bot.sendIRC().message("NickServ", String.format("acc %s *", nick));
+		}
+		
+		while (!map.containsKey(nick)) {
+			long now = System.currentTimeMillis();
+			if (now - sentAt >= MAX_WAIT_TIME) return null;
+			Util.sleep(50);
+		}
+		
+		synchronized (map) {
 			UserEntry ue = map.get(nick);
 			if (ue.acc == null) {
 				map.remove(nick);
