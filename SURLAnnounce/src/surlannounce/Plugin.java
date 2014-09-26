@@ -51,7 +51,6 @@ public class Plugin extends shocky3.ListenerPlugin {
 	}
 	
 	protected void onLoad() {
-		botApp.settings.add(this, "characters", ".");
 		synchronized (announcers) {synchronized (lastLinked) {
 			announcers.clear();
 			
