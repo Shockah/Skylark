@@ -1,5 +1,6 @@
 package sident;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -235,6 +236,19 @@ public class Plugin extends shocky3.Plugin {
 			permissions[i] = String.format("%s.%s", plugin.pinfo.internalName(), permissions[i]);
 		}
 		return userHasPermission(manager, user, permissions);
+	}
+	
+	public String getMostCredibleAccount(BotManager manager, User user) {
+		prepare(manager);
+		List<IdentHandler> handlers = new ArrayList<>(identHandlers.get(manager));
+		Collections.sort(handlers, IdentHandler.comparatorCredibility);
+		for (IdentHandler handler : handlers) {
+			if (handler.isAvailable()) {
+				String account = handler.account(user);
+				if (account != null) return String.format("%s:%s", handler.id, account);
+			}
+		}
+		return null;
 	}
 	
 	public String formatIdent(User user, String format, Object... args) {
