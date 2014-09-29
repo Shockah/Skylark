@@ -71,7 +71,7 @@ public class Plugin extends shocky3.ListenerPlugin implements IConsolePluginList
 	public void onConsoleDisabled() {}
 	
 	public ConsoleTab prepareServerTab(BotManager manager) {
-		while (pluginConsole.thread == null) {
+		while (pluginConsole.thread == null || pluginConsole.thread.viewTabs == null || pluginConsole.thread.viewTabs.tabs == null) {
 			Util.sleep(50);
 		}
 		
