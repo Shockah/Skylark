@@ -34,9 +34,11 @@ public class ConsoleViewChannelInput extends ConsoleView {
 				sb.append(key.getCharacter());
 				break;
 			case Backspace:
+				if (sb.length() == 0) break;
 				sb.deleteCharAt(sb.length() - 1);
 				break;
 			case Enter:
+				if (sb.length() == 0) break;
 				handleOutput(sb.toString());
 				sb = new StringBuilder();
 				break;
