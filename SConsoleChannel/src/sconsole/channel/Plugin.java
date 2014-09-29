@@ -17,6 +17,7 @@ import org.pircbotx.hooks.events.OpEvent;
 import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.types.GenericChannelEvent;
+import pl.shockah.Util;
 import sconsole.ConsoleTab;
 import sconsole.ConsoleViewSplitter;
 import sconsole.ConsoleViewTab;
@@ -70,6 +71,10 @@ public class Plugin extends shocky3.ListenerPlugin implements IConsolePluginList
 	public void onConsoleDisabled() {}
 	
 	public ConsoleTab prepareServerTab(BotManager manager) {
+		while (pluginConsole.thread == null) {
+			Util.sleep(50);
+		}
+		
 		synchronized (tabsServer) {
 			if (tabsServer.containsKey(manager)) {
 				return tabsServer.get(manager);
