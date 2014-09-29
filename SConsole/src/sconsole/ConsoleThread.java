@@ -44,10 +44,12 @@ public class ConsoleThread extends Thread {
 				borders = new Borders(rect);
 				
 				ConsoleViewSplitter cvs1 = new ConsoleViewSplitter(this);
-				//ConsoleViewSplitter cvs2 = new ConsoleViewSplitter(this);
 				ConsoleViewTabs cvtt = new ConsoleViewTabs(this);
 				ConsoleViewTab cvt = new ConsoleViewTab(this);
-				ConsoleViewOutput cvo = new ConsoleViewOutput(this);
+				
+				ConsoleViewSplitter cvs2 = new ConsoleViewSplitter(this);
+				ConsoleViewRawOutput cvo = new ConsoleViewRawOutput(this);
+				ConsoleViewRawInput cvi = new ConsoleViewRawInput(this);
 				
 				cvo.apply();
 				try {
@@ -55,10 +57,17 @@ public class ConsoleThread extends Thread {
 					cvs1.setMain(cvtt, ConsoleViewSplitter.Side.Top);
 					cvs1.setOff(cvt);
 					
-					cvtt.tabs.add(new ConsoleTab("Output", cvo));
+					cvs2.setMain(cvi, ConsoleViewSplitter.Side.Bottom);
+					cvs2.setOff(cvo);
+					ConsoleTab tab = new ConsoleTab("Raw", cvs2);
+					ConsoleViewRawSet set = new ConsoleViewRawSet(tab, cvi, cvo);
+					cvi.set = set;
+					cvo.set = set;
 					
 					viewTab = cvtt.view = cvt;
 					viewTabs = cvt.view = cvtt;
+					
+					viewTabs.tabs.add(tab);
 					
 					ScreenWriter sw = new ScreenWriter(screen);
 					synchronized (plugin.listeners) {for (IConsolePluginListener listener : plugin.listeners) {

@@ -2,14 +2,16 @@ package sconsole;
 
 import java.io.PrintStream;
 import java.util.Locale;
+import com.googlecode.lanterna.input.Key;
 import pl.shockah.ZeroOutputStream;
 import shocky3.Shocky;
 
-public class ConsoleViewOutput extends ConsoleViewTextarea {
+public class ConsoleViewRawOutput extends ConsoleViewTextarea {
 	public final PrintStream printStream, original;
 	public StringBuffer sb = new StringBuffer();
+	public ConsoleViewRawSet set;
 	
-	public ConsoleViewOutput(ConsoleThread thread) {
+	public ConsoleViewRawOutput(ConsoleThread thread) {
 		super(thread);
 		original = Shocky.sysout.other;
 		printStream = new MyPrintStream(original);
@@ -20,6 +22,19 @@ public class ConsoleViewOutput extends ConsoleViewTextarea {
 	}
 	public void restore() {
 		Shocky.sysout.other = original;
+	}
+	
+	public void handleInput(ConsoleViewSplitter.Side side, Key key) {
+		switch (key.getKind()) {
+			case Tab:
+				if (set != null) {
+					rect.thread.replaceFocus(set.input);
+				}
+				break;
+			default:
+				super.handleInput(side, key);
+				break;
+		}
 	}
 	
 	public class MyPrintStream extends PrintStream {
