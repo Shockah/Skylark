@@ -2,13 +2,12 @@ package sconsole.channel;
 
 import org.pircbotx.Channel;
 import sconsole.ConsoleThread;
-import sconsole.ConsoleView;
+import sconsole.ConsoleViewLongTextfield;
 import sconsole.ConsoleViewSplitter;
 import com.googlecode.lanterna.input.Key;
 
-public class ConsoleViewChannelInput extends ConsoleView {
+public class ConsoleViewChannelInput extends ConsoleViewLongTextfield {
 	public final Channel channel;
-	public StringBuilder sb = new StringBuilder();
 	public ConsoleViewSet set;
 	
 	public ConsoleViewChannelInput(ConsoleThread thread, Channel channel) {
@@ -16,31 +15,12 @@ public class ConsoleViewChannelInput extends ConsoleView {
 		this.channel = channel;
 	}
 	
-	public void update(ConsoleViewSplitter.Side side) {
-		super.update(side);
-		if (side != null && side.h) {
-			throw new IllegalStateException();
-		}
-		rect.h = 1;
-	}
 	public void handleInput(ConsoleViewSplitter.Side side, Key key) {
 		switch (key.getKind()) {
 			case Tab:
 				if (set != null) {
 					rect.thread.replaceFocus(set.userlist);
 				}
-				break;
-			case NormalKey:
-				sb.append(key.getCharacter());
-				break;
-			case Backspace:
-				if (sb.length() == 0) break;
-				sb.deleteCharAt(sb.length() - 1);
-				break;
-			case Enter:
-				if (sb.length() == 0) break;
-				handleOutput(sb.toString());
-				sb = new StringBuilder();
 				break;
 			default:
 				super.handleInput(side, key);
@@ -56,14 +36,5 @@ public class ConsoleViewChannelInput extends ConsoleView {
 		} else {
 			channel.send().message(message);
 		}
-	}
-	
-	public void draw(ConsoleViewSplitter.Side side) {
-		try {
-		rect.draw(0, 0, sb.toString());
-		if (rect.thread.focus() == this) {
-			rect.setCursor(sb.length(), 0);
-		}
-		} catch (Exception e) {e.printStackTrace();}
 	}
 }
