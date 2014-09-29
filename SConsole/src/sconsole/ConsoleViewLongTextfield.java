@@ -14,7 +14,8 @@ public abstract class ConsoleViewLongTextfield extends ConsoleView {
 		if (side != null && side.h) {
 			throw new IllegalStateException();
 		}
-		rect.h = 1;
+		if (rect.w == 0) return;
+		rect.h = (int)Math.ceil(1f * (sb.length() + 1) / rect.w);
 	}
 	public void handleInput(ConsoleViewSplitter.Side side, Key key) {
 		switch (key.getKind()) {
@@ -39,9 +40,13 @@ public abstract class ConsoleViewLongTextfield extends ConsoleView {
 	public abstract void handleOutput(String message);
 	
 	public void draw(ConsoleViewSplitter.Side side) {
-		rect.draw(0, 0, sb.toString());
+		String msg = sb.toString();
+		for (int yy = 0; yy < rect.h; yy++) {
+			rect.draw(0, yy, msg.substring(yy * rect.w, Math.min((yy + 1) * rect.w, msg.length())));
+		}
 		if (rect.thread.focus() == this) {
-			rect.setCursor(sb.length(), 0);
+			int xx = msg.length() % rect.w;
+			rect.setCursor(xx, rect.h - 1);
 		}
 	}
 }
