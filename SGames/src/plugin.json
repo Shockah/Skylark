@@ -1,0 +1,12 @@
+{
+	"name": "Shocky - Games",
+	"version": "r1",
+	"author": "Shockah",
+	
+	"internalName": "Shocky.Games",
+	"baseClass": "sgames.Plugin",
+	"dependsOn": [
+		"Shocky.Ident",
+		"Shocky.Commands"
+	]
+}
