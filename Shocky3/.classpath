@@ -5,7 +5,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/commons-codec-1.9.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/commons-lang3-3.2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/guava-16.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/pircbotx-2.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/mongo-java-driver-2.12.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/commons-io-2.4.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/pl.shockah"/>
@@ -13,5 +12,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/slf4j-api-1.7.7.jar"/>
 	<classpathentry kind="lib" path="libs/slf4j-simple-1.7.7.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jsoup-1.7.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/pircbotx-2.1-20141126.160823-86.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

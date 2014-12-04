@@ -122,11 +122,11 @@ public class Plugin extends shocky3.Plugin {
 		return null;
 	}
 	
-	public List<IdentGroup> userIdentGroups(Event<Bot> e, User user) {
-		return userIdentGroups(e.getBot(), user);
+	public List<IdentGroup> userIdentGroups(Event e, User user) {
+		return userIdentGroups(e.<Bot>getBot(), user);
 	}
-	public List<IdentGroup> userIdentGroups(GenericUserEvent<Bot> e) {
-		return userIdentGroups(e.getBot(), e.getUser());
+	public List<IdentGroup> userIdentGroups(GenericUserEvent e) {
+		return userIdentGroups(e.<Bot>getBot(), e.getUser());
 	}
 	public List<IdentGroup> userIdentGroups(Bot bot, User user) {
 		return userIdentGroups(bot.manager, user);
@@ -155,8 +155,8 @@ public class Plugin extends shocky3.Plugin {
 		}
 	}
 	
-	public List<IdentGroup> permissionIdentGroups(Event<Bot> e, String permission) {
-		return permissionIdentGroups(e.getBot(), permission);
+	public List<IdentGroup> permissionIdentGroups(Event e, String permission) {
+		return permissionIdentGroups(e.<Bot>getBot(), permission);
 	}
 	public List<IdentGroup> permissionIdentGroups(Bot bot, String permission) {
 		return permissionIdentGroups(bot.manager, permission);
@@ -186,11 +186,11 @@ public class Plugin extends shocky3.Plugin {
 		}
 	}
 	
-	public boolean userHasPermission(Event<Bot> e, User user, String... permissions) {
-		return userHasPermission(e.getBot(), user, permissions);
+	public boolean userHasPermission(Event e, User user, String... permissions) {
+		return userHasPermission(e.<Bot>getBot(), user, permissions);
 	}
-	public boolean userHasPermission(GenericUserEvent<Bot> e, String... permissions) {
-		return userHasPermission(e.getBot(), e.getUser(), permissions);
+	public boolean userHasPermission(GenericUserEvent e, String... permissions) {
+		return userHasPermission(e.<Bot>getBot(), e.getUser(), permissions);
 	}
 	public boolean userHasPermission(Bot bot, User user, String... permissions) {
 		return userHasPermission(bot.manager, user, permissions);
@@ -222,11 +222,11 @@ public class Plugin extends shocky3.Plugin {
 		return false;
 	}
 	
-	public boolean userHasPermission(Event<Bot> e, User user, shocky3.Plugin plugin, String... permissions) {
-		return userHasPermission(e.getBot(), user, plugin, permissions);
+	public boolean userHasPermission(Event e, User user, shocky3.Plugin plugin, String... permissions) {
+		return userHasPermission(e.<Bot>getBot(), user, plugin, permissions);
 	}
-	public boolean userHasPermission(GenericUserEvent<Bot> e, shocky3.Plugin plugin, String... permissions) {
-		return userHasPermission(e.getBot(), e.getUser(), plugin, permissions);
+	public boolean userHasPermission(GenericUserEvent e, shocky3.Plugin plugin, String... permissions) {
+		return userHasPermission(e.<Bot>getBot(), e.getUser(), plugin, permissions);
 	}
 	public boolean userHasPermission(Bot bot, User user, shocky3.Plugin plugin, String... permissions) {
 		return userHasPermission(bot.manager, user, plugin, permissions);

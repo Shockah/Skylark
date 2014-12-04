@@ -7,7 +7,6 @@ import org.pircbotx.hooks.events.MessageEvent;
 import pl.shockah.Pair;
 import pl.shockah.func.Func;
 import shocky3.Shocky;
-import shocky3.pircbotx.Bot;
 import surlannounce.URLAnnouncer;
 
 public class SteamURLAnnouncer extends URLAnnouncer {
@@ -21,7 +20,7 @@ public class SteamURLAnnouncer extends URLAnnouncer {
 		pluginSteam = plugin;
 	}
 
-	public void provide(List<Pair<Func<String>, EPriority>> candidates, Shocky botApp, final MessageEvent<Bot> e, final String url) {
+	public void provide(List<Pair<Func<String>, EPriority>> candidates, Shocky botApp, final MessageEvent e, final String url) {
 		final int app = appIDFromURL(url);
 		if (app != 0) {
 			candidates.add(new Pair<Func<String>, EPriority>(new Func<String>(){

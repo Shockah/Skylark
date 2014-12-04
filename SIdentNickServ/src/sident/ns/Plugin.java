@@ -50,13 +50,13 @@ public class Plugin extends shocky3.ListenerPlugin {
 		}.start();
 	}
 	
-	protected void onWhois(WhoisEvent<Bot> e) {
+	protected void onWhois(WhoisEvent e) {
 		if (!e.getNick().equals("NickServ")) return;
-		((NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.getBot().manager, identHandler.id)).whois = e;
+		((NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.<Bot>getBot().manager, identHandler.id)).whois = e;
 	}
 	
-	protected void onNotice(NoticeEvent<Bot> e) {
-		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.getBot().manager, identHandler.id);
+	protected void onNotice(NoticeEvent e) {
+		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.<Bot>getBot().manager, identHandler.id);
 		if (!handler.isAvailable()) return;
 		if (!e.getUser().getNick().equals("NickServ")) return;
 		
@@ -68,8 +68,8 @@ public class Plugin extends shocky3.ListenerPlugin {
 		}
 	}
 	
-	protected void onNickChange(NickChangeEvent<Bot> e) {
-		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.getBot().manager, identHandler.id);
+	protected void onNickChange(NickChangeEvent e) {
+		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.<Bot>getBot().manager, identHandler.id);
 		if (!handler.isAvailable()) return;
 		String sold = e.getOldNick().toLowerCase();
 		String snew = e.getNewNick().toLowerCase();
@@ -81,8 +81,8 @@ public class Plugin extends shocky3.ListenerPlugin {
 		}
 	}
 	
-	protected void onQuit(QuitEvent<Bot> e) {
-		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.getBot().manager, identHandler.id);
+	protected void onQuit(QuitEvent e) {
+		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.<Bot>getBot().manager, identHandler.id);
 		if (!handler.isAvailable()) return;
 		String nick = e.getUser().getNick().toLowerCase();
 		synchronized (handler.map) {
@@ -92,8 +92,8 @@ public class Plugin extends shocky3.ListenerPlugin {
 		}
 	}
 	
-	protected void onJoin(JoinEvent<Bot> e) {
-		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.getBot().manager, identHandler.id);
+	protected void onJoin(JoinEvent e) {
+		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.<Bot>getBot().manager, identHandler.id);
 		if (handler.isAvailable() && handler.availableWHOX) {
 			if (e.getBot().getUserBot().equals(e.getUser())) {
 				e.getBot().sendRaw().rawLine(String.format("WHO %s %%na", e.getChannel().getName()));
@@ -103,8 +103,8 @@ public class Plugin extends shocky3.ListenerPlugin {
 		}
 	}
 	
-	protected void onPart(PartEvent<Bot> e) {
-		BotManager manager = e.getBot().manager;
+	protected void onPart(PartEvent e) {
+		BotManager manager = e.<Bot>getBot().manager;
 		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(manager, identHandler.id);
 		if (handler.isAvailable()) {
 			boolean foundUser = false;
@@ -127,19 +127,19 @@ public class Plugin extends shocky3.ListenerPlugin {
 		}
 	}
 	
-	protected void onExtendedJoin(ExtendedJoinEvent<Bot> e) {
-		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.getBot().manager, identHandler.id);
+	protected void onExtendedJoin(ExtendedJoinEvent e) {
+		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.<Bot>getBot().manager, identHandler.id);
 		handler.setAccount(e.getUser().getNick(), e.getAccount());
 	}
 	
-	protected void onAccountNotify(AccountNotifyEvent<Bot> e) {
-		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.getBot().manager, identHandler.id);
+	protected void onAccountNotify(AccountNotifyEvent e) {
+		NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.<Bot>getBot().manager, identHandler.id);
 		handler.setAccount(e.getUser().getNick(), e.getAccount());
 	}
 	
-	protected void onServerResponse(ServerResponseEvent<Bot> e) {
+	protected void onServerResponse(ServerResponseEvent e) {
 		if (e.getCode() == 354) {
-			NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.getBot().manager, identHandler.id);
+			NickServIdentHandler handler = (NickServIdentHandler)pluginIdent.getIdentHandlerFor(e.<Bot>getBot().manager, identHandler.id);
 			if (!handler.isAvailable()) return;
 			List<String> list = e.getParsedResponse();
 			if (list.size() == 3) {

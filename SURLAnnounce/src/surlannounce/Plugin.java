@@ -78,7 +78,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 		announcers.clear();
 	}
 	
-	protected void onMessage(MessageEvent<Bot> e) {
+	protected void onMessage(MessageEvent e) {
 		String msg = e.getMessage();
 		if (msg.matches(".*(?:https?\\://).*") || msg.matches(".*www\\..*")) {
 			String[] spl = msg.split("\\s");
@@ -95,7 +95,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 						}
 						List<Sender> senders = lastLinked.get(s2);
 						Sender newSender = new Sender(
-							e.getBot().manager,
+							e.<Bot>getBot().manager,
 							e.getChannel().getName(),
 							e.getUser().getNick(),
 							new Date(),
@@ -159,7 +159,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 		return url;
 	}
 	
-	public String getAnnouncement(MessageEvent<Bot> e, String url) {
+	public String getAnnouncement(MessageEvent e, String url) {
 		List<Pair<Func<String>, URLAnnouncer.EPriority>> list = new LinkedList<>();
 		synchronized (announcers) {for (URLAnnouncer urla : announcers) {
 			urla.provide(list, botApp, e, url);

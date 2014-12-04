@@ -11,7 +11,6 @@ import pl.shockah.Pair;
 import pl.shockah.json.JSONObject;
 import scommands.CommandProvider.EPriority;
 import shocky3.PluginInfo;
-import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
 public class Plugin extends shocky3.ListenerPlugin {
@@ -52,17 +51,17 @@ public class Plugin extends shocky3.ListenerPlugin {
 		);
 	}
 	
-	protected void onMessage(MessageEvent<Bot> e) {
-		handleCommands(new GenericUserMessageEvent<>(e));
+	protected void onMessage(MessageEvent e) {
+		handleCommands(new GenericUserMessageEvent(e));
 	}
-	protected void onPrivateMessage(PrivateMessageEvent<Bot> e) {
-		handleCommands(new GenericUserMessageEvent<>(e));
+	protected void onPrivateMessage(PrivateMessageEvent e) {
+		handleCommands(new GenericUserMessageEvent(e));
 	}
-	protected void onNotice(NoticeEvent<Bot> e) {
-		handleCommands(new GenericUserMessageEvent<>(e));
+	protected void onNotice(NoticeEvent e) {
+		handleCommands(new GenericUserMessageEvent(e));
 	}
 	
-	 public void handleCommands(GenericUserMessageEvent<Bot> e) {
+	 public void handleCommands(GenericUserMessageEvent e) {
 		String msg = e.getMessage();
 		String[] spl = botApp.settings.getStringForChannel(e.getChannel(), this, "characters").split(" ");
 		for (String s : spl) {
@@ -80,7 +79,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 		}
 	}
 	
-	public ICommand findCommand(GenericUserMessageEvent<Bot> e, String trigger, String args) {
+	public ICommand findCommand(GenericUserMessageEvent e, String trigger, String args) {
 		List<Pair<ICommand, CommandProvider.EPriority>> list = new LinkedList<>();
 		synchronized (providers) {for (CommandProvider cp : providers) {
 			cp.provide(list, e, trigger, args);

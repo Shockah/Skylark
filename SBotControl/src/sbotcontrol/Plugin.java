@@ -23,7 +23,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 		}
 	}
 	
-	protected void onInvite(InviteEvent<Bot> e) {
-		e.getBot().manager.joinChannel(e.getChannel());
+	protected void onInvite(InviteEvent e) {
+		e.<Bot>getBot().manager.joinChannel(e.getChannel());
 	}
 }

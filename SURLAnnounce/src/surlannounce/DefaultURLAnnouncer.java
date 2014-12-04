@@ -8,7 +8,6 @@ import pl.shockah.Pair;
 import pl.shockah.func.Func;
 import shocky3.Plugin;
 import shocky3.Shocky;
-import shocky3.pircbotx.Bot;
 import com.github.kevinsawicki.http.HttpRequest;
 
 public class DefaultURLAnnouncer extends URLAnnouncer {
@@ -19,7 +18,7 @@ public class DefaultURLAnnouncer extends URLAnnouncer {
 		super(plugin);
 	}
 
-	public void provide(List<Pair<Func<String>, EPriority>> candidates, Shocky botApp, MessageEvent<Bot> e, final String url) {
+	public void provide(List<Pair<Func<String>, EPriority>> candidates, Shocky botApp, MessageEvent e, final String url) {
 		candidates.add(new Pair<Func<String>, EPriority>(new Func<String>(){
 			public String f() {
 				String title = retrieveTitle(url);

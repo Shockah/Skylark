@@ -41,7 +41,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 		}
 	}
 	
-	protected void onMessage(MessageEvent<Bot> e) {
+	protected void onMessage(MessageEvent e) {
 		Matcher m = REGEX_KARMA.matcher(e.getMessage());
 		if (m.find()) {
 			String inputTarget = m.group(1);
@@ -96,10 +96,10 @@ public class Plugin extends shocky3.ListenerPlugin {
 		}
 	}
 	
-	public String findKarmaTarget(GenericChannelUserEvent<Bot> e, String target) {
+	public String findKarmaTarget(GenericChannelUserEvent e, String target) {
 		return findKarmaTarget(e, target, null);
 	}
-	public String findKarmaTarget(GenericChannelUserEvent<Bot> e, String target, Box<User> refUser) {
+	public String findKarmaTarget(GenericChannelUserEvent e, String target, Box<User> refUser) {
 		if (target.indexOf(':') != -1) {
 			return target;
 		}
@@ -111,7 +111,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 						if (refUser != null) {
 							refUser.value = user;
 						}
-						List<IdentHandler> handlers = new LinkedList<>(pluginIdent.identHandlers.get(e.getBot().manager));
+						List<IdentHandler> handlers = new LinkedList<>(pluginIdent.identHandlers.get(e.<Bot>getBot().manager));
 						Collections.sort(handlers, IdentHandler.comparatorCredibility);
 						for (IdentHandler handler : handlers) {
 							if (handler.isAvailable()) {

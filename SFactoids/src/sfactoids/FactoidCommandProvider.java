@@ -21,11 +21,11 @@ public class FactoidCommandProvider extends CommandProvider {
 		);
 	}
 	
-	public void provide(List<Pair<ICommand, EPriority>> candidates, GenericUserMessageEvent<Bot> e, String trigger, String args) {
-		DBCollection dbc = e.getBot().botApp.collection(plugin);
+	public void provide(List<Pair<ICommand, EPriority>> candidates, GenericUserMessageEvent e, String trigger, String args) {
+		DBCollection dbc = e.<Bot>getBot().botApp.collection(plugin);
 		trigger = trigger.toLowerCase();
 		
-		String serverName = e.getBot().manager.name;
+		String serverName = e.<Bot>getBot().manager.name;
 		String contextServer = "server:" + serverName;
 		String contextChannel = String.format("channel:%s@%s", e.getChannel().getName(), serverName);
 		

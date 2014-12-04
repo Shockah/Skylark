@@ -16,7 +16,7 @@ public class NickServIdentHandler extends IdentHandler {
 		RECHECK_DELAY = 1000 * 60 * 5; //5 minutes
 	
 	public final Plugin plugin;
-	protected WhoisEvent<Bot> whois = null;
+	protected WhoisEvent whois = null;
 	protected Map<String, UserEntry> map = Collections.synchronizedMap(new HashMap<String, UserEntry>());
 	protected boolean availableWHOX = false, availableExtendedJoin = false, availableAccountNotify = false;
 	

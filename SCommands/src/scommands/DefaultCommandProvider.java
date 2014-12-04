@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import pl.shockah.Pair;
-import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
 public class DefaultCommandProvider extends CommandProvider {
@@ -27,7 +26,7 @@ public class DefaultCommandProvider extends CommandProvider {
 		}}
 	}
 	
-	public void provide(List<Pair<ICommand, EPriority>> candidates, GenericUserMessageEvent<Bot> e, String trigger, String args) {
+	public void provide(List<Pair<ICommand, EPriority>> candidates, GenericUserMessageEvent e, String trigger, String args) {
 		synchronized (list) {
 			for (Command cmd : list) {
 				if (cmd.main.equals(trigger)) {

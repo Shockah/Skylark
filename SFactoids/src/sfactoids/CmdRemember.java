@@ -15,7 +15,7 @@ public class CmdRemember extends Command {
 		super(plugin, "remember", "r");
 	}
 	
-	public void call(GenericUserMessageEvent<Bot> e, String trigger, String args) {
+	public void call(GenericUserMessageEvent e, String trigger, String args) {
 		//String originalArgs = args;
 		String[] spl = args.split("\\s");
 		String context = "global";
@@ -35,7 +35,7 @@ public class CmdRemember extends Command {
 			}
 			
 			if (!context.equals("global")) {
-				String serverName = e.getBot().manager.name;
+				String serverName = e.<Bot>getBot().manager.name;
 				if (context.equals("server")) {
 					context = "server:" + serverName;
 				} else if (context.equals("channel") && e.getChannel() != null) {
@@ -52,7 +52,7 @@ public class CmdRemember extends Command {
 		String code = args;
 		
 		JSONObject jAuthor = new JSONObject();
-		BotManager bm = e.getBot().manager;
+		BotManager bm = e.<Bot>getBot().manager;
 		synchronized (Plugin.pluginIdent.identHandlers) {for (IdentHandler handler : Plugin.pluginIdent.identHandlers.get(null)) {
 			IdentHandler handler2 = Plugin.pluginIdent.getIdentHandlerFor(bm, handler.id);
 			if (handler2.isAvailable()) {
@@ -63,7 +63,7 @@ public class CmdRemember extends Command {
 			}
 		}}
 		
-		DBCollection dbc = e.getBot().botApp.collection(plugin);
+		DBCollection dbc = e.<Bot>getBot().botApp.collection(plugin);
 		dbc.insert(JSONUtil.toDBObject(JSONObject.make(
 			"name", name,
 			"context", context,

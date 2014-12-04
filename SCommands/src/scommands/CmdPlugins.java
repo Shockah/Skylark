@@ -8,10 +8,10 @@ public class CmdPlugins extends Command {
 		super(plugin, "reload");
 	}
 	
-	public void call(GenericUserMessageEvent<Bot> e, String trigger, String args) {
+	public void call(GenericUserMessageEvent e, String trigger, String args) {
 		if (!Plugin.pluginIdent.userHasPermission(e, plugin, "Admin.Plugin.Reload")) return;
 		e.respond("Reloading...");
-		e.getBot().botApp.pluginManager.reload();
+		e.<Bot>getBot().botApp.pluginManager.reload();
 		e.respond("Finished.");
 	}
 }

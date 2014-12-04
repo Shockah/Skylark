@@ -75,7 +75,7 @@ public class Settings {
 		return getStringForChannel(channel, String.format("%s|%s", plugin.pinfo.internalName(), setting));
 	}
 	public String getStringForChannel(Channel channel, String setting) {
-		return getStringForChannel(channel == null ? null : channel.getBot().getConfiguration().getServerHostname(), channel == null ? null : channel.getName(), setting);
+		return getStringForChannel(channel == null ? null : channel.getBot().getConfiguration().getServers().get(0).getHostname(), channel == null ? null : channel.getName(), setting);
 	}
 	public String getStringForChannel(String server, String channel, String setting) {
 		return (String)getForChannel(server, channel, setting);
@@ -85,7 +85,7 @@ public class Settings {
 		return getForChannel(channel, String.format("%s|%s", plugin.pinfo.internalName(), setting));
 	}
 	public Object getForChannel(Channel channel, String setting) {
-		return getForChannel(channel == null ? null : channel.getBot().getConfiguration().getServerHostname(), channel == null ? null : channel.getName(), setting);
+		return getForChannel(channel == null ? null : channel.getBot().getConfiguration().getServers().get(0).getHostname(), channel == null ? null : channel.getName(), setting);
 	}
 	public Object getForChannel(String server, String channel, String setting) {
 		synchronized (settings) {

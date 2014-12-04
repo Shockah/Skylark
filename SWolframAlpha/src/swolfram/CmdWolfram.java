@@ -7,7 +7,6 @@ import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 import org.pircbotx.Colors;
 import scommands.Command;
-import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 import com.github.kevinsawicki.http.HttpRequest;
 
@@ -16,7 +15,7 @@ public class CmdWolfram extends Command {
 		super(plugin, "wolfram", "wa");
 	}
 	
-	public void call(GenericUserMessageEvent<Bot> e, String trigger, String args) {
+	public void call(GenericUserMessageEvent e, String trigger, String args) {
 		String appid = plugin.botApp.settings.getStringForChannel(e.getChannel(), plugin, "appid");
 		if (appid == null) {
 			e.respond("WolframAlpha plugin can't be used without setting an appid first.");

@@ -6,7 +6,6 @@ import pl.shockah.func.Func1;
 import pl.shockah.json.JSONObject;
 import pl.shockah.json.JSONParser;
 import shocky3.Shocky;
-import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 import com.github.kevinsawicki.http.HttpRequest;
 
@@ -19,7 +18,7 @@ public class PHP {
 		this.plugin = plugin;
 	}
 	
-	public String parse(GenericUserMessageEvent<Bot> e, String trigger, String args, String code) {
+	public String parse(GenericUserMessageEvent e, String trigger, String args, String code) {
 		String url = botApp.settings.getStringForChannel(null, plugin, "url");
 		
 		StringBuilder sb = build(e, new StringBuilder(), args);
@@ -43,7 +42,7 @@ public class PHP {
 		return code;
 	}
 	
-	protected StringBuilder build(GenericUserMessageEvent<Bot> e, StringBuilder sb, String args) {
+	protected StringBuilder build(GenericUserMessageEvent e, StringBuilder sb, String args) {
 		varStringSimple(sb, "bot", e.getBot().getNick());
 		varStringSimple(sb, "sender", e.getUser().getNick());
 		varStringSimple(sb, "channel", e.getChannel().getName());

@@ -17,7 +17,7 @@ public class CmdTell extends Command {
 		pluginTell = plugin;
 	}
 	
-	public void call(GenericUserMessageEvent<Bot> e, String trigger, String args) {
+	public void call(GenericUserMessageEvent e, String trigger, String args) {
 		String[] spl = args.split("\\s");
 		if (spl.length >= 2) {
 			String target = spl[0];
@@ -44,13 +44,13 @@ public class CmdTell extends Command {
 			if (!hasOther) {
 				return;
 			}
-			BotManager manager = e.getBot().manager;
+			BotManager manager = e.<Bot>getBot().manager;
 			if (hasServer == null) {
 				hasServer = manager.name;
 				list.add(new Pair<>(Plugin.pluginIdent.handlerServer, String.format("%s (%s)", manager.name, manager.host)));
 			}
 			
-			BotManager managerReceiver = e.getBot().botApp.serverManager.byServerName(hasServer);
+			BotManager managerReceiver = e.<Bot>getBot().botApp.serverManager.byServerName(hasServer);
 			for (Pair<IdentHandler, String> pair : list) {
 				pair.set1(pair.get1().copy(managerReceiver));
 			}

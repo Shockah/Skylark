@@ -10,8 +10,8 @@ public class CmdDie extends Command {
 		super(plugin, "die");
 	}
 	
-	public void call(GenericUserMessageEvent<Bot> e, String trigger, String args) {
+	public void call(GenericUserMessageEvent e, String trigger, String args) {
 		if (!Plugin.pluginIdent.userHasPermission(e, plugin, "Admin.Die")) return;
-		e.getBot().botApp.stop();
+		e.<Bot>getBot().botApp.stop();
 	}
 }

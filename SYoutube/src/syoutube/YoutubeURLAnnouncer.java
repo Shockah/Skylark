@@ -8,7 +8,6 @@ import pl.shockah.Box;
 import pl.shockah.Pair;
 import pl.shockah.func.Func;
 import shocky3.Shocky;
-import shocky3.pircbotx.Bot;
 import surlannounce.URLAnnouncer;
 
 public class YoutubeURLAnnouncer extends URLAnnouncer {
@@ -23,7 +22,7 @@ public class YoutubeURLAnnouncer extends URLAnnouncer {
 		pluginYoutube = plugin;
 	}
 
-	public void provide(List<Pair<Func<String>, EPriority>> candidates, Shocky botApp, MessageEvent<Bot> e, final String url) {
+	public void provide(List<Pair<Func<String>, EPriority>> candidates, Shocky botApp, MessageEvent e, final String url) {
 		final Box<Boolean> includeShortUrl = new Box<>(false);
 		final String vid = videoIDFromURL(url, includeShortUrl);
 		if (vid != null) {

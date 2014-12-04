@@ -3,16 +3,17 @@ package shocky3.pircbotx.event;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.types.GenericChannelUserEvent;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 
-public class OutNoticeEvent<T extends PircBotX> extends Event<T> implements GenericChannelUserEvent<T>, GenericMessageEvent<T> {
+public class OutNoticeEvent extends Event implements GenericChannelUserEvent, GenericMessageEvent {
 	protected final Channel channel;
 	protected final User recipient;
 	protected final String message;
 	
-	public OutNoticeEvent(T bot, Channel channel, User recipient, String message) {
+	public OutNoticeEvent(PircBotX bot, Channel channel, User recipient, String message) {
 		super(bot);
 		this.channel = channel;
 		this.recipient = recipient;
@@ -22,11 +23,12 @@ public class OutNoticeEvent<T extends PircBotX> extends Event<T> implements Gene
 	public Channel getChannel() {
 		return channel;
 	}
-
+	public UserHostmask getUserHostmask() {
+		return new UserHostmask(bot, getUser().getHostmask());
+	}
 	public User getUser() {
 		return bot.getUserBot();
 	}
-
 	public User getRecipient() {
 		return recipient;
 	}
@@ -36,6 +38,9 @@ public class OutNoticeEvent<T extends PircBotX> extends Event<T> implements Gene
 	}
 
 	public void respond(String response) {
+		throw new UnsupportedOperationException();
+	}
+	public void respondPrivateMessage(String response) {
 		throw new UnsupportedOperationException();
 	}
 }

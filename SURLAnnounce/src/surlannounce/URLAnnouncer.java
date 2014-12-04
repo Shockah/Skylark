@@ -5,7 +5,6 @@ import org.pircbotx.hooks.events.MessageEvent;
 import pl.shockah.Pair;
 import pl.shockah.func.Func;
 import shocky3.Shocky;
-import shocky3.pircbotx.Bot;
 
 public abstract class URLAnnouncer {
 	public static enum EPriority {
@@ -24,5 +23,5 @@ public abstract class URLAnnouncer {
 		this.plugin = plugin;
 	}
 	
-	public abstract void provide(List<Pair<Func<String>, EPriority>> candidates, Shocky botApp, MessageEvent<Bot> e, String url);
+	public abstract void provide(List<Pair<Func<String>, EPriority>> candidates, Shocky botApp, MessageEvent e, String url);
 }

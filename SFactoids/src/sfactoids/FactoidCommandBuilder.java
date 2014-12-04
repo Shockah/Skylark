@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import pl.shockah.json.JSONObject;
 import scommands.ICommand;
-import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
 public class FactoidCommandBuilder {
@@ -33,7 +32,7 @@ public class FactoidCommandBuilder {
 		return null;
 	}
 	
-	public ICommand build(JSONObject j, GenericUserMessageEvent<Bot> e, String trigger, String args) {
+	public ICommand build(JSONObject j, GenericUserMessageEvent e, String trigger, String args) {
 		//String original = message;
 		String originalCode = j.getString("code");
 		String code = originalCode;
@@ -63,7 +62,7 @@ public class FactoidCommandBuilder {
 		}
 		final String fcode = code;
 		return new ICommand(){
-			public void call(GenericUserMessageEvent<Bot> e, String trigger, String args) {
+			public void call(GenericUserMessageEvent e, String trigger, String args) {
 				e.respond(fcode);
 			}
 		};

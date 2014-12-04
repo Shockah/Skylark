@@ -15,6 +15,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.OpEvent;
 import org.pircbotx.hooks.events.PartEvent;
+import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.types.GenericChannelEvent;
 import pl.shockah.Util;
@@ -28,7 +29,6 @@ import shocky3.PluginInfo;
 import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.event.OutActionEvent;
 import shocky3.pircbotx.event.OutMessageEvent;
-import shocky3.pircbotx.event.QuitEvent2;
 
 public class Plugin extends shocky3.ListenerPlugin implements IConsolePluginListener {
 	public static final DateFormat format = new SimpleDateFormat("HH:mm:ss");
@@ -96,8 +96,8 @@ public class Plugin extends shocky3.ListenerPlugin implements IConsolePluginList
 			return tab;
 		}
 	}
-	public ConsoleViewSet prepareChannelTab(GenericChannelEvent<Bot> e) {
-		return prepareChannelTab(e.getBot().manager, e.getChannel());
+	public ConsoleViewSet prepareChannelTab(GenericChannelEvent e) {
+		return prepareChannelTab(e.<Bot>getBot().manager, e.getChannel());
 	}
 	public ConsoleViewSet prepareChannelTab(BotManager manager, Channel channel) {
 		synchronized (tabsServer) {synchronized (tabsChannel) {
@@ -143,57 +143,57 @@ public class Plugin extends shocky3.ListenerPlugin implements IConsolePluginList
 		}
 	}
 	
-	protected void onMessage(MessageEvent<Bot> e) {
+	protected void onMessage(MessageEvent e) {
 		prepareChannelTab(e).output.add(String.format("[%s] <%s%s%s> %s", format.format(new Date()), colors[Math.abs(e.getUser().getNick().hashCode() % colors.length)], e.getUser().getNick(), Colors.NORMAL, Colors.removeFormatting(e.getMessage())));
 	}
-	protected void onOutMessage(OutMessageEvent<Bot> e) {
+	protected void onOutMessage(OutMessageEvent e) {
 		prepareChannelTab(e).output.add(String.format("[%s] <%s%s%s> %s", format.format(new Date()), colors[Math.abs(e.getUser().getNick().hashCode() % colors.length)], e.getUser().getNick(), Colors.NORMAL, Colors.removeFormatting(e.getMessage())));
 	}
 	
-	protected void onAction(ActionEvent<Bot> e) {
+	protected void onAction(ActionEvent e) {
 		prepareChannelTab(e).output.add(String.format("[%s] *%s%s%s %s", format.format(new Date()), colors[Math.abs(e.getUser().getNick().hashCode() % colors.length)], e.getUser().getNick(), Colors.NORMAL, Colors.removeFormatting(e.getMessage())));
 	}
-	protected void onOutAction(OutActionEvent<Bot> e) {
+	protected void onOutAction(OutActionEvent e) {
 		prepareChannelTab(e).output.add(String.format("[%s] *%s%s%s %s", format.format(new Date()), colors[Math.abs(e.getUser().getNick().hashCode() % colors.length)], e.getUser().getNick(), Colors.NORMAL, Colors.removeFormatting(e.getMessage())));
 	}
 	
-	protected void onJoin(JoinEvent<Bot> e) {
+	protected void onJoin(JoinEvent e) {
 		ConsoleViewSet set = prepareChannelTab(e);
 		set.output.add(String.format("[%s] %s has joined", format.format(new Date()), e.getUser().getNick()));
 		set.userlist.markUpdate = true;
 	}
-	protected void onPart(PartEvent<Bot> e) {
+	protected void onPart(PartEvent e) {
 		ConsoleViewSet set = prepareChannelTab(e);
 		set.output.add(String.format("[%s] %s has left", format.format(new Date()), e.getUser().getNick()));
 		set.userlist.markUpdate = true;
 	}
-	protected void onQuit2(QuitEvent2<Bot> e) {
-		for (Channel channel : e.getChannels()) {
-			ConsoleViewSet set = prepareChannelTab(e.getBot().manager, channel);
+	protected void onQuit(QuitEvent e) {
+		for (Channel channel : e.getUser().getChannels()) {
+			ConsoleViewSet set = prepareChannelTab(e.<Bot>getBot().manager, channel);
 			set.output.add(String.format("[%s] %s has quit", format.format(new Date()), e.getUser().getNick()));
 			set.userlist.markUpdate = true;
 		}
 	}
-	protected void onKick(KickEvent<Bot> e) {
+	protected void onKick(KickEvent e) {
 		ConsoleViewSet set = prepareChannelTab(e);
 		set.output.add(String.format("[%s] %s has kicked %s (%s)", format.format(new Date()), e.getUser().getNick(), e.getRecipient().getNick(), Colors.removeFormattingAndColors(e.getReason())));
 		set.userlist.markUpdate = true;
 	}
 	
-	protected void onNickChange(NickChangeEvent<Bot> e) {
+	protected void onNickChange(NickChangeEvent e) {
 		for (Channel channel : e.getUser().getChannels()) {
-			ConsoleViewSet set = prepareChannelTab(e.getBot().manager, channel);
+			ConsoleViewSet set = prepareChannelTab(e.<Bot>getBot().manager, channel);
 			set.output.add(String.format("[%s] %s is now known as %s", format.format(new Date()), e.getOldNick(), e.getNewNick()));
 			set.userlist.markUpdate = true;
 		}
 	}
 	
-	protected void onVoice(VoiceEvent<Bot> e) {
+	protected void onVoice(VoiceEvent e) {
 		ConsoleViewSet set = prepareChannelTab(e);
 		set.output.add(String.format("[%s] %s %s %s", format.format(new Date()), e.getUser().getNick(), e.hasVoice() ? "gives voice to" : "removes voice from", e.getRecipient().getNick()));
 		set.userlist.markUpdate = true;
 	}
-	protected void onOp(OpEvent<Bot> e) {
+	protected void onOp(OpEvent e) {
 		ConsoleViewSet set = prepareChannelTab(e);
 		set.output.add(String.format("[%s] %s %s %s", format.format(new Date()), e.getUser().getNick(), e.isOp() ? "gives channel operator status to" : "removes channel operator status from", e.getRecipient().getNick()));
 		set.userlist.markUpdate = true;

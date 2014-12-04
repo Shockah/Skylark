@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import org.pircbotx.User;
 import scommands.Command;
-import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
 public class CmdGames extends Command {
@@ -15,7 +14,7 @@ public class CmdGames extends Command {
 		pluginGames = plugin;
 	}
 	
-	public void call(GenericUserMessageEvent<Bot> e, String trigger, String args) {
+	public void call(GenericUserMessageEvent e, String trigger, String args) {
 		String[] spl = args.split("\\s");
 		if (spl.length != 0) {
 			if (spl[0].equalsIgnoreCase("stats") && spl.length >= 2) {

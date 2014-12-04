@@ -63,7 +63,6 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 import org.pircbotx.hooks.types.GenericUserEvent;
 import org.pircbotx.hooks.types.GenericUserModeEvent;
-import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.CustomListenerAdapter;
 import shocky3.pircbotx.event.AccountNotifyEvent;
 import shocky3.pircbotx.event.ExtendedJoinEvent;
@@ -71,171 +70,168 @@ import shocky3.pircbotx.event.OutActionEvent;
 import shocky3.pircbotx.event.OutMessageEvent;
 import shocky3.pircbotx.event.OutNoticeEvent;
 import shocky3.pircbotx.event.OutPrivateMessageEvent;
-import shocky3.pircbotx.event.QuitEvent2;
 import shocky3.pircbotx.event.ServerNoticeEvent;
 
 public abstract class ListenerPlugin extends Plugin {
-	public final Listener<Bot> listener;
+	public final Listener listener;
 	
 	public ListenerPlugin(PluginInfo pinfo) {
 		super(pinfo);
 		listener = new MyListener(this);
 	}
 	
-	protected void onEvent(Event<Bot> e) {}
-	protected void onAction(ActionEvent<Bot> e) {}
-	protected void onChannelInfo(ChannelInfoEvent<Bot> e) {}
-	protected void onConnect(ConnectEvent<Bot> e) {}
-	protected void onDisconnect(DisconnectEvent<Bot> e) {}
-	protected void onFinger(FingerEvent<Bot> e) {}
-	protected void onGenericChannel(GenericChannelEvent<Bot> e) {}
-	protected void onGenericChannelMode(GenericChannelModeEvent<Bot> e) {}
-	protected void onGenericChannelUser(GenericChannelUserEvent<Bot> e) {}
-	protected void onGenericCTCP(GenericCTCPEvent<Bot> e) {}
-	protected void onGenericDCC(GenericDCCEvent<Bot> e) {}
-	protected void onGenericMessage(GenericMessageEvent<Bot> e) {}
-	protected void onGenericUser(GenericUserEvent<Bot> e) {}
-	protected void onGenericUserMode(GenericUserModeEvent<Bot> e) {}
-	protected void onHalfOp(HalfOpEvent<Bot> e) {}
-	protected void onIncomingChatRequest(IncomingChatRequestEvent<Bot> e) {}
-	protected void onIncomingFileTransfer(IncomingFileTransferEvent<Bot> e) {}
-	protected void onInvite(InviteEvent<Bot> e) {}
-	protected void onJoin(JoinEvent<Bot> e) {}
-	protected void onKick(KickEvent<Bot> e) {}
-	protected void onMessage(MessageEvent<Bot> e) {}
-	protected void onMode(ModeEvent<Bot> e) {}
-	protected void onMotd(MotdEvent<Bot> e) {}
-	protected void onNickAlreadyInUse(NickAlreadyInUseEvent<Bot> e) {}
-	protected void onNickChange(NickChangeEvent<Bot> e) {}
-	protected void onNotice(NoticeEvent<Bot> e) {}
-	protected void onOp(OpEvent<Bot> e) {}
-	protected void onOwner(OwnerEvent<Bot> e) {}
-	protected void onPart(PartEvent<Bot> e) {}
-	protected void onPing(PingEvent<Bot> e) {}
-	protected void onPrivateMessage(PrivateMessageEvent<Bot> e) {}
-	protected void onQuit(QuitEvent<Bot> e) {}
-	protected void onRemoveChannelBan(RemoveChannelBanEvent<Bot> e) {}
-	protected void onRemoveChannelKey(RemoveChannelKeyEvent<Bot> e) {}
-	protected void onRemoveChannelLimit(RemoveChannelLimitEvent<Bot> e) {}
-	protected void onRemoveInviteOnly(RemoveInviteOnlyEvent<Bot> e) {}
-	protected void onRemoveModerated(RemoveModeratedEvent<Bot> e) {}
-	protected void onRemoveNoExternalMessages(RemoveNoExternalMessagesEvent<Bot> e) {}
-	protected void onRemovePrivate(RemovePrivateEvent<Bot> e) {}
-	protected void onRemoveSecret(RemoveSecretEvent<Bot> e) {}
-	protected void onRemoveTopicProtection(RemoveTopicProtectionEvent<Bot> e) {}
-	protected void onServerPing(ServerPingEvent<Bot> e) {}
-	protected void onServerResponse(ServerResponseEvent<Bot> e) {}
-	protected void onSetChannelBan(SetChannelBanEvent<Bot> e) {}
-	protected void onSetChannelKey(SetChannelKeyEvent<Bot> e) {}
-	protected void onSetChannelLimit(SetChannelLimitEvent<Bot> e) {}
-	protected void onSetInviteOnly(SetInviteOnlyEvent<Bot> e) {}
-	protected void onSetModerated(SetModeratedEvent<Bot> e) {}
-	protected void onSetNoExternalMessages(SetNoExternalMessagesEvent<Bot> e) {}
-	protected void onSetPrivate(SetPrivateEvent<Bot> e) {}
-	protected void onSetSecret(SetSecretEvent<Bot> e) {}
-	protected void onSetTopicProtection(SetTopicProtectionEvent<Bot> e) {}
-	protected void onSocketConnect(SocketConnectEvent<Bot> e) {}
-	protected void onSuperOp(SuperOpEvent<Bot> e) {}
-	protected void onTime(TimeEvent<Bot> e) {}
-	protected void onTopic(TopicEvent<Bot> e) {}
-	protected void onUnknown(UnknownEvent<Bot> e) {}
-	protected void onUserList(UserListEvent<Bot> e) {}
-	protected void onUserMode(UserModeEvent<Bot> e) {}
-	protected void onVersion(VersionEvent<Bot> e) {}
-	protected void onVoice(VoiceEvent<Bot> e) {}
-	protected void onWhois(WhoisEvent<Bot> e) {}
+	protected void onEvent(Event e) {}
+	protected void onAction(ActionEvent e) {}
+	protected void onChannelInfo(ChannelInfoEvent e) {}
+	protected void onConnect(ConnectEvent e) {}
+	protected void onDisconnect(DisconnectEvent e) {}
+	protected void onFinger(FingerEvent e) {}
+	protected void onGenericChannel(GenericChannelEvent e) {}
+	protected void onGenericChannelMode(GenericChannelModeEvent e) {}
+	protected void onGenericChannelUser(GenericChannelUserEvent e) {}
+	protected void onGenericCTCP(GenericCTCPEvent e) {}
+	protected void onGenericDCC(GenericDCCEvent e) {}
+	protected void onGenericMessage(GenericMessageEvent e) {}
+	protected void onGenericUser(GenericUserEvent e) {}
+	protected void onGenericUserMode(GenericUserModeEvent e) {}
+	protected void onHalfOp(HalfOpEvent e) {}
+	protected void onIncomingChatRequest(IncomingChatRequestEvent e) {}
+	protected void onIncomingFileTransfer(IncomingFileTransferEvent e) {}
+	protected void onInvite(InviteEvent e) {}
+	protected void onJoin(JoinEvent e) {}
+	protected void onKick(KickEvent e) {}
+	protected void onMessage(MessageEvent e) {}
+	protected void onMode(ModeEvent e) {}
+	protected void onMotd(MotdEvent e) {}
+	protected void onNickAlreadyInUse(NickAlreadyInUseEvent e) {}
+	protected void onNickChange(NickChangeEvent e) {}
+	protected void onNotice(NoticeEvent e) {}
+	protected void onOp(OpEvent e) {}
+	protected void onOwner(OwnerEvent e) {}
+	protected void onPart(PartEvent e) {}
+	protected void onPing(PingEvent e) {}
+	protected void onPrivateMessage(PrivateMessageEvent e) {}
+	protected void onQuit(QuitEvent e) {}
+	protected void onRemoveChannelBan(RemoveChannelBanEvent e) {}
+	protected void onRemoveChannelKey(RemoveChannelKeyEvent e) {}
+	protected void onRemoveChannelLimit(RemoveChannelLimitEvent e) {}
+	protected void onRemoveInviteOnly(RemoveInviteOnlyEvent e) {}
+	protected void onRemoveModerated(RemoveModeratedEvent e) {}
+	protected void onRemoveNoExternalMessages(RemoveNoExternalMessagesEvent e) {}
+	protected void onRemovePrivate(RemovePrivateEvent e) {}
+	protected void onRemoveSecret(RemoveSecretEvent e) {}
+	protected void onRemoveTopicProtection(RemoveTopicProtectionEvent e) {}
+	protected void onServerPing(ServerPingEvent e) {}
+	protected void onServerResponse(ServerResponseEvent e) {}
+	protected void onSetChannelBan(SetChannelBanEvent e) {}
+	protected void onSetChannelKey(SetChannelKeyEvent e) {}
+	protected void onSetChannelLimit(SetChannelLimitEvent e) {}
+	protected void onSetInviteOnly(SetInviteOnlyEvent e) {}
+	protected void onSetModerated(SetModeratedEvent e) {}
+	protected void onSetNoExternalMessages(SetNoExternalMessagesEvent e) {}
+	protected void onSetPrivate(SetPrivateEvent e) {}
+	protected void onSetSecret(SetSecretEvent e) {}
+	protected void onSetTopicProtection(SetTopicProtectionEvent e) {}
+	protected void onSocketConnect(SocketConnectEvent e) {}
+	protected void onSuperOp(SuperOpEvent e) {}
+	protected void onTime(TimeEvent e) {}
+	protected void onTopic(TopicEvent e) {}
+	protected void onUnknown(UnknownEvent e) {}
+	protected void onUserList(UserListEvent e) {}
+	protected void onUserMode(UserModeEvent e) {}
+	protected void onVersion(VersionEvent e) {}
+	protected void onVoice(VoiceEvent e) {}
+	protected void onWhois(WhoisEvent e) {}
 	
-	protected void onExtendedJoin(ExtendedJoinEvent<Bot> e) {}
-	protected void onAccountNotify(AccountNotifyEvent<Bot> e) {}
-	protected void onOutAction(OutActionEvent<Bot> e) {}
-	protected void onOutMessage(OutMessageEvent<Bot> e) {}
-	protected void onOutNotice(OutNoticeEvent<Bot> e) {}
-	protected void onOutPrivateMessage(OutPrivateMessageEvent<Bot> e) {}
-	protected void onServerNotice(ServerNoticeEvent<Bot> e) {}
-	protected void onQuit2(QuitEvent2<Bot> e) {}
+	protected void onExtendedJoin(ExtendedJoinEvent e) {}
+	protected void onAccountNotify(AccountNotifyEvent e) {}
+	protected void onOutAction(OutActionEvent e) {}
+	protected void onOutMessage(OutMessageEvent e) {}
+	protected void onOutNotice(OutNoticeEvent e) {}
+	protected void onOutPrivateMessage(OutPrivateMessageEvent e) {}
+	protected void onServerNotice(ServerNoticeEvent e) {}
 	
-	protected class MyListener extends CustomListenerAdapter<Bot> {
+	protected class MyListener extends CustomListenerAdapter {
 		public final ListenerPlugin plugin;
 		
 		public MyListener(ListenerPlugin plugin) {
 			this.plugin = plugin;
 		}
 		
-		public void onEvent(Event<Bot> e) {
+		public void onEvent(Event e) {
 			try {
 				plugin.onEvent(e);
 				super.onEvent(e);
 			} catch (Exception ex) {ex.printStackTrace();}
 		}
-		public void onAction(ActionEvent<Bot> e) { plugin.onAction(e); }
-		public void onChannelInfo(ChannelInfoEvent<Bot> e) { plugin.onChannelInfo(e); }
-		public void onConnect(ConnectEvent<Bot> e) { plugin.onConnect(e); }
-		public void onDisconnect(DisconnectEvent<Bot> e) { plugin.onDisconnect(e); }
-		public void onFinger(FingerEvent<Bot> e) { plugin.onFinger(e); }
-		public void onGenericChannel(GenericChannelEvent<Bot> e) { plugin.onGenericChannel(e); }
-		public void onGenericChannelMode(GenericChannelModeEvent<Bot> e) { plugin.onGenericChannelMode(e); }
-		public void onGenericChannelUser(GenericChannelUserEvent<Bot> e) { plugin.onGenericChannelUser(e); }
-		public void onGenericCTCP(GenericCTCPEvent<Bot> e) { plugin.onGenericCTCP(e); }
-		public void onGenericDCC(GenericDCCEvent<Bot> e) { plugin.onGenericDCC(e); }
-		public void onGenericMessage(GenericMessageEvent<Bot> e) { plugin.onGenericMessage(e); }
-		public void onGenericUser(GenericUserEvent<Bot> e) { plugin.onGenericUser(e); }
-		public void onGenericUserMode(GenericUserModeEvent<Bot> e) { plugin.onGenericUserMode(e); }
-		public void onHalfOp(HalfOpEvent<Bot> e) { plugin.onHalfOp(e); }
-		public void onIncomingChatRequest(IncomingChatRequestEvent<Bot> e) { plugin.onIncomingChatRequest(e); }
-		public void onIncomingFileTransfer(IncomingFileTransferEvent<Bot> e) { plugin.onIncomingFileTransfer(e); }
-		public void onInvite(InviteEvent<Bot> e) { plugin.onInvite(e); }
-		public void onJoin(JoinEvent<Bot> e) { plugin.onJoin(e); }
-		public void onKick(KickEvent<Bot> e) { plugin.onKick(e); }
-		public void onMessage(MessageEvent<Bot> e) { plugin.onMessage(e); }
-		public void onMode(ModeEvent<Bot> e) { plugin.onMode(e); }
-		public void onMotd(MotdEvent<Bot> e) { plugin.onMotd(e); }
-		public void onNickAlreadyInUse(NickAlreadyInUseEvent<Bot> e) { plugin.onNickAlreadyInUse(e); }
-		public void onNickChange(NickChangeEvent<Bot> e) { plugin.onNickChange(e); }
-		public void onNotice(NoticeEvent<Bot> e) { plugin.onNotice(e); }
-		public void onOp(OpEvent<Bot> e) { plugin.onOp(e); }
-		public void onOwner(OwnerEvent<Bot> e) { plugin.onOwner(e); }
-		public void onPart(PartEvent<Bot> e) { plugin.onPart(e); }
-		public void onPing(PingEvent<Bot> e) { plugin.onPing(e); }
-		public void onPrivateMessage(PrivateMessageEvent<Bot> e) { plugin.onPrivateMessage(e); }
-		public void onQuit(QuitEvent<Bot> e) { plugin.onQuit(e); }
-		public void onRemoveChannelBan(RemoveChannelBanEvent<Bot> e) { plugin.onRemoveChannelBan(e); }
-		public void onRemoveChannelKey(RemoveChannelKeyEvent<Bot> e) { plugin.onRemoveChannelKey(e); }
-		public void onRemoveChannelLimit(RemoveChannelLimitEvent<Bot> e) { plugin.onRemoveChannelLimit(e); }
-		public void onRemoveInviteOnly(RemoveInviteOnlyEvent<Bot> e) { plugin.onRemoveInviteOnly(e); }
-		public void onRemoveModerated(RemoveModeratedEvent<Bot> e) { plugin.onRemoveModerated(e); }
-		public void onRemoveNoExternalMessages(RemoveNoExternalMessagesEvent<Bot> e) { plugin.onRemoveNoExternalMessages(e); }
-		public void onRemovePrivate(RemovePrivateEvent<Bot> e) { plugin.onRemovePrivate(e); }
-		public void onRemoveSecret(RemoveSecretEvent<Bot> e) { plugin.onRemoveSecret(e); }
-		public void onRemoveTopicProtection(RemoveTopicProtectionEvent<Bot> e) { plugin.onRemoveTopicProtection(e); }
-		public void onServerPing(ServerPingEvent<Bot> e) { plugin.onServerPing(e); }
-		public void onServerResponse(ServerResponseEvent<Bot> e) { plugin.onServerResponse(e); }
-		public void onSetChannelBan(SetChannelBanEvent<Bot> e) { plugin.onSetChannelBan(e); }
-		public void onSetChannelKey(SetChannelKeyEvent<Bot> e) { plugin.onSetChannelKey(e); }
-		public void onSetChannelLimit(SetChannelLimitEvent<Bot> e) { plugin.onSetChannelLimit(e); }
-		public void onSetInviteOnly(SetInviteOnlyEvent<Bot> e) { plugin.onSetInviteOnly(e); }
-		public void onSetModerated(SetModeratedEvent<Bot> e) { plugin.onSetModerated(e); }
-		public void onSetNoExternalMessages(SetNoExternalMessagesEvent<Bot> e) { plugin.onSetNoExternalMessages(e); }
-		public void onSetPrivate(SetPrivateEvent<Bot> e) { plugin.onSetPrivate(e); }
-		public void onSetSecret(SetSecretEvent<Bot> e) { plugin.onSetSecret(e); }
-		public void onSetTopicProtection(SetTopicProtectionEvent<Bot> e) { plugin.onSetTopicProtection(e); }
-		public void onSocketConnect(SocketConnectEvent<Bot> e) { plugin.onSocketConnect(e); }
-		public void onSuperOp(SuperOpEvent<Bot> e) { plugin.onSuperOp(e); }
-		public void onTime(TimeEvent<Bot> e) { plugin.onTime(e); }
-		public void onTopic(TopicEvent<Bot> e) { plugin.onTopic(e); }
-		public void onUnknown(UnknownEvent<Bot> e) { plugin.onUnknown(e); }
-		public void onUserList(UserListEvent<Bot> e) { plugin.onUserList(e); }
-		public void onUserMode(UserModeEvent<Bot> e) { plugin.onUserMode(e); }
-		public void onVersion(VersionEvent<Bot> e) { plugin.onVersion(e); }
-		public void onVoice(VoiceEvent<Bot> e) { plugin.onVoice(e); }
-		public void onWhois(WhoisEvent<Bot> e) { plugin.onWhois(e); }
+		public void onAction(ActionEvent e) { plugin.onAction(e); }
+		public void onChannelInfo(ChannelInfoEvent e) { plugin.onChannelInfo(e); }
+		public void onConnect(ConnectEvent e) { plugin.onConnect(e); }
+		public void onDisconnect(DisconnectEvent e) { plugin.onDisconnect(e); }
+		public void onFinger(FingerEvent e) { plugin.onFinger(e); }
+		public void onGenericChannel(GenericChannelEvent e) { plugin.onGenericChannel(e); }
+		public void onGenericChannelMode(GenericChannelModeEvent e) { plugin.onGenericChannelMode(e); }
+		public void onGenericChannelUser(GenericChannelUserEvent e) { plugin.onGenericChannelUser(e); }
+		public void onGenericCTCP(GenericCTCPEvent e) { plugin.onGenericCTCP(e); }
+		public void onGenericDCC(GenericDCCEvent e) { plugin.onGenericDCC(e); }
+		public void onGenericMessage(GenericMessageEvent e) { plugin.onGenericMessage(e); }
+		public void onGenericUser(GenericUserEvent e) { plugin.onGenericUser(e); }
+		public void onGenericUserMode(GenericUserModeEvent e) { plugin.onGenericUserMode(e); }
+		public void onHalfOp(HalfOpEvent e) { plugin.onHalfOp(e); }
+		public void onIncomingChatRequest(IncomingChatRequestEvent e) { plugin.onIncomingChatRequest(e); }
+		public void onIncomingFileTransfer(IncomingFileTransferEvent e) { plugin.onIncomingFileTransfer(e); }
+		public void onInvite(InviteEvent e) { plugin.onInvite(e); }
+		public void onJoin(JoinEvent e) { plugin.onJoin(e); }
+		public void onKick(KickEvent e) { plugin.onKick(e); }
+		public void onMessage(MessageEvent e) { plugin.onMessage(e); }
+		public void onMode(ModeEvent e) { plugin.onMode(e); }
+		public void onMotd(MotdEvent e) { plugin.onMotd(e); }
+		public void onNickAlreadyInUse(NickAlreadyInUseEvent e) { plugin.onNickAlreadyInUse(e); }
+		public void onNickChange(NickChangeEvent e) { plugin.onNickChange(e); }
+		public void onNotice(NoticeEvent e) { plugin.onNotice(e); }
+		public void onOp(OpEvent e) { plugin.onOp(e); }
+		public void onOwner(OwnerEvent e) { plugin.onOwner(e); }
+		public void onPart(PartEvent e) { plugin.onPart(e); }
+		public void onPing(PingEvent e) { plugin.onPing(e); }
+		public void onPrivateMessage(PrivateMessageEvent e) { plugin.onPrivateMessage(e); }
+		public void onQuit(QuitEvent e) { plugin.onQuit(e); }
+		public void onRemoveChannelBan(RemoveChannelBanEvent e) { plugin.onRemoveChannelBan(e); }
+		public void onRemoveChannelKey(RemoveChannelKeyEvent e) { plugin.onRemoveChannelKey(e); }
+		public void onRemoveChannelLimit(RemoveChannelLimitEvent e) { plugin.onRemoveChannelLimit(e); }
+		public void onRemoveInviteOnly(RemoveInviteOnlyEvent e) { plugin.onRemoveInviteOnly(e); }
+		public void onRemoveModerated(RemoveModeratedEvent e) { plugin.onRemoveModerated(e); }
+		public void onRemoveNoExternalMessages(RemoveNoExternalMessagesEvent e) { plugin.onRemoveNoExternalMessages(e); }
+		public void onRemovePrivate(RemovePrivateEvent e) { plugin.onRemovePrivate(e); }
+		public void onRemoveSecret(RemoveSecretEvent e) { plugin.onRemoveSecret(e); }
+		public void onRemoveTopicProtection(RemoveTopicProtectionEvent e) { plugin.onRemoveTopicProtection(e); }
+		public void onServerPing(ServerPingEvent e) { plugin.onServerPing(e); }
+		public void onServerResponse(ServerResponseEvent e) { plugin.onServerResponse(e); }
+		public void onSetChannelBan(SetChannelBanEvent e) { plugin.onSetChannelBan(e); }
+		public void onSetChannelKey(SetChannelKeyEvent e) { plugin.onSetChannelKey(e); }
+		public void onSetChannelLimit(SetChannelLimitEvent e) { plugin.onSetChannelLimit(e); }
+		public void onSetInviteOnly(SetInviteOnlyEvent e) { plugin.onSetInviteOnly(e); }
+		public void onSetModerated(SetModeratedEvent e) { plugin.onSetModerated(e); }
+		public void onSetNoExternalMessages(SetNoExternalMessagesEvent e) { plugin.onSetNoExternalMessages(e); }
+		public void onSetPrivate(SetPrivateEvent e) { plugin.onSetPrivate(e); }
+		public void onSetSecret(SetSecretEvent e) { plugin.onSetSecret(e); }
+		public void onSetTopicProtection(SetTopicProtectionEvent e) { plugin.onSetTopicProtection(e); }
+		public void onSocketConnect(SocketConnectEvent e) { plugin.onSocketConnect(e); }
+		public void onSuperOp(SuperOpEvent e) { plugin.onSuperOp(e); }
+		public void onTime(TimeEvent e) { plugin.onTime(e); }
+		public void onTopic(TopicEvent e) { plugin.onTopic(e); }
+		public void onUnknown(UnknownEvent e) { plugin.onUnknown(e); }
+		public void onUserList(UserListEvent e) { plugin.onUserList(e); }
+		public void onUserMode(UserModeEvent e) { plugin.onUserMode(e); }
+		public void onVersion(VersionEvent e) { plugin.onVersion(e); }
+		public void onVoice(VoiceEvent e) { plugin.onVoice(e); }
+		public void onWhois(WhoisEvent e) { plugin.onWhois(e); }
 		
-		public void onExtendedJoin(ExtendedJoinEvent<Bot> e) { plugin.onExtendedJoin(e); }
-		public void onAccountNotify(AccountNotifyEvent<Bot> e) { plugin.onAccountNotify(e); }
-		public void onOutAction(OutActionEvent<Bot> e) { plugin.onOutAction(e); }
-		public void onOutMessage(OutMessageEvent<Bot> e) { plugin.onOutMessage(e); }
-		public void onOutNotice(OutNoticeEvent<Bot> e) { plugin.onOutNotice(e); }
-		public void onOutPrivateMessage(OutPrivateMessageEvent<Bot> e) { plugin.onOutPrivateMessage(e); }
-		public void onServerNotice(ServerNoticeEvent<Bot> e) { plugin.onServerNotice(e); }
-		public void onQuit2(QuitEvent2<Bot> e) { plugin.onQuit2(e); }
+		public void onExtendedJoin(ExtendedJoinEvent e) { plugin.onExtendedJoin(e); }
+		public void onAccountNotify(AccountNotifyEvent e) { plugin.onAccountNotify(e); }
+		public void onOutAction(OutActionEvent e) { plugin.onOutAction(e); }
+		public void onOutMessage(OutMessageEvent e) { plugin.onOutMessage(e); }
+		public void onOutNotice(OutNoticeEvent e) { plugin.onOutNotice(e); }
+		public void onOutPrivateMessage(OutPrivateMessageEvent e) { plugin.onOutPrivateMessage(e); }
+		public void onServerNotice(ServerNoticeEvent e) { plugin.onServerNotice(e); }
 	}
 }

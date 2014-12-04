@@ -19,7 +19,7 @@ public class CmdInfo extends Command {
 		super(plugin, "factoidinfo", "finfo");
 	}
 	
-	public void call(GenericUserMessageEvent<Bot> e, String trigger, String args) {
+	public void call(GenericUserMessageEvent e, String trigger, String args) {
 		//String originalArgs = args;
 		String[] spl = args.split("\\s");
 		String context = "global";
@@ -39,7 +39,7 @@ public class CmdInfo extends Command {
 			}
 			
 			if (!context.equals("global")) {
-				String serverName = e.getBot().manager.name;
+				String serverName = e.<Bot>getBot().manager.name;
 				if (context.equals("server")) {
 					context = "server:" + serverName;
 				} else if (context.equals("channel") && e.getChannel() != null) {
@@ -51,7 +51,7 @@ public class CmdInfo extends Command {
 		
 		name = args;
 		
-		DBCollection dbc = e.getBot().botApp.collection(plugin);
+		DBCollection dbc = e.<Bot>getBot().botApp.collection(plugin);
 		DBCursor dbcur = dbc.find(JSONUtil.toDBObject(JSONObject.make(
 			"name", name,
 			"context", context,
