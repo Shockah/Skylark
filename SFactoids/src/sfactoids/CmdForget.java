@@ -2,6 +2,7 @@ package sfactoids;
 
 import pl.shockah.json.JSONObject;
 import scommands.Command;
+import scommands.CommandResult;
 import shocky3.JSONUtil;
 import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
@@ -13,14 +14,14 @@ public class CmdForget extends Command {
 		super(plugin, "forget", "f");
 	}
 	
-	public String call(GenericUserMessageEvent e, String trigger, String args, boolean chain) {
+	public void call(GenericUserMessageEvent e, String trigger, String args, CommandResult result) {
 		//String originalArgs = args;
 		String[] spl = args.split("\\s");
 		String context = "global";
 		String name = null;
 		
 		if (spl.length < 1) {
-			return "";
+			return;
 		}
 		
 		if (spl[0].startsWith("@")) {
@@ -29,7 +30,7 @@ public class CmdForget extends Command {
 			spl = args.split("\\s");
 			
 			if (spl.length < 1) {
-				return "";
+				return;
 			}
 			
 			if (!context.equals("global")) {
@@ -60,11 +61,9 @@ public class CmdForget extends Command {
 				)
 			)));
 			
-			if (!chain) e.getUser().send().notice("Done.");
-			return "Done.";
+			result.add(CommandResult.Type.Notice, "Done.");
 		} else {
-			if (!chain) e.getUser().send().notice("No factoid to forget.");
-			return "No factoid to forget.";
+			result.add(CommandResult.Type.Notice, "No factoid to forget.");
 		}
 	}
 }

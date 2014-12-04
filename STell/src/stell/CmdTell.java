@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import pl.shockah.Pair;
 import scommands.Command;
+import scommands.CommandResult;
 import shocky3.BotManager;
 import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
@@ -17,7 +18,7 @@ public class CmdTell extends Command {
 		pluginTell = plugin;
 	}
 	
-	public String call(GenericUserMessageEvent e, String trigger, String args, boolean chain) {
+	public void call(GenericUserMessageEvent e, String trigger, String args, CommandResult result) {
 		String[] spl = args.split("\\s");
 		if (spl.length >= 2) {
 			String target = spl[0];
@@ -32,7 +33,7 @@ public class CmdTell extends Command {
 					targetS = String.format("%s:%s", Plugin.pluginIdent.handlerNick.id, targetS);
 				}
 				IdentHandler handler = Plugin.pluginIdent.getIdentHandlerFor(null, targetS);
-				if (handler == null) return "";
+				if (handler == null) return;
 				if (handler.name.equals("server")) {
 					hasServer = targetS.substring(targetS.indexOf(':') + 1);
 				} else {
@@ -41,9 +42,8 @@ public class CmdTell extends Command {
 				list.add(new Pair<>(handler, targetS.substring(targetS.indexOf(':') + 1)));
 			}
 			
-			if (!hasOther) {
-				return "";
-			}
+			if (!hasOther)
+				return;
 			BotManager manager = e.<Bot>getBot().manager;
 			if (hasServer == null) {
 				hasServer = manager.name;
@@ -58,11 +58,9 @@ public class CmdTell extends Command {
 			Tell tell = Tell.create(manager, e.getUser(), list, args);
 			tell = Tell.read(plugin.botApp, Tell.write(tell)); //TODO: figure out why the fuck does it break without serialize cycling
 			synchronized (pluginTell.tells) {pluginTell.tells.add(tell);}
-			if (!chain) e.getUser().send().notice("I'll pass that along.");
+			result.add(CommandResult.Type.Notice, "I'll pass that along.");
 			Tell.writeDB(plugin, tell);
 			Tell.updateIDDB(plugin);
-			return "I'll pass that along.";
 		}
-		return "";
 	}
 }

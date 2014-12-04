@@ -1,6 +1,7 @@
 package sphp;
 
 import scommands.Command;
+import scommands.CommandResult;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
 public class CmdPHP extends Command {
@@ -11,9 +12,7 @@ public class CmdPHP extends Command {
 		this.pluginPHP = plugin;
 	}
 	
-	public String call(GenericUserMessageEvent e, String trigger, String args, boolean chain) {
-		String _s = pluginPHP.php.parse(e, trigger, "", args);
-		if (!chain) e.respond(_s);
-		return _s;
+	public void call(GenericUserMessageEvent e, String trigger, String args, CommandResult result) {
+		result.add(pluginPHP.php.parse(e, trigger, "", args));
 	}
 }

@@ -3,6 +3,7 @@ package sfactoids;
 import java.util.Date;
 import pl.shockah.json.JSONObject;
 import scommands.Command;
+import scommands.CommandResult;
 import shocky3.BotManager;
 import shocky3.JSONUtil;
 import shocky3.pircbotx.Bot;
@@ -15,14 +16,14 @@ public class CmdRemember extends Command {
 		super(plugin, "remember", "r");
 	}
 	
-	public String call(GenericUserMessageEvent e, String trigger, String args, boolean chain) {
+	public void call(GenericUserMessageEvent e, String trigger, String args, CommandResult result) {
 		//String originalArgs = args;
 		String[] spl = args.split("\\s");
 		String context = "global";
 		String name = null;
 		
 		if (spl.length < 2) {
-			return "";
+			return;
 		}
 		
 		if (spl[0].startsWith("@")) {
@@ -31,7 +32,7 @@ public class CmdRemember extends Command {
 			spl = args.split("\\s");
 			
 			if (spl.length < 2) {
-				return "";
+				return;
 			}
 			
 			if (!context.equals("global")) {
@@ -73,7 +74,6 @@ public class CmdRemember extends Command {
 			"timestamp", (int)(new Date().getTime() / 1000l)
 		)));
 		
-		if (!chain) e.getUser().send().notice("Done.");
-		return "Done.";
+		result.add(CommandResult.Type.Notice, "Done.");
 	}
 }

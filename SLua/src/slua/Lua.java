@@ -9,6 +9,7 @@ import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.jse.JsePlatform;
 import org.pircbotx.User;
 import pl.shockah.func.Func1;
+import scommands.CommandResult;
 import scommands.ICommand;
 import shocky3.Shocky;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
@@ -37,8 +38,18 @@ public class Lua {
 				ICommand cmd = Plugin.pluginCmd.findCommand(e, sCommandName, sArgs);
 				if (cmd == null)
 					return LuaValue.valueOf(String.format("<No command '%s' found.>", sCommandName));
-				else
-					return LuaValue.valueOf(cmd.call(e, sCommandName, sArgs, true));
+				else {
+					CommandResult cresult = new CommandResult(e.getUser(), e.getChannel());
+					cmd.call(e, sCommandName, sArgs, cresult);
+					
+					StringBuilder sb = new StringBuilder();
+					for (int i = 0; i < cresult.lines.size(); i++) {
+						if (i != 0)
+							sb.append("\n");
+						sb.append(cresult.lines.get(i).formatted());
+					}
+					return LuaValue.valueOf(sb.toString());
+				}
 			}
 		});
 		

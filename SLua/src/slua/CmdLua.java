@@ -1,6 +1,7 @@
 package slua;
 
 import scommands.Command;
+import scommands.CommandResult;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
 public class CmdLua extends Command {
@@ -11,9 +12,7 @@ public class CmdLua extends Command {
 		this.pluginLua = plugin;
 	}
 	
-	public String call(GenericUserMessageEvent e, String trigger, String args, boolean chain) {
-		String _s = pluginLua.lua.parse(e, trigger, "", args);
-		if (!chain) e.respond(_s);
-		return _s;
+	public void call(GenericUserMessageEvent e, String trigger, String args, CommandResult result) {
+		result.add(pluginLua.lua.parse(e, trigger, "", args));
 	}
 }

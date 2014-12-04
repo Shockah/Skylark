@@ -10,6 +10,7 @@ import net.objecthunter.exp4j.ValidationResult;
 import pl.shockah.Box;
 import pl.shockah.Strings;
 import scommands.Command;
+import scommands.CommandResult;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
 public class CmdCalc extends Command {
@@ -20,7 +21,7 @@ public class CmdCalc extends Command {
 		super(plugin, "calc");
 	}
 	
-	public String call(GenericUserMessageEvent e, String trigger, String args, boolean chain) {
+	public void call(GenericUserMessageEvent e, String trigger, String args, CommandResult result) {
 		String[] spl = args.split(";");
 		
 		String expression = null;
@@ -33,9 +34,8 @@ public class CmdCalc extends Command {
 				if (Strings.tryParseDouble( m.group(2), boxd)) {
 					variables.put(m.group(1), boxd.value);
 				} else {
-					String _s = "Nested expressions are not implemented just yet.";
-					if (!chain) e.respond(_s);
-					return _s;
+					result.add("Nested expressions are not implemented just yet.");
+					return;
 				}
 			} else {
 				expression = s;
@@ -43,9 +43,8 @@ public class CmdCalc extends Command {
 		}
 		
 		if (expression == null) {
-			String _s = "Invalid expression.";
-			if (!chain) e.respond(_s);
-			return _s;
+			result.add("Invalid expression.");
+			return;
 		} else {
 			ExpressionBuilder exprb = new ExpressionBuilder(expression);
 			for (String key : variables.keySet())
@@ -55,14 +54,11 @@ public class CmdCalc extends Command {
 			
 			ValidationResult vresult = expr.validate();
 			if (vresult.isValid()) {
-				String _s = "" + expr.evaluate();
-				if (!chain) e.respond(_s);
-				return _s;
+				result.add("" + expr.evaluate());
+				return;
 			} else {
-				if (!chain)
-					for (String error : vresult.getErrors())
-						e.respond(error);
-				return "<Error.>";
+				for (String error : vresult.getErrors())
+					result.add(error);
 			}
 		}
 	}

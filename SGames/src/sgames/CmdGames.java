@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.pircbotx.User;
 import scommands.Command;
+import scommands.CommandResult;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
 public class CmdGames extends Command {
@@ -14,7 +15,7 @@ public class CmdGames extends Command {
 		pluginGames = plugin;
 	}
 	
-	public String call(GenericUserMessageEvent e, String trigger, String args, boolean chain) {
+	public void call(GenericUserMessageEvent e, String trigger, String args, CommandResult result) {
 		String[] spl = args.split("\\s");
 		if (spl.length != 0) {
 			if (spl[0].equalsIgnoreCase("stats") && spl.length >= 2) {
@@ -42,12 +43,11 @@ public class CmdGames extends Command {
 				}
 				
 				if (pluginGames.areBusy(user, users)) {
-					if (!chain) e.respond("Users are busy.");
+					result.add("Users are busy.");
 				} else {
 					
 				}
 			}
 		}
-		return "";
 	}
 }

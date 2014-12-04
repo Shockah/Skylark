@@ -6,6 +6,7 @@ import java.util.List;
 import pl.shockah.Pair;
 import pl.shockah.json.JSONObject;
 import scommands.Command;
+import scommands.CommandResult;
 import shocky3.JSONUtil;
 import shocky3.TimeDuration;
 import shocky3.pircbotx.Bot;
@@ -19,14 +20,14 @@ public class CmdInfo extends Command {
 		super(plugin, "factoidinfo", "finfo");
 	}
 	
-	public String call(GenericUserMessageEvent e, String trigger, String args, boolean chain) {
+	public void call(GenericUserMessageEvent e, String trigger, String args, CommandResult result) {
 		//String originalArgs = args;
 		String[] spl = args.split("\\s");
 		String context = "global";
 		String name = null;
 		
 		if (spl.length < 1) {
-			return "";
+			return;
 		}
 		
 		if (spl[0].startsWith("@")) {
@@ -35,7 +36,7 @@ public class CmdInfo extends Command {
 			spl = args.split("\\s");
 			
 			if (spl.length < 1) {
-				return "";
+				return;
 			}
 			
 			if (!context.equals("global")) {
@@ -64,20 +65,17 @@ public class CmdInfo extends Command {
 			
 			//TODO: return the whole thing
 			
-			if (!chain) e.respond(String.format("%s added %s ago", name, TimeDuration.format(new Date(j.getInt("timestamp") * 1000l))));
+			result.add(String.format("%s added %s ago", name, TimeDuration.format(new Date(j.getInt("timestamp") * 1000l))));
 			
 			JSONObject jAuthor = j.getObject("author");
 			List<Pair<IdentHandler, String>> list = new LinkedList<>();
-			for (String jAuthorKey : jAuthor.keys()) {
+			for (String jAuthorKey : jAuthor.keys())
 				list.add(new Pair<>(Plugin.pluginIdent.getIdentHandlerFor(null, jAuthorKey), jAuthor.getString(jAuthorKey)));
-			}
-			if (!chain) e.respond(String.format("> ident: %s", Plugin.pluginIdent.formatIdent(list, "%_%")));
+			result.add(String.format("> ident: %s", Plugin.pluginIdent.formatIdent(list, "%_%")));
 			
-			if (!chain) e.respond(String.format("> source: %s", j.getString("code")));
-			return j.getString("code");
+			result.add(String.format("> source: %s", j.getString("code")));
 		} else {
-			if (!chain) e.getUser().send().notice("No factoid.");
-			return "No factoid.";
+			result.add("No factoid.");
 		}
 	}
 }

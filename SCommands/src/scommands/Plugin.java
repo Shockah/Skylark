@@ -27,9 +27,8 @@ public class Plugin extends shocky3.ListenerPlugin {
 	
 	public void add(CommandProvider... cps) {
 		synchronized (providers) {for (CommandProvider cp : cps) {
-			if (!providers.contains(cp)) {
+			if (!providers.contains(cp))
 				providers.add(cp);
-			}
 		}}
 	}
 	public void remove(CommandProvider... cps) {
@@ -71,9 +70,8 @@ public class Plugin extends shocky3.ListenerPlugin {
 				String args = msg.equals(trigger) ? "" : msg.substring(trigger.length() + 1).trim();
 				
 				ICommand cmd = findCommand(e, trigger, args);
-				if (cmd != null) {
-					cmd.call(e, trigger, args, false);
-				}
+				if (cmd != null)
+					cmd.call(e, trigger, args, new CommandResult(e.getUser(), e.getChannel()));
 				break;
 			}
 		}
