@@ -20,8 +20,6 @@ public class CustomInputParser extends InputParser {
 	}
 	
 	public void processCommand(String target, UserHostmask sourceh, String command, String line, List<String> parsedLine) throws IOException {
-		User source = bot.getUserChannelDao().getUser(sourceh);
-		String sourceNick = source.getNick();
 		Channel channel = (target.length() != 0 && configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0 && bot.getUserChannelDao().containsChannel(target)) ? bot.getUserChannelDao().getChannel(target) : null;
 		
 		if (command.equals("ACCOUNT")) {
@@ -33,10 +31,13 @@ public class CustomInputParser extends InputParser {
 				if (account.equals("0") || account.equals("*")) {
 					account = null;
 				}
+				User source = bot.getUserChannelDao().getUser(sourceh);
 				configuration.getListenerManager().dispatchEvent(new AccountNotifyEvent(bot, channel, new UserHostmask(source), source, account));
 				return;
 			}
 		} else if (command.equals("JOIN")) {
+			User source = bot.getUserChannelDao().getUser(sourceh);
+			String sourceNick = source.getNick();
 			if (!sourceNick.equalsIgnoreCase(bot.getNick())) {
 				if (availableExtendedJoin == null) {
 					availableExtendedJoin = bot.getEnabledCapabilities().contains("extended-join");

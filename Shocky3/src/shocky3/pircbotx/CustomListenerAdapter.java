@@ -33,7 +33,7 @@ public class CustomListenerAdapter extends ListenerAdapter {
 		
 		if (event instanceof NoticeEvent) {
 			NoticeEvent e = (NoticeEvent)event;
-			if (e.getUser().getServer() == null || e.getUser().getServer().equals("")) {
+			if (e.getUser() == null || e.getUser().getServer() == null || e.getUser().getServer().equals("")) {
 				onServerNotice(new ServerNoticeEvent(e.getBot(), e.getUserHostmask(), e.getUser(), e.getMessage()));
 				return;
 			}
