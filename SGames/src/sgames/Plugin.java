@@ -16,6 +16,7 @@ public class Plugin extends shocky3.Plugin {
 	@Dependency protected static sident.Plugin pluginIdent;
 	@Dependency protected static scommands.Plugin pluginCmd;
 	
+	public final List<User> busy = Collections.synchronizedList(new ArrayList<User>());
 	public final List<Scores> scores = Collections.synchronizedList(new ArrayList<Scores>());
 	
 	public Plugin(PluginInfo pinfo) {
@@ -51,6 +52,24 @@ public class Plugin extends shocky3.Plugin {
 				if (sc.account1.equals(acc2)) sc = sc.reverse();
 				return sc;
 			}
+		}
+	}
+	
+	public boolean isBusy(User user) {
+		return busy.contains(user);
+	}
+	public boolean areBusy(List<User> list) {
+		synchronized (busy) {
+			for (User user : list) {
+				if (isBusy(user)) return true;
+			}
+			return false;
+		}
+	}
+	public boolean areBusy(User me, List<User> list) {
+		synchronized (busy) {
+			if (isBusy(me)) return true;
+			return areBusy(list);
 		}
 	}
 }

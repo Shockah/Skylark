@@ -1,5 +1,7 @@
 package sgames;
 
+import java.util.LinkedList;
+import java.util.List;
 import org.pircbotx.User;
 import scommands.Command;
 import shocky3.pircbotx.Bot;
@@ -31,6 +33,20 @@ public class CmdGames extends Command {
 				}
 				
 				e.getChannel().send().message(String.format("%s %d : %d %s", user1.getNick(), wins, loses, user2.getNick()));
+			} else if (spl[0].equalsIgnoreCase("challenge") && spl.length >= 3) {
+				String game = spl[1].toLowerCase();
+				User user = e.getUser();
+				List<User> users = new LinkedList<>();
+				for (int i = 2; i < spl.length; i++) {
+					User user2 = e.getBot().getUserChannelDao().getUser(spl[i]);
+					if (user2 != null) users.add(user2);
+				}
+				
+				if (pluginGames.areBusy(user, users)) {
+					e.respond("Users are busy.");
+				} else {
+					
+				}
 			}
 		}
 	}
