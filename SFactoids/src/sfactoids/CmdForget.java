@@ -13,14 +13,14 @@ public class CmdForget extends Command {
 		super(plugin, "forget", "f");
 	}
 	
-	public void call(GenericUserMessageEvent e, String trigger, String args) {
+	public String call(GenericUserMessageEvent e, String trigger, String args, boolean chain) {
 		//String originalArgs = args;
 		String[] spl = args.split("\\s");
 		String context = "global";
 		String name = null;
 		
 		if (spl.length < 1) {
-			return;
+			return "";
 		}
 		
 		if (spl[0].startsWith("@")) {
@@ -29,7 +29,7 @@ public class CmdForget extends Command {
 			spl = args.split("\\s");
 			
 			if (spl.length < 1) {
-				return;
+				return "";
 			}
 			
 			if (!context.equals("global")) {
@@ -60,9 +60,11 @@ public class CmdForget extends Command {
 				)
 			)));
 			
-			e.getUser().send().notice("Done.");
+			if (!chain) e.getUser().send().notice("Done.");
+			return "Done.";
 		} else {
-			e.getUser().send().notice("No factoid to forget.");
+			if (!chain) e.getUser().send().notice("No factoid to forget.");
+			return "No factoid to forget.";
 		}
 	}
 }

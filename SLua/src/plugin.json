@@ -1,0 +1,12 @@
+{
+	"name": "Shocky - Lua",
+	"version": "r1",
+	"author": "Shockah",
+	
+	"internalName": "Shocky.Lua",
+	"baseClass": "slua.Plugin",
+	"dependsOn": [
+		"Shocky.Commands",
+		"Shocky.Factoids"
+	]
+}

@@ -72,7 +72,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 				
 				ICommand cmd = findCommand(e, trigger, args);
 				if (cmd != null) {
-					cmd.call(e, trigger, args);
+					cmd.call(e, trigger, args, false);
 				}
 				break;
 			}

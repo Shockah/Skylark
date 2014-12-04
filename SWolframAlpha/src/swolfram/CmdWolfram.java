@@ -15,11 +15,12 @@ public class CmdWolfram extends Command {
 		super(plugin, "wolfram", "wa");
 	}
 	
-	public void call(GenericUserMessageEvent e, String trigger, String args) {
+	public String call(GenericUserMessageEvent e, String trigger, String args, boolean chain) {
 		String appid = plugin.botApp.settings.getStringForChannel(e.getChannel(), plugin, "appid");
 		if (appid == null) {
-			e.respond("WolframAlpha plugin can't be used without setting an appid first.");
-			return;
+			String _s = "WolframAlpha plugin can't be used without setting an appid first.";
+			if (!chain) e.respond(_s);
+			return _s;
 		}
 		
 		try {
@@ -31,14 +32,14 @@ public class CmdWolfram extends Command {
 				Document doc = Jsoup.parse(req.body(), "", Parser.xmlParser());
 				Elements qress = doc.select("queryresult");
 				if (qress.isEmpty()) {
-					e.respond("Failed.");
-					return;
+					if (!chain) e.respond("Failed.");
+					return "Failed.";
 				}
 				
 				Element qres = qress.get(0);
 				if (!qres.hasAttr("success") || !Boolean.parseBoolean(qres.attr("success"))) {
-					e.respond("Failed.");
-					return;
+					if (!chain) e.respond("Failed.");
+					return "Failed.";
 				}
 				
 				StringBuilder sb = new StringBuilder();
@@ -77,8 +78,10 @@ public class CmdWolfram extends Command {
 					}
 				}
 				
-				e.respond(sb.substring(3));
+				if (!chain) e.respond(sb.substring(3));
+				return sb.substring(3);
 			}
 		} catch (Exception ex) {ex.printStackTrace();}
+		return "";
 	}
 }

@@ -17,7 +17,7 @@ public class CmdTell extends Command {
 		pluginTell = plugin;
 	}
 	
-	public void call(GenericUserMessageEvent e, String trigger, String args) {
+	public String call(GenericUserMessageEvent e, String trigger, String args, boolean chain) {
 		String[] spl = args.split("\\s");
 		if (spl.length >= 2) {
 			String target = spl[0];
@@ -32,7 +32,7 @@ public class CmdTell extends Command {
 					targetS = String.format("%s:%s", Plugin.pluginIdent.handlerNick.id, targetS);
 				}
 				IdentHandler handler = Plugin.pluginIdent.getIdentHandlerFor(null, targetS);
-				if (handler == null) return;
+				if (handler == null) return "";
 				if (handler.name.equals("server")) {
 					hasServer = targetS.substring(targetS.indexOf(':') + 1);
 				} else {
@@ -42,7 +42,7 @@ public class CmdTell extends Command {
 			}
 			
 			if (!hasOther) {
-				return;
+				return "";
 			}
 			BotManager manager = e.<Bot>getBot().manager;
 			if (hasServer == null) {
@@ -58,9 +58,11 @@ public class CmdTell extends Command {
 			Tell tell = Tell.create(manager, e.getUser(), list, args);
 			tell = Tell.read(plugin.botApp, Tell.write(tell)); //TODO: figure out why the fuck does it break without serialize cycling
 			synchronized (pluginTell.tells) {pluginTell.tells.add(tell);}
-			e.getUser().send().notice("I'll pass that along.");
+			if (!chain) e.getUser().send().notice("I'll pass that along.");
 			Tell.writeDB(plugin, tell);
 			Tell.updateIDDB(plugin);
+			return "I'll pass that along.";
 		}
+		return "";
 	}
 }

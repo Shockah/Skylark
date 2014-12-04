@@ -10,8 +10,9 @@ public class CmdPart extends Command {
 		super(plugin, "part");
 	}
 	
-	public void call(GenericUserMessageEvent e, String trigger, String args) {
-		if (!Plugin.pluginIdent.userHasPermission(e, plugin, "Admin.Part")) return;
+	public String call(GenericUserMessageEvent e, String trigger, String args, boolean chain) {
+		if (!Plugin.pluginIdent.userHasPermission(e, plugin, "Admin.Part")) return "";
 		e.<Bot>getBot().manager.partChannel(args);
+		return "";
 	}
 }

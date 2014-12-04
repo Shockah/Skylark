@@ -15,14 +15,14 @@ public class CmdRemember extends Command {
 		super(plugin, "remember", "r");
 	}
 	
-	public void call(GenericUserMessageEvent e, String trigger, String args) {
+	public String call(GenericUserMessageEvent e, String trigger, String args, boolean chain) {
 		//String originalArgs = args;
 		String[] spl = args.split("\\s");
 		String context = "global";
 		String name = null;
 		
 		if (spl.length < 2) {
-			return;
+			return "";
 		}
 		
 		if (spl[0].startsWith("@")) {
@@ -31,7 +31,7 @@ public class CmdRemember extends Command {
 			spl = args.split("\\s");
 			
 			if (spl.length < 2) {
-				return;
+				return "";
 			}
 			
 			if (!context.equals("global")) {
@@ -73,6 +73,7 @@ public class CmdRemember extends Command {
 			"timestamp", (int)(new Date().getTime() / 1000l)
 		)));
 		
-		e.getUser().send().notice("Done.");
+		if (!chain) e.getUser().send().notice("Done.");
+		return "Done.";
 	}
 }

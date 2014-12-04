@@ -11,12 +11,15 @@ public class CmdYoutube extends Command {
 		pluginYoutube = plugin;
 	}
 	
-	public void call(GenericUserMessageEvent e, String trigger, String args) {
+	public String call(GenericUserMessageEvent e, String trigger, String args, boolean chain) {
 		VideoInfo info = pluginYoutube.getVideoSearch(args);
 		if (info == null) {
-			e.respond("No videos found.");
+			if (!chain) e.respond("No videos found.");
+			return "No videos found.";
 		} else {
-			e.respond(String.format("[%s]", info.format()));
+			String _s = String.format("[%s]", info.format());
+			if (!chain) e.respond(_s);
+			return _s;
 		}
 	}
 }

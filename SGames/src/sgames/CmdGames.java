@@ -14,7 +14,7 @@ public class CmdGames extends Command {
 		pluginGames = plugin;
 	}
 	
-	public void call(GenericUserMessageEvent e, String trigger, String args) {
+	public String call(GenericUserMessageEvent e, String trigger, String args, boolean chain) {
 		String[] spl = args.split("\\s");
 		if (spl.length != 0) {
 			if (spl[0].equalsIgnoreCase("stats") && spl.length >= 2) {
@@ -42,11 +42,12 @@ public class CmdGames extends Command {
 				}
 				
 				if (pluginGames.areBusy(user, users)) {
-					e.respond("Users are busy.");
+					if (!chain) e.respond("Users are busy.");
 				} else {
 					
 				}
 			}
 		}
+		return "";
 	}
 }

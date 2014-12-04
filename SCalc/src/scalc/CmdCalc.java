@@ -20,7 +20,7 @@ public class CmdCalc extends Command {
 		super(plugin, "calc");
 	}
 	
-	public void call(GenericUserMessageEvent e, String trigger, String args) {
+	public String call(GenericUserMessageEvent e, String trigger, String args, boolean chain) {
 		String[] spl = args.split(";");
 		
 		String expression = null;
@@ -33,8 +33,9 @@ public class CmdCalc extends Command {
 				if (Strings.tryParseDouble( m.group(2), boxd)) {
 					variables.put(m.group(1), boxd.value);
 				} else {
-					e.respond("Nested expressions are not implemented just yet.");
-					return;
+					String _s = "Nested expressions are not implemented just yet.";
+					if (!chain) e.respond(_s);
+					return _s;
 				}
 			} else {
 				expression = s;
@@ -42,25 +43,26 @@ public class CmdCalc extends Command {
 		}
 		
 		if (expression == null) {
-			e.respond("Invalid expression.");
-			return;
+			String _s = "Invalid expression.";
+			if (!chain) e.respond(_s);
+			return _s;
 		} else {
 			ExpressionBuilder exprb = new ExpressionBuilder(expression);
-			for (String key : variables.keySet()) {
+			for (String key : variables.keySet())
 				exprb.variable(key);
-			}
 			Expression expr = exprb.build();
 			expr.setVariables(variables);
 			
 			ValidationResult vresult = expr.validate();
 			if (vresult.isValid()) {
-				e.respond("" + expr.evaluate());
-				return;
+				String _s = "" + expr.evaluate();
+				if (!chain) e.respond(_s);
+				return _s;
 			} else {
-				for (String error : vresult.getErrors()) {
-					e.respond(error);
-				}
-				return;
+				if (!chain)
+					for (String error : vresult.getErrors())
+						e.respond(error);
+				return "<Error.>";
 			}
 		}
 	}

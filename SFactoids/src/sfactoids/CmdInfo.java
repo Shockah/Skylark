@@ -19,14 +19,14 @@ public class CmdInfo extends Command {
 		super(plugin, "factoidinfo", "finfo");
 	}
 	
-	public void call(GenericUserMessageEvent e, String trigger, String args) {
+	public String call(GenericUserMessageEvent e, String trigger, String args, boolean chain) {
 		//String originalArgs = args;
 		String[] spl = args.split("\\s");
 		String context = "global";
 		String name = null;
 		
 		if (spl.length < 1) {
-			return;
+			return "";
 		}
 		
 		if (spl[0].startsWith("@")) {
@@ -35,7 +35,7 @@ public class CmdInfo extends Command {
 			spl = args.split("\\s");
 			
 			if (spl.length < 1) {
-				return;
+				return "";
 			}
 			
 			if (!context.equals("global")) {
@@ -62,18 +62,22 @@ public class CmdInfo extends Command {
 		if (dbcur.hasNext()) {
 			JSONObject j = JSONUtil.fromDBObject(dbcur.next());
 			
-			e.respond(String.format("%s added %s ago", name, TimeDuration.format(new Date(j.getInt("timestamp") * 1000l))));
+			//TODO: return the whole thing
+			
+			if (!chain) e.respond(String.format("%s added %s ago", name, TimeDuration.format(new Date(j.getInt("timestamp") * 1000l))));
 			
 			JSONObject jAuthor = j.getObject("author");
 			List<Pair<IdentHandler, String>> list = new LinkedList<>();
 			for (String jAuthorKey : jAuthor.keys()) {
 				list.add(new Pair<>(Plugin.pluginIdent.getIdentHandlerFor(null, jAuthorKey), jAuthor.getString(jAuthorKey)));
 			}
-			e.respond(String.format("> ident: %s", Plugin.pluginIdent.formatIdent(list, "%_%")));
+			if (!chain) e.respond(String.format("> ident: %s", Plugin.pluginIdent.formatIdent(list, "%_%")));
 			
-			e.respond(String.format("> source: %s", j.getString("code")));
+			if (!chain) e.respond(String.format("> source: %s", j.getString("code")));
+			return j.getString("code");
 		} else {
-			e.getUser().send().notice("No factoid.");
+			if (!chain) e.getUser().send().notice("No factoid.");
+			return "No factoid.";
 		}
 	}
 }

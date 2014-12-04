@@ -10,8 +10,9 @@ public class CmdJoin extends Command {
 		super(plugin, "join");
 	}
 	
-	public void call(GenericUserMessageEvent e, String trigger, String args) {
-		if (!Plugin.pluginIdent.userHasPermission(e, plugin, "Admin.Join")) return;
+	public String call(GenericUserMessageEvent e, String trigger, String args, boolean chain) {
+		if (!Plugin.pluginIdent.userHasPermission(e, plugin, "Admin.Join")) return "";
 		e.<Bot>getBot().manager.joinChannel(args);
+		return "";
 	}
 }

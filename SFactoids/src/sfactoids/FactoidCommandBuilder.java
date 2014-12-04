@@ -62,8 +62,9 @@ public class FactoidCommandBuilder {
 		}
 		final String fcode = code;
 		return new ICommand(){
-			public void call(GenericUserMessageEvent e, String trigger, String args) {
-				e.respond(fcode);
+			public String call(GenericUserMessageEvent e, String trigger, String args, boolean chain) {
+				if (!chain) e.respond(fcode);
+				return fcode;
 			}
 		};
 	}
