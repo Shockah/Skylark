@@ -70,8 +70,11 @@ public class Plugin extends shocky3.ListenerPlugin {
 				String args = msg.equals(trigger) ? "" : msg.substring(trigger.length() + 1).trim();
 				
 				ICommand cmd = findCommand(e, trigger, args);
-				if (cmd != null)
-					cmd.call(e, trigger, args, new CommandResult(e.getUser(), e.getChannel()));
+				if (cmd != null) {
+					CommandResult cresult = new CommandResult(e.getUser(), e.getChannel());
+					cmd.call(e, trigger, args, cresult);
+					cresult.send();
+				}
 				break;
 			}
 		}

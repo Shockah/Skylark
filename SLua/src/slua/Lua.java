@@ -41,14 +41,7 @@ public class Lua {
 				else {
 					CommandResult cresult = new CommandResult(e.getUser(), e.getChannel());
 					cmd.call(e, sCommandName, sArgs, cresult);
-					
-					StringBuilder sb = new StringBuilder();
-					for (int i = 0; i < cresult.lines.size(); i++) {
-						if (i != 0)
-							sb.append("\n");
-						sb.append(cresult.lines.get(i).formatted());
-					}
-					return LuaValue.valueOf(sb.toString());
+					return LuaValue.valueOf(cresult.buildOne());
 				}
 			}
 		});
