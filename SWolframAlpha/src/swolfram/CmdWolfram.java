@@ -7,6 +7,7 @@ import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 import org.pircbotx.Colors;
 import scommands.Command;
+import scommands.CommandResult;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 import com.github.kevinsawicki.http.HttpRequest;
 
@@ -15,12 +16,11 @@ public class CmdWolfram extends Command {
 		super(plugin, "wolfram", "wa");
 	}
 	
-	public String call(GenericUserMessageEvent e, String trigger, String args, boolean chain) {
+	public void call(GenericUserMessageEvent e, String trigger, String args, CommandResult result) {
 		String appid = plugin.botApp.settings.getStringForChannel(e.getChannel(), plugin, "appid");
 		if (appid == null) {
-			String _s = "WolframAlpha plugin can't be used without setting an appid first.";
-			if (!chain) e.respond(_s);
-			return _s;
+			result.add("WolframAlpha plugin can't be used without setting an appid first.");
+			return;
 		}
 		
 		try {
@@ -32,14 +32,14 @@ public class CmdWolfram extends Command {
 				Document doc = Jsoup.parse(req.body(), "", Parser.xmlParser());
 				Elements qress = doc.select("queryresult");
 				if (qress.isEmpty()) {
-					if (!chain) e.respond("Failed.");
-					return "Failed.";
+					result.add("Failed.");
+					return;
 				}
 				
 				Element qres = qress.get(0);
 				if (!qres.hasAttr("success") || !Boolean.parseBoolean(qres.attr("success"))) {
-					if (!chain) e.respond("Failed.");
-					return "Failed.";
+					result.add("Failed.");
+					return;
 				}
 				
 				StringBuilder sb = new StringBuilder();
@@ -78,10 +78,8 @@ public class CmdWolfram extends Command {
 					}
 				}
 				
-				if (!chain) e.respond(sb.substring(3));
-				return sb.substring(3);
+				result.add(sb.substring(3));
 			}
 		} catch (Exception ex) {ex.printStackTrace();}
-		return "";
 	}
 }

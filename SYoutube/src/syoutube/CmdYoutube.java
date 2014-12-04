@@ -1,6 +1,7 @@
 package syoutube;
 
 import scommands.Command;
+import scommands.CommandResult;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
 public class CmdYoutube extends Command {
@@ -11,15 +12,12 @@ public class CmdYoutube extends Command {
 		pluginYoutube = plugin;
 	}
 	
-	public String call(GenericUserMessageEvent e, String trigger, String args, boolean chain) {
+	public void call(GenericUserMessageEvent e, String trigger, String args, CommandResult result) {
 		VideoInfo info = pluginYoutube.getVideoSearch(args);
 		if (info == null) {
-			if (!chain) e.respond("No videos found.");
-			return "No videos found.";
+			result.add("No videos found.");
 		} else {
-			String _s = String.format("[%s]", info.format());
-			if (!chain) e.respond(_s);
-			return _s;
+			result.add(String.format("[%s]", info.format()));
 		}
 	}
 }
