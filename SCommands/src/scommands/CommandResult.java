@@ -8,7 +8,7 @@ import shocky3.pircbotx.event.GenericUserMessageEvent;
 
 public class CommandResult {
 	public static final int
-		STACKTRACE_LIMIT = 50;
+		STACKTRACE_LIMIT = 15;
 	
 	public static enum Type {
 		Message, Action, Notice
@@ -139,7 +139,17 @@ public class CommandResult {
 		if (stackTrace.size() >= STACKTRACE_LIMIT)
 			throw new StackOverflowException();
 		stackTrace.add(new StackEntry(cmd, trigger, args));
-		cmd.call(e, trigger, args, copy());
+		cmd.call(e, trigger, args, this);
+	}
+	public void call(CommandResult another, ICommand cmd, GenericUserMessageEvent e, String trigger, String args) {
+		if (stackTrace.size() >= STACKTRACE_LIMIT)
+			throw new StackOverflowException();
+		if (another.stackTrace.size() >= STACKTRACE_LIMIT)
+			throw new StackOverflowException();
+		StackEntry entry = new StackEntry(cmd, trigger, args);
+		stackTrace.add(entry);
+		another.stackTrace.add(entry);
+		cmd.call(e, trigger, args, this);
 	}
 	public void addStackEntry(CommandResult result, GenericUserMessageEvent e, String trigger, String args) {
 		if (stackTrace.size() >= STACKTRACE_LIMIT)

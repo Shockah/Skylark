@@ -35,14 +35,18 @@ public class Lua {
 				String sCommandName = commandName.tojstring();
 				String sArgs = largs.isnil() ? "" : largs.tojstring();
 				
-				ICommand cmd = Plugin.pluginCmd.findCommand(e, sCommandName, sArgs, result);
+				CommandResult cresult = new CommandResult(e.getUser(), e.getChannel());
+				ICommand cmd = Plugin.pluginCmd.findCommand(e, sCommandName, sArgs, cresult);
 				if (cmd == null)
 					return LuaValue.valueOf(String.format("<No command '%s' found.>", sCommandName));
 				else {
-					CommandResult cresult = result == null ? new CommandResult(e.getUser(), e.getChannel()) : result.copy();
 					if (result != null)
 						result.addStackEntry(cresult, e, trigger, args);
-					cmd.call(e, sCommandName, sArgs, cresult);
+					if (result == null)
+						cresult.call(cmd, e, sCommandName, sArgs);
+					else
+						cresult.call(result, cmd, e, sCommandName, sArgs);
+					cresult.ping(false);
 					return LuaValue.valueOf(cresult.buildOne());
 				}
 			}

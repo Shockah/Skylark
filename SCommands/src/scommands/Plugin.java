@@ -73,7 +73,7 @@ public class Plugin extends shocky3.ListenerPlugin {
 				ICommand cmd = findCommand(e, trigger, args, cresult);
 				if (cmd != null) {
 					try {
-						cmd.call(e, trigger, args, cresult);
+						cresult.call(cmd, e, trigger, args);
 						cresult.send();
 					} catch (Exception ex) {
 						e.respond(String.format("<%s: %s>", ex.getClass().getName(), ex.getMessage()));
