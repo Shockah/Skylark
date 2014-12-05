@@ -69,21 +69,25 @@ public class Plugin extends shocky3.ListenerPlugin {
 				String trigger = msg.split("\\s")[0].toLowerCase();
 				String args = msg.equals(trigger) ? "" : msg.substring(trigger.length() + 1).trim();
 				
-				ICommand cmd = findCommand(e, trigger, args);
+				CommandResult cresult = new CommandResult(e.getUser(), e.getChannel());
+				ICommand cmd = findCommand(e, trigger, args, cresult);
 				if (cmd != null) {
-					CommandResult cresult = new CommandResult(e.getUser(), e.getChannel());
-					cmd.call(e, trigger, args, cresult);
-					cresult.send();
+					try {
+						cmd.call(e, trigger, args, cresult);
+						cresult.send();
+					} catch (Exception ex) {
+						e.respond(String.format("<%s: %s>", ex.getClass().getName(), ex.getMessage()));
+					}
 				}
 				break;
 			}
 		}
 	}
 	
-	public ICommand findCommand(GenericUserMessageEvent e, String trigger, String args) {
+	public ICommand findCommand(GenericUserMessageEvent e, String trigger, String args, CommandResult result) {
 		List<Pair<ICommand, CommandProvider.EPriority>> list = new LinkedList<>();
 		synchronized (providers) {for (CommandProvider cp : providers) {
-			cp.provide(list, e, trigger, args);
+			cp.provide(list, e, trigger, args, result);
 		}}
 		
 		if (!list.isEmpty()) {

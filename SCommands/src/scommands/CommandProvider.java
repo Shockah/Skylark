@@ -21,5 +21,5 @@ public abstract class CommandProvider {
 		this.plugin = plugin;
 	}
 	
-	public abstract void provide(List<Pair<ICommand, EPriority>> candidates, GenericUserMessageEvent e, String trigger, String args);
+	public abstract void provide(List<Pair<ICommand, EPriority>> candidates, GenericUserMessageEvent e, String trigger, String args, CommandResult result);
 }

@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
+import shocky3.pircbotx.event.GenericUserMessageEvent;
 
 public class CommandResult {
+	public static final int
+		STACKTRACE_LIMIT = 50;
+	
 	public static enum Type {
 		Message, Action, Notice
 	}
@@ -52,6 +56,30 @@ public class CommandResult {
 		}
 	}
 	
+	public static class StackEntry {
+		public final CommandResult result;
+		public final ICommand cmd;
+		public final String trigger, args;
+		
+		public StackEntry(CommandResult result, String trigger, String args) {
+			this.result = result;
+			cmd = null;
+			this.trigger = trigger;
+			this.args = args;
+		}
+		public StackEntry(ICommand cmd, String trigger, String args) {
+			result = null;
+			this.cmd = cmd;
+			this.trigger = trigger;
+			this.args = args;
+		}
+	}
+	
+	public static class StackOverflowException extends RuntimeException {
+		private static final long serialVersionUID = -3547060527396313081L;
+	}
+	
+	public final List<StackEntry> stackTrace = new ArrayList<>(STACKTRACE_LIMIT);
 	public final List<Line> lines = new ArrayList<>();
 	public final User defaultUser;
 	public final Channel defaultChannel;
@@ -105,5 +133,25 @@ public class CommandResult {
 			sb.append(lines.get(i).formatted());
 		}
 		return sb.toString();
+	}
+	
+	public void call(ICommand cmd, GenericUserMessageEvent e, String trigger, String args) {
+		if (stackTrace.size() >= STACKTRACE_LIMIT)
+			throw new StackOverflowException();
+		stackTrace.add(new StackEntry(cmd, trigger, args));
+		cmd.call(e, trigger, args, copy());
+	}
+	public void addStackEntry(CommandResult result, GenericUserMessageEvent e, String trigger, String args) {
+		if (stackTrace.size() >= STACKTRACE_LIMIT)
+			throw new StackOverflowException();
+		stackTrace.add(new StackEntry(result, trigger, args));
+	}
+	
+	public CommandResult copy() {
+		CommandResult result = new CommandResult(defaultUser, defaultChannel);
+		result.stackTrace.addAll(stackTrace);
+		result.lines.addAll(lines);
+		result.quiet = quiet;
+		return result;
 	}
 }

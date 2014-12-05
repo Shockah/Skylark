@@ -33,7 +33,7 @@ public class FactoidCommandBuilder {
 		return null;
 	}
 	
-	public ICommand build(JSONObject j, GenericUserMessageEvent e, String trigger, String args) {
+	public ICommand build(JSONObject j, GenericUserMessageEvent e, String trigger, String args, CommandResult result) {
 		//String original = message;
 		String originalCode = j.getString("code");
 		String code = originalCode;
@@ -48,10 +48,10 @@ public class FactoidCommandBuilder {
 				} else {
 					switch (fp.resultType()) {
 						case FactoidParser.TYPE_STRING_CODE:
-							code = fp.parseStringCode(j, e, trigger, args, code);
+							code = fp.parseStringCode(j, e, trigger, args, code, result);
 							break;
 						case FactoidParser.TYPE_ICOMMAND:
-							return fp.parseICommand(j, e, trigger, args, code);
+							return fp.parseICommand(j, e, trigger, args, code, result);
 					}
 				}
 			} else {

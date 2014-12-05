@@ -23,23 +23,25 @@ public class Lua {
 		this.plugin = plugin;
 	}
 	
-	public String parse(final GenericUserMessageEvent e, String trigger, String args, String code) {
+	public String parse(final GenericUserMessageEvent e, final String trigger, final String args, String code, final CommandResult result) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		Globals globals = JsePlatform.standardGlobals();
 		globals.STDOUT = new PrintStream(baos);
 		globals.set("cmd", new TwoArgFunction(){
-			public LuaValue call(LuaValue commandName, LuaValue args) {
+			public LuaValue call(LuaValue commandName, LuaValue largs) {
 				if (commandName.isnil())
 					return LuaValue.valueOf("<No command name specified.>");
 				
 				String sCommandName = commandName.tojstring();
-				String sArgs = args.isnil() ? "" : args.tojstring();
+				String sArgs = largs.isnil() ? "" : largs.tojstring();
 				
-				ICommand cmd = Plugin.pluginCmd.findCommand(e, sCommandName, sArgs);
+				ICommand cmd = Plugin.pluginCmd.findCommand(e, sCommandName, sArgs, result);
 				if (cmd == null)
 					return LuaValue.valueOf(String.format("<No command '%s' found.>", sCommandName));
 				else {
-					CommandResult cresult = new CommandResult(e.getUser(), e.getChannel());
+					CommandResult cresult = result == null ? new CommandResult(e.getUser(), e.getChannel()) : result.copy();
+					if (result != null)
+						result.addStackEntry(cresult, e, trigger, args);
 					cmd.call(e, sCommandName, sArgs, cresult);
 					return LuaValue.valueOf(cresult.buildOne());
 				}
@@ -52,6 +54,8 @@ public class Lua {
 		try {
 			LuaValue chunk = globals.load(sb.toString());
 			chunk.call();
+		} catch (CommandResult.StackOverflowException ex) {
+			throw ex;
 		} catch (Exception ex) {
 			return ex.getMessage();
 		}

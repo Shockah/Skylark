@@ -4,6 +4,7 @@ import java.util.List;
 import pl.shockah.Pair;
 import pl.shockah.json.JSONObject;
 import scommands.CommandProvider;
+import scommands.CommandResult;
 import scommands.ICommand;
 import shocky3.JSONUtil;
 import shocky3.pircbotx.Bot;
@@ -21,7 +22,7 @@ public class FactoidCommandProvider extends CommandProvider {
 		);
 	}
 	
-	public void provide(List<Pair<ICommand, EPriority>> candidates, GenericUserMessageEvent e, String trigger, String args) {
+	public void provide(List<Pair<ICommand, EPriority>> candidates, GenericUserMessageEvent e, String trigger, String args, CommandResult result) {
 		DBCollection dbc = e.<Bot>getBot().botApp.collection(plugin);
 		trigger = trigger.toLowerCase();
 		
@@ -59,7 +60,7 @@ public class FactoidCommandProvider extends CommandProvider {
 		
 		JSONObject j = jChannel != null ? jChannel : (jServer != null ? jServer : (jGlobal != null ? jGlobal : null));
 		if (j != null) {
-			ICommand built = builder.build(j, e, trigger, args);
+			ICommand built = builder.build(j, e, trigger, args, result);
 			if (built != null) {
 				candidates.add(new Pair<ICommand, EPriority>(built, EPriority.Medium));
 			}

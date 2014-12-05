@@ -13,6 +13,6 @@ public class CmdLua extends Command {
 	}
 	
 	public void call(GenericUserMessageEvent e, String trigger, String args, CommandResult result) {
-		result.add(pluginLua.lua.parse(e, trigger, "", args));
+		result.add(pluginLua.lua.parse(e, trigger, "", args, result));
 	}
 }
