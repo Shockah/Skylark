@@ -1,7 +1,7 @@
 package slua;
 
 import pl.shockah.json.JSONObject;
-import scommands.CommandResult;
+import scommands.old.CommandResult;
 import sfactoids.FactoidParser;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 

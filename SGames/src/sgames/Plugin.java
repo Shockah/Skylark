@@ -14,7 +14,7 @@ import com.mongodb.DBObject;
 
 public class Plugin extends shocky3.Plugin {
 	@Dependency protected static sident.Plugin pluginIdent;
-	@Dependency protected static scommands.Plugin pluginCmd;
+	@Dependency protected static scommands.old.Plugin pluginCmd;
 	
 	public final List<User> busy = Collections.synchronizedList(new ArrayList<User>());
 	public final List<Scores> scores = Collections.synchronizedList(new ArrayList<Scores>());

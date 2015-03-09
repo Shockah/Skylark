@@ -1,12 +1,13 @@
 package stell;
 
 import java.util.ListIterator;
-import scommands.Command;
-import scommands.CommandResult;
+import scommands.CommandStack;
+import scommands.TextCommand;
+import shocky3.MultilineString;
 import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
-public class CmdTells extends Command {
+public class CmdTells extends TextCommand {
 	protected final Plugin pluginTell;
 	
 	public CmdTells(Plugin plugin) {
@@ -14,17 +15,18 @@ public class CmdTells extends Command {
 		pluginTell = plugin;
 	}
 	
-	public void call(GenericUserMessageEvent e, String trigger, String args, CommandResult result) {
+	public String call(GenericUserMessageEvent e, String input, CommandStack stack) {
 		ListIterator<Tell> lit = pluginTell.tells.listIterator();
+		MultilineString str = new MultilineString();
 		while (lit.hasNext()) {
 			Tell tell = lit.next();
 			if (tell.matches(e.<Bot>getBot().manager, e.getUser())) {
 				String[] spl = tell.buildMessage().split("\\n");
-				for (String s : spl)
-					result.add(CommandResult.Type.Notice, s);
+				str.add(spl);
 				Tell.removeDB(plugin, tell);
 				lit.remove();
 			}
 		}
+		return str.toString();
 	}
 }

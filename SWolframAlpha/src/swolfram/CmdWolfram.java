@@ -6,41 +6,35 @@ import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 import org.pircbotx.Colors;
-import scommands.Command;
-import scommands.CommandResult;
+import scommands.CommandStack;
+import scommands.TextCommand;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 import com.github.kevinsawicki.http.HttpRequest;
 
-public class CmdWolfram extends Command {
+public class CmdWolfram extends TextCommand {
 	public CmdWolfram(Plugin plugin) {
 		super(plugin, "wolfram", "wa");
 	}
 	
-	public void call(GenericUserMessageEvent e, String trigger, String args, CommandResult result) {
+	public String call(GenericUserMessageEvent e, String input, CommandStack stack) {
 		String appid = plugin.botApp.settings.getStringForChannel(e.getChannel(), plugin, "appid");
-		if (appid == null) {
-			result.add("WolframAlpha plugin can't be used without setting an appid first.");
-			return;
-		}
+		if (appid == null)
+			return "WolframAlpha plugin can't be used without setting an appid first.";
 		
 		try {
 			HttpRequest req = HttpRequest.get("http://api.wolframalpha.com/v2/query", true,
-				"input", args,
+				"input", input,
 				"appid", appid
 			);
 			if (req.ok()) {
 				Document doc = Jsoup.parse(req.body(), "", Parser.xmlParser());
 				Elements qress = doc.select("queryresult");
-				if (qress.isEmpty()) {
-					result.add("Failed.");
-					return;
-				}
+				if (qress.isEmpty())
+					return "Failed.";
 				
 				Element qres = qress.get(0);
-				if (!qres.hasAttr("success") || !Boolean.parseBoolean(qres.attr("success"))) {
-					result.add("Failed.");
-					return;
-				}
+				if (!qres.hasAttr("success") || !Boolean.parseBoolean(qres.attr("success")))
+					return "Failed.";
 				
 				StringBuilder sb = new StringBuilder();
 				for (Element pod : qres.select("pod")) {
@@ -78,8 +72,11 @@ public class CmdWolfram extends Command {
 					}
 				}
 				
-				result.add(sb.substring(3));
+				return sb.substring(3);
 			}
-		} catch (Exception ex) {ex.printStackTrace();}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
 	}
 }

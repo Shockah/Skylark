@@ -1,8 +1,8 @@
 package sfactoids;
 
 import pl.shockah.json.JSONObject;
-import scommands.CommandResult;
-import scommands.ICommand;
+import scommands.old.CommandResult;
+import scommands.old.ICommand;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
 public class AliasFactoidParser extends FactoidParser {

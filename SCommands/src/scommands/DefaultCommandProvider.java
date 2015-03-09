@@ -3,70 +3,73 @@ package scommands;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import pl.shockah.Pair;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
 public class DefaultCommandProvider extends CommandProvider {
-	protected List<Command> list = Collections.synchronizedList(new LinkedList<Command>());
+	public final List<Command<?, ?>> commands = Collections.synchronizedList(new LinkedList<Command<?, ?>>());
 	
 	public DefaultCommandProvider(Plugin plugin) {
-		super(plugin);
+		super(plugin, MEDIUM_PRIORITY);
 	}
 	
-	public void add(Command... cmds) {
-		synchronized (list) {for (Command cmd : cmds) {
-			if (!list.contains(cmd)) {
-				list.add(cmd);
-			}
-		}}
+	public void add(Command<?, ?>... commands) {
+		synchronized (this.commands) {for (Command<?, ?> command : commands)
+			this.commands.add(command);
+		}
 	}
-	public void remove(Command... cmds) {
-		synchronized (list) {for (Command cmd : cmds) {
-			list.remove(cmd);
-		}}
+	public void remove(Command<?, ?>... commands) {
+		synchronized (this.commands) {for (Command<?, ?> command : commands)
+			this.commands.remove(command);
+		}
+	}
+	public void removeAll(shocky3.Plugin plugin) {
+		List<Command<?, ?>> list = new LinkedList<>();
+		synchronized (commands) {
+			for (Command<?, ?> command : commands)
+				if (command.plugin == plugin)
+					list.add(command);
+			commands.removeAll(list);
+		}
 	}
 	
-	public void provide(List<Pair<ICommand, EPriority>> candidates, GenericUserMessageEvent e, String trigger, String args, CommandResult result) {
-		synchronized (list) {
-			for (Command cmd : list) {
-				if (cmd.main.equals(trigger)) {
-					candidates.add(new Pair<ICommand, EPriority>(cmd, EPriority.High));
-					return;
-				}
+	public CommandMatch provide(GenericUserMessageEvent e, String name, String input) {
+		name = name.toLowerCase();
+		synchronized (commands) {
+			for (Command<?, ?> command : commands) {
+				if (command.main.toLowerCase().equals(name))
+					return new CommandMatch(command, true, priority);
 			}
-			for (Command cmd : list) {
-				for (String alt : cmd.alt) {
-					if (alt.equals(trigger)) {
-						candidates.add(new Pair<ICommand, EPriority>(cmd, EPriority.High));
-						return;
-					}
-				}
-			}
+			for (Command<?, ?> command : commands)
+				for (String alt : command.alts)
+					if (alt.toLowerCase().equals(name))
+						return new CommandMatch(command, true, priority);
 			
-			Command closest = null;
+			Command<?, ?> closest = null;
 			int diff = -1;
-			for (Command cmd : list) {
-				if (cmd.main.startsWith(trigger)) {
-					int d = cmd.main.length() - trigger.length();
-					if (closest == null || d < diff) {
-						closest = cmd;
-						diff = d;
+			for (Command<?, ?> command : commands) {
+				if (command.main.toLowerCase().startsWith(name)) {
+					int thisdiff = command.main.length() - name.length();
+					if (closest == null || thisdiff < diff) {
+						closest = command;
+						diff = thisdiff;
 					}
 				}
-				for (String alt : cmd.alt) {
-					if (alt.startsWith(trigger)) {
-						int d = alt.length() - trigger.length();
-						if (closest == null || d < diff) {
-							closest = cmd;
-							diff = d;
+			}
+			for (Command<?, ?> command : commands) {
+				for (String alt : command.alts) {
+					if (alt.toLowerCase().startsWith(name)) {
+						int thisdiff = alt.length() - name.length();
+						if (closest == null || thisdiff < diff) {
+							closest = command;
+							diff = thisdiff;
 						}
 					}
 				}
 			}
-			
-			if (closest != null) {
-				candidates.add(new Pair<ICommand, EPriority>(closest, EPriority.Low));
-			}
+			if (closest != null)
+				return new CommandMatch(closest, false, priority);
 		}
+		
+		return null;
 	}
 }

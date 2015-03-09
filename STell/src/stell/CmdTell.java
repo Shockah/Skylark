@@ -3,14 +3,14 @@ package stell;
 import java.util.LinkedList;
 import java.util.List;
 import pl.shockah.Pair;
-import scommands.Command;
-import scommands.CommandResult;
+import scommands.CommandStack;
+import scommands.TextCommand;
 import shocky3.BotManager;
 import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 import sident.IdentHandler;
 
-public class CmdTell extends Command {
+public class CmdTell extends TextCommand {
 	protected final Plugin pluginTell;
 	
 	public CmdTell(Plugin plugin) {
@@ -18,11 +18,11 @@ public class CmdTell extends Command {
 		pluginTell = plugin;
 	}
 	
-	public void call(GenericUserMessageEvent e, String trigger, String args, CommandResult result) {
-		String[] spl = args.split("\\s");
+	public String call(GenericUserMessageEvent e, String input, CommandStack stack) {
+		String[] spl = input.split("\\s");
 		if (spl.length >= 2) {
 			String target = spl[0];
-			args = args.substring(target.length() + 1);
+			input = input.substring(target.length() + 1);
 			
 			String[] targetSpl = target.split(";");
 			List<Pair<IdentHandler, String>> list = new LinkedList<>();
@@ -33,7 +33,8 @@ public class CmdTell extends Command {
 					targetS = String.format("%s:%s", Plugin.pluginIdent.handlerNick.id, targetS);
 				}
 				IdentHandler handler = Plugin.pluginIdent.getIdentHandlerFor(null, targetS);
-				if (handler == null) return;
+				if (handler == null)
+					return null;
 				if (handler.name.equals("server")) {
 					hasServer = targetS.substring(targetS.indexOf(':') + 1);
 				} else {
@@ -43,7 +44,7 @@ public class CmdTell extends Command {
 			}
 			
 			if (!hasOther)
-				return;
+				return null;
 			BotManager manager = e.<Bot>getBot().manager;
 			if (hasServer == null) {
 				hasServer = manager.name;
@@ -55,12 +56,13 @@ public class CmdTell extends Command {
 				pair.set1(pair.get1().copy(managerReceiver));
 			}
 			
-			Tell tell = Tell.create(manager, e.getUser(), list, args);
+			Tell tell = Tell.create(manager, e.getUser(), list, input);
 			tell = Tell.read(plugin.botApp, Tell.write(tell)); //TODO: figure out why the fuck does it break without serialize cycling
-			synchronized (pluginTell.tells) {pluginTell.tells.add(tell);}
-			result.add(CommandResult.Type.Notice, "I'll pass that along.");
+			pluginTell.tells.add(tell);
 			Tell.writeDB(plugin, tell);
 			Tell.updateIDDB(plugin);
+			return "I'll pass that along.";
 		}
+		return null;
 	}
 }

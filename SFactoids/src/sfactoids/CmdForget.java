@@ -1,8 +1,8 @@
 package sfactoids;
 
 import pl.shockah.json.JSONObject;
-import scommands.Command;
-import scommands.CommandResult;
+import scommands.old.Command;
+import scommands.old.CommandResult;
 import shocky3.JSONUtil;
 import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.event.GenericUserMessageEvent;

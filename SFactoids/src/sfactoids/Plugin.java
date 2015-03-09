@@ -4,7 +4,7 @@ import shocky3.PluginInfo;
 
 public class Plugin extends shocky3.Plugin {
 	@Dependency protected static sident.Plugin pluginIdent;
-	@Dependency protected static scommands.Plugin pluginCmd;
+	@Dependency protected static scommands.old.Plugin pluginCmd;
 	
 	public FactoidCommandProvider provider;
 	

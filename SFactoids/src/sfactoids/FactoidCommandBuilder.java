@@ -5,8 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import pl.shockah.json.JSONObject;
-import scommands.CommandResult;
-import scommands.ICommand;
+import scommands.old.CommandResult;
+import scommands.old.ICommand;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
 public class FactoidCommandBuilder {

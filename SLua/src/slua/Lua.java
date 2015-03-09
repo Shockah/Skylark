@@ -9,8 +9,8 @@ import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.jse.JsePlatform;
 import org.pircbotx.User;
 import pl.shockah.func.Func1;
-import scommands.CommandResult;
-import scommands.ICommand;
+import scommands.old.CommandResult;
+import scommands.old.ICommand;
 import shocky3.Shocky;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 

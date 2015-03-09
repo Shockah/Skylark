@@ -3,8 +3,8 @@ package sgames;
 import java.util.LinkedList;
 import java.util.List;
 import org.pircbotx.User;
-import scommands.Command;
-import scommands.CommandResult;
+import scommands.old.Command;
+import scommands.old.CommandResult;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
 public class CmdGames extends Command {
