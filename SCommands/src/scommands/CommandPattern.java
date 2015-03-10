@@ -66,6 +66,7 @@ public abstract class CommandPattern {
 			if (match != null)
 				matches.add(match);
 		}}
+		
 		return matches.isEmpty() ? null : new CommandStackEntry(matches.get(0).command, pmatch.input);
 	}
 }

@@ -2,14 +2,10 @@ package sfactoids;
 
 import java.util.regex.Pattern;
 import pl.shockah.json.JSONObject;
-import scommands.old.CommandResult;
-import scommands.old.ICommand;
+import scommands.CommandStack;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
 public abstract class FactoidParser {
-	public static final int
-		TYPE_STRING_CODE = 1,
-		TYPE_ICOMMAND = 2;
 	public static final Pattern
 		REGEX_PARSER = Pattern.compile("^\\{(.+?)\\}(.*)$");
 	
@@ -19,11 +15,5 @@ public abstract class FactoidParser {
 		this.id = id;
 	}
 	
-	public abstract int resultType();
-	public String parseStringCode(JSONObject j, GenericUserMessageEvent e, String trigger, String args, String code, CommandResult result) {
-		return code;
-	}
-	public ICommand parseICommand(JSONObject j, GenericUserMessageEvent e, String trigger, String args, String code, CommandResult result) {
-		return null;
-	}
+	public abstract String parse(JSONObject j, GenericUserMessageEvent e, String input, String code, CommandStack stack);
 }

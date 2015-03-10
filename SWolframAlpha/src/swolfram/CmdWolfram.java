@@ -6,12 +6,12 @@ import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 import org.pircbotx.Colors;
+import scommands.Command;
 import scommands.CommandStack;
-import scommands.TextCommand;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 import com.github.kevinsawicki.http.HttpRequest;
 
-public class CmdWolfram extends TextCommand {
+public class CmdWolfram extends Command {
 	public CmdWolfram(Plugin plugin) {
 		super(plugin, "wolfram", "wa");
 	}

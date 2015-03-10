@@ -1,13 +1,13 @@
 package sphp;
 
 import java.util.Collection;
-import org.pircbotx.User;
-import pl.shockah.func.Func1;
 import pl.shockah.json.JSONObject;
 import pl.shockah.json.JSONParser;
+import scommands.CommandStack;
 import shocky3.Shocky;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 import com.github.kevinsawicki.http.HttpRequest;
+import com.google.common.base.Function;
 
 public class PHP {
 	public final Shocky botApp;
@@ -18,10 +18,10 @@ public class PHP {
 		this.plugin = plugin;
 	}
 	
-	public String parse(GenericUserMessageEvent e, String trigger, String args, String code) {
+	public String parse(GenericUserMessageEvent e, String input, String code, CommandStack stack) {
 		String url = botApp.settings.getStringForChannel(null, plugin, "url");
 		
-		StringBuilder sb = build(e, new StringBuilder(), args);
+		StringBuilder sb = build(e, new StringBuilder(), input);
 		sb.append(code);
 		
 		try {
@@ -48,7 +48,7 @@ public class PHP {
 		varStringSimple(sb, "channel", e.getChannel().getName());
 		varStringSimple(sb, "input", args);
 		varStringSimple(sb, "ioru", args.equals("") ? e.getUser().getNick() : args);
-		varStringSimpleArray(sb, "users", e.getChannel().getUsers(), new Func1<User, String>(){ public String f(User user) { return user.getNick(); } });
+		varStringSimpleArray(sb, "users", e.getChannel().getUsers(), user -> user.getNick());
 		return sb;
 	}
 	
@@ -64,16 +64,16 @@ public class PHP {
 	}
 	
 	protected <T> void varStringSimpleArray(StringBuilder sb, String variable, Collection<T> value) {
-		varStringSimpleArray(sb, variable, value, new Func1<T, String>(){ public String f(T a) { return a == null ? "null" : a.toString(); } });
+		varStringSimpleArray(sb, variable, value, a -> a == null ? "null" : a.toString());
 	}
-	protected <T> void varStringSimpleArray(StringBuilder sb, String variable, Collection<T> value, Func1<T, String> f) {
+	protected <T> void varStringSimpleArray(StringBuilder sb, String variable, Collection<T> value, Function<T, String> f) {
 		sb.append(String.format("$%s = %s;", variable, formatStringSimpleArray(value, f)));
 	}
-	protected <T> String formatStringSimpleArray(Collection<T> value, Func1<T, String> f) {
+	protected <T> String formatStringSimpleArray(Collection<T> value, Function<T, String> f) {
 		StringBuilder sb = new StringBuilder();
 		for (T a : value) {
 			sb.append(",");
-			sb.append(formatStringSimple(f.f(a)));
+			sb.append(formatStringSimple(f.apply(a)));
 		}
 		return String.format("array(%s)", sb.toString().substring(1));
 	}

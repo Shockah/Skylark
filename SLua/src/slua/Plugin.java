@@ -3,7 +3,7 @@ package slua;
 import shocky3.PluginInfo;
 
 public class Plugin extends shocky3.Plugin {
-	@Dependency protected static scommands.old.Plugin pluginCmd;
+	@Dependency protected static scommands.Plugin pluginCmd;
 	@Dependency protected static sfactoids.Plugin pluginFactoids;
 	
 	public Lua lua;
@@ -18,7 +18,7 @@ public class Plugin extends shocky3.Plugin {
 		pluginCmd.provider.add(
 			new CmdLua(this)
 		);
-		pluginFactoids.provider.builder.add(
+		pluginFactoids.add(
 			new LuaFactoidParser(this)
 		);
 	}

@@ -1,8 +1,8 @@
 package sfactoids;
 
 import pl.shockah.json.JSONObject;
-import scommands.old.Command;
-import scommands.old.CommandResult;
+import scommands.Command;
+import scommands.CommandStack;
 import shocky3.JSONUtil;
 import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
@@ -14,37 +14,34 @@ public class CmdForget extends Command {
 		super(plugin, "forget", "f");
 	}
 	
-	public void call(GenericUserMessageEvent e, String trigger, String args, CommandResult result) {
+	public String call(GenericUserMessageEvent e, String input, CommandStack stack) {
 		//String originalArgs = args;
-		String[] spl = args.split("\\s");
+		String[] spl = input.split("\\s");
 		String context = "global";
 		String name = null;
 		
-		if (spl.length < 1) {
-			return;
-		}
+		if (spl.length < 1)
+			return null;
 		
 		if (spl[0].startsWith("@")) {
 			context = spl[0].substring(1).toLowerCase();
-			args = args.substring(spl[0].length() + 1);
-			spl = args.split("\\s");
+			input = input.substring(spl[0].length() + 1);
+			spl = input.split("\\s");
 			
-			if (spl.length < 1) {
-				return;
-			}
+			if (spl.length < 1)
+				return null;
 			
 			if (!context.equals("global")) {
 				String serverName = e.<Bot>getBot().manager.name;
-				if (context.equals("server")) {
+				if (context.equals("server"))
 					context = "server:" + serverName;
-				} else if (context.equals("channel") && e.getChannel() != null) {
+				else if (context.equals("channel") && e.getChannel() != null)
 					context = String.format("channel:%s@%s", e.getChannel().getName(), serverName);
-				}
 			}
 		}
 		context = context.toLowerCase();
 		
-		name = args;
+		name = input;
 		
 		DBCollection dbc = e.<Bot>getBot().botApp.collection(plugin);
 		DBCursor dbcur = dbc.find(JSONUtil.toDBObject(JSONObject.make(
@@ -61,9 +58,8 @@ public class CmdForget extends Command {
 				)
 			)));
 			
-			result.add(CommandResult.Type.Notice, "Done.");
-		} else {
-			result.add(CommandResult.Type.Notice, "No factoid to forget.");
-		}
+			return "Done.";
+		} else
+			return "No factoid to forget.";
 	}
 }

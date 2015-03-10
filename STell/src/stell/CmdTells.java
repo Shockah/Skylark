@@ -1,13 +1,13 @@
 package stell;
 
 import java.util.ListIterator;
+import scommands.Command;
 import scommands.CommandStack;
-import scommands.TextCommand;
 import shocky3.MultilineString;
 import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
-public class CmdTells extends TextCommand {
+public class CmdTells extends Command {
 	protected final Plugin pluginTell;
 	
 	public CmdTells(Plugin plugin) {

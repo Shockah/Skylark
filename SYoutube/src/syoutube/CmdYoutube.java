@@ -1,10 +1,10 @@
 package syoutube;
 
+import scommands.Command;
 import scommands.CommandStack;
-import scommands.TextCommand;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
-public class CmdYoutube extends TextCommand {
+public class CmdYoutube extends Command {
 	protected final Plugin pluginYoutube;
 	
 	public CmdYoutube(Plugin plugin) {

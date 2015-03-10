@@ -14,15 +14,6 @@ public final class CommandPatternManager {
 		}
 	}));
 	
-	public CommandStackEntry matchCommand(GenericUserMessageEvent e) {
-		synchronized (patterns) {for (CommandPattern pattern : patterns) {
-			CommandStackEntry entry = pattern.matchCommand(e);
-			if (entry != null)
-				return entry;
-		}}
-		return null;
-	}
-	
 	public void add(CommandPattern... patterns) {
 		synchronized (this.patterns) {for (CommandPattern pattern : patterns)
 			this.patterns.add(pattern);
@@ -41,5 +32,25 @@ public final class CommandPatternManager {
 					list.add(pattern);
 			patterns.removeAll(list);
 		}
+	}
+	
+	public CommandStackEntry matchCommand(GenericUserMessageEvent e) {
+		synchronized (patterns) {for (CommandPattern pattern : patterns) {
+			CommandStackEntry entry = pattern.matchCommand(e);
+			if (entry != null)
+				return entry;
+		}}
+		return null;
+	}
+	
+	public Command findCommand(GenericUserMessageEvent e, String name) {
+		synchronized (patterns) {for (CommandPattern pattern : patterns) {
+			synchronized (pattern.providers) {for (CommandProvider provider : pattern.providers) {
+				CommandMatch match = provider.provide(e, name, null);
+				if (match != null)
+					return match.command;
+			}}
+		}}
+		return null;
 	}
 }

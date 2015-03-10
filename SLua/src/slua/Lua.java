@@ -9,8 +9,8 @@ import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.jse.JsePlatform;
 import org.pircbotx.User;
 import pl.shockah.func.Func1;
-import scommands.old.CommandResult;
-import scommands.old.ICommand;
+import scommands.Command;
+import scommands.CommandStack;
 import shocky3.Shocky;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
@@ -23,7 +23,7 @@ public class Lua {
 		this.plugin = plugin;
 	}
 	
-	public String parse(final GenericUserMessageEvent e, final String trigger, final String args, String code, final CommandResult result) {
+	public String parse(final GenericUserMessageEvent e, final String input, String code, final CommandStack stack) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		Globals globals = JsePlatform.standardGlobals();
 		globals.STDOUT = new PrintStream(baos);
@@ -35,30 +35,27 @@ public class Lua {
 				String sCommandName = commandName.tojstring();
 				String sArgs = largs.isnil() ? "" : largs.tojstring();
 				
-				CommandResult cresult = new CommandResult(e.getUser(), e.getChannel());
-				ICommand cmd = Plugin.pluginCmd.findCommand(e, sCommandName, sArgs, cresult);
+				Command cmd = Plugin.pluginCmd.patternManager.findCommand(e, sCommandName);
 				if (cmd == null)
 					return LuaValue.valueOf(String.format("<No command '%s' found.>", sCommandName));
 				else {
-					if (result != null)
-						result.addStackEntry(cresult, e, trigger, args);
-					if (result == null)
-						cresult.call(cmd, e, sCommandName, sArgs);
+					String result;
+					if (stack == null)
+						result = cmd.call(e, sArgs, stack);
 					else
-						cresult.call(result, cmd, e, sCommandName, sArgs);
-					cresult.ping(false);
-					return LuaValue.valueOf(cresult.buildOne());
+						result = stack.call(cmd, sArgs);
+					return LuaValue.valueOf(result);
 				}
 			}
 		});
 		
-		StringBuilder sb = build(e, new StringBuilder(), args);
+		StringBuilder sb = build(e, new StringBuilder(), input);
 		sb.append(code);
 		
 		try {
 			LuaValue chunk = globals.load(sb.toString());
 			chunk.call();
-		} catch (CommandResult.StackOverflowException ex) {
+		} catch (RuntimeException ex) {
 			throw ex;
 		} catch (Exception ex) {
 			return ex.getMessage();

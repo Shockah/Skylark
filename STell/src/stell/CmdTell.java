@@ -3,14 +3,14 @@ package stell;
 import java.util.LinkedList;
 import java.util.List;
 import pl.shockah.Pair;
+import scommands.Command;
 import scommands.CommandStack;
-import scommands.TextCommand;
 import shocky3.BotManager;
 import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 import sident.IdentHandler;
 
-public class CmdTell extends TextCommand {
+public class CmdTell extends Command {
 	protected final Plugin pluginTell;
 	
 	public CmdTell(Plugin plugin) {

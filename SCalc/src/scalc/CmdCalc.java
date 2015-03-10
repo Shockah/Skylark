@@ -9,12 +9,12 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 import net.objecthunter.exp4j.ValidationResult;
 import pl.shockah.Box;
 import pl.shockah.Strings;
+import scommands.Command;
 import scommands.CommandStack;
-import scommands.TextCommand;
 import shocky3.MultilineString;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
-public class CmdCalc extends TextCommand {
+public class CmdCalc extends Command {
 	public static final Pattern
 		REGEX_VARIABLE_ASSIGN = Pattern.compile("([a-zA-Z_][a-zA-Z_0-9]*)\\s?=\\s(.*)");
 	

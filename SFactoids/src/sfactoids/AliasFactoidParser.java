@@ -1,8 +1,8 @@
 package sfactoids;
 
 import pl.shockah.json.JSONObject;
-import scommands.old.CommandResult;
-import scommands.old.ICommand;
+import scommands.Command;
+import scommands.CommandStack;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
 public class AliasFactoidParser extends FactoidParser {
@@ -10,15 +10,13 @@ public class AliasFactoidParser extends FactoidParser {
 		super("alias");
 	}
 	
-	public int resultType() {
-		return TYPE_ICOMMAND;
-	}
-
-	public ICommand parseICommand(JSONObject j, GenericUserMessageEvent e, String trigger, String args, String code, CommandResult result) {
+	public String parse(JSONObject j, GenericUserMessageEvent e, String input, String code, CommandStack stack) {
 		String[] spl = code.split("\\s");
-		args = spl.length == 1 ? "" : code.substring(spl.length + 1);
+		code = spl.length == 1 ? "" : code.substring(spl.length + 1);
 		
-		ICommand cmd = Plugin.pluginCmd.findCommand(e, spl[0], args, result);
-		return cmd;
+		Command command = Plugin.pluginCmd.patternManager.findCommand(e, spl[0]);
+		if (command != null)
+			return stack.call(command, code);
+		return code;
 	}
 }

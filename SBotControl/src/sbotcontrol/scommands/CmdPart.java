@@ -1,12 +1,12 @@
 package sbotcontrol.scommands;
 
 import sbotcontrol.Plugin;
+import scommands.Command;
 import scommands.CommandStack;
-import scommands.TextCommand;
 import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.event.GenericUserMessageEvent;
 
-public class CmdPart extends TextCommand {
+public class CmdPart extends Command {
 	public CmdPart(Plugin plugin) {
 		super(plugin, "part");
 	}

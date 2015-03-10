@@ -24,21 +24,22 @@ public class MultilineString {
 	protected StringBuilder sb = new StringBuilder();
 	
 	public <T> void add(Collection<T> els, Function<T, String> f) {
-		for (T el : els) {
-			String line = f.apply(el);
-			if (line == null || line.length() == 0)
-				continue;
-			
-			if (sb.length() != 0)
-				sb.append("\n");
-			sb.append(line);
-		}
+		for (T el : els)
+			add(f.apply(el));
 	}
 	public void add(Collection<String> lines) {
 		add(lines, line -> line);
 	}
 	public void add(String[] lines) {
 		add(Arrays.asList(lines));
+	}
+	public void add(String line) {
+		if (line == null || line.length() == 0)
+			return;
+		
+		if (sb.length() != 0)
+			sb.append("\n");
+		sb.append(line);
 	}
 	
 	public String toString() {

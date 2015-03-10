@@ -15,18 +15,13 @@ public final class CommandStack {
 		event = e;
 	}
 	
-	public Object call(Command<?, ?> command, Object input) {
-		if (command.clsInput.isInstance(input)) {
-			if (stack.size() < MAX_STACK_SIZE) {
-				stack.push(new CommandStackEntry(command, input));
-				Object result = command.callGeneric(event, input, this);
-				stack.pop();
-				return result;
-			} else {
-				throw new RuntimeException("Stack overflow.");
-			}
-		} else {
-			throw new RuntimeException("Invalid input type passed to the command.");
-		}
+	public String call(Command command, String input) {
+		if (stack.size() < MAX_STACK_SIZE) {
+			stack.push(new CommandStackEntry(command, input));
+			String result = command.call(event, input, this);
+			stack.pop();
+			return result;
+		} else
+			throw new RuntimeException("Stack overflow.");
 	}
 }

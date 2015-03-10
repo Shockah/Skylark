@@ -2,8 +2,8 @@ package sfactoids;
 
 import java.util.Date;
 import pl.shockah.json.JSONObject;
-import scommands.old.Command;
-import scommands.old.CommandResult;
+import scommands.Command;
+import scommands.CommandStack;
 import shocky3.BotManager;
 import shocky3.JSONUtil;
 import shocky3.pircbotx.Bot;
@@ -16,24 +16,22 @@ public class CmdRemember extends Command {
 		super(plugin, "remember", "r");
 	}
 	
-	public void call(GenericUserMessageEvent e, String trigger, String args, CommandResult result) {
+	public String call(GenericUserMessageEvent e, String input, CommandStack stack) {
 		//String originalArgs = args;
-		String[] spl = args.split("\\s");
+		String[] spl = input.split("\\s");
 		String context = "global";
 		String name = null;
 		
-		if (spl.length < 2) {
-			return;
-		}
+		if (spl.length < 2)
+			return null;
 		
 		if (spl[0].startsWith("@")) {
 			context = spl[0].substring(1).toLowerCase();
-			args = args.substring(spl[0].length() + 1);
-			spl = args.split("\\s");
+			input = input.substring(spl[0].length() + 1);
+			spl = input.split("\\s");
 			
-			if (spl.length < 2) {
-				return;
-			}
+			if (spl.length < 2)
+				return null;
 			
 			if (!context.equals("global")) {
 				String serverName = e.<Bot>getBot().manager.name;
@@ -47,10 +45,10 @@ public class CmdRemember extends Command {
 		context = context.toLowerCase();
 		
 		name = spl[0];
-		args = args.substring(spl[0].length() + 1);
+		input = input.substring(spl[0].length() + 1);
 		//spl = args.split("\\s");
 		
-		String code = args;
+		String code = input;
 		
 		JSONObject jAuthor = new JSONObject();
 		BotManager bm = e.<Bot>getBot().manager;
@@ -74,6 +72,6 @@ public class CmdRemember extends Command {
 			"timestamp", (int)(new Date().getTime() / 1000l)
 		)));
 		
-		result.add(CommandResult.Type.Notice, "Done.");
+		return "Done.";
 	}
 }
