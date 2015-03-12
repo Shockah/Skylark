@@ -1,4 +1,4 @@
-package sconsole;
+package sconsole.old;
 
 public class ConsoleViewTabs extends ConsoleViewSelectList<ConsoleTab> {
 	public ConsoleViewTab view = null;

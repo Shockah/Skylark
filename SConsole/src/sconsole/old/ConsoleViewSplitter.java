@@ -1,4 +1,4 @@
-package sconsole;
+package sconsole.old;
 
 public class ConsoleViewSplitter extends ConsoleView {
 	public static enum Side {

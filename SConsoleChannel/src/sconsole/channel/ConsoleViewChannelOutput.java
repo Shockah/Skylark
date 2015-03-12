@@ -1,8 +1,8 @@
 package sconsole.channel;
 
-import sconsole.ConsoleThread;
-import sconsole.ConsoleViewSplitter;
-import sconsole.ConsoleViewTextareaIRCColors;
+import sconsole.old.ConsoleThread;
+import sconsole.old.ConsoleViewSplitter;
+import sconsole.old.ConsoleViewTextareaIRCColors;
 import com.googlecode.lanterna.input.Key;
 
 public class ConsoleViewChannelOutput extends ConsoleViewTextareaIRCColors {

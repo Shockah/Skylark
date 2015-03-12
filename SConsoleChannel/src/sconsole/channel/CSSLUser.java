@@ -2,8 +2,8 @@ package sconsole.channel;
 
 import org.pircbotx.Channel;
 import org.pircbotx.User;
-import sconsole.ConsoleViewSplitter.Side;
-import sconsole.IConsoleViewSelectList;
+import sconsole.old.IConsoleViewSelectList;
+import sconsole.old.ConsoleViewSplitter.Side;
 
 public class CSSLUser implements IConsoleViewSelectList, Comparable<CSSLUser> {
 	public final Channel channel;

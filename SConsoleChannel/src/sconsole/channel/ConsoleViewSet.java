@@ -1,6 +1,6 @@
 package sconsole.channel;
 
-import sconsole.ConsoleTab;
+import sconsole.old.ConsoleTab;
 
 public class ConsoleViewSet {
 	public final ConsoleTab tab;

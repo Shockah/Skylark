@@ -1,4 +1,4 @@
-package sconsole;
+package sconsole.old;
 
 public interface IConsolePluginListener {
 	public void onConsoleEnabled();

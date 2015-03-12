@@ -1,4 +1,4 @@
-package sconsole;
+package sconsole.old;
 
 import com.googlecode.lanterna.input.Key;
 

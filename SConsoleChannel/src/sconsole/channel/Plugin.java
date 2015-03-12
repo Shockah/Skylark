@@ -19,11 +19,11 @@ import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.types.GenericChannelEvent;
 import pl.shockah.Util;
-import sconsole.ConsoleTab;
-import sconsole.ConsoleViewSplitter;
-import sconsole.ConsoleViewTab;
-import sconsole.ConsoleViewTabs;
-import sconsole.IConsolePluginListener;
+import sconsole.old.ConsoleTab;
+import sconsole.old.ConsoleViewSplitter;
+import sconsole.old.ConsoleViewTab;
+import sconsole.old.ConsoleViewTabs;
+import sconsole.old.IConsolePluginListener;
 import shocky3.BotManager;
 import shocky3.PluginInfo;
 import shocky3.pircbotx.Bot;
@@ -37,7 +37,7 @@ public class Plugin extends shocky3.ListenerPlugin implements IConsolePluginList
 		Colors.MAGENTA, Colors.RED, Colors.YELLOW
 	};
 	
-	@Dependency protected static sconsole.Plugin pluginConsole;
+	@Dependency protected static sconsole.old.Plugin pluginConsole;
 	public Map<BotManager, ConsoleTab> tabsServer = Collections.synchronizedMap(new HashMap<BotManager, ConsoleTab>());
 	public Map<ConsoleTab, Map<Channel, ConsoleViewSet>> tabsChannel = Collections.synchronizedMap(new HashMap<ConsoleTab, Map<Channel, ConsoleViewSet>>());
 	

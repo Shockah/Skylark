@@ -1,9 +1,9 @@
 package sconsole.channel;
 
 import org.pircbotx.Channel;
-import sconsole.ConsoleThread;
-import sconsole.ConsoleViewLongTextfield;
-import sconsole.ConsoleViewSplitter;
+import sconsole.old.ConsoleThread;
+import sconsole.old.ConsoleViewLongTextfield;
+import sconsole.old.ConsoleViewSplitter;
 import com.googlecode.lanterna.input.Key;
 
 public class ConsoleViewChannelInput extends ConsoleViewLongTextfield {

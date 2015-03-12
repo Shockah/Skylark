@@ -1,4 +1,4 @@
-package sconsole;
+package sconsole.old;
 
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.Terminal.Color;

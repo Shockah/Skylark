@@ -3,9 +3,9 @@ package sconsole.channel;
 import java.util.Collections;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
-import sconsole.ConsoleThread;
-import sconsole.ConsoleViewSelectList;
-import sconsole.ConsoleViewSplitter;
+import sconsole.old.ConsoleThread;
+import sconsole.old.ConsoleViewSelectList;
+import sconsole.old.ConsoleViewSplitter;
 import com.googlecode.lanterna.input.Key;
 
 public class ConsoleViewChannelUserList extends ConsoleViewSelectList<CSSLUser> {

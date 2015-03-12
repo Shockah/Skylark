@@ -1,4 +1,4 @@
-package sconsole;
+package sconsole.old;
 
 import java.io.PrintStream;
 import java.util.Locale;

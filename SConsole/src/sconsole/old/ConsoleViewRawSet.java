@@ -1,6 +1,6 @@
-package sconsole;
+package sconsole.old;
 
-import sconsole.ConsoleTab;
+import sconsole.old.ConsoleTab;
 
 public class ConsoleViewRawSet {
 	public final ConsoleTab tab;

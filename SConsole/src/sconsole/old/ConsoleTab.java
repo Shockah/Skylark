@@ -1,4 +1,4 @@
-package sconsole;
+package sconsole.old;
 
 public class ConsoleTab implements IConsoleViewSelectList {
 	public final ConsoleView view;

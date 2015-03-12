@@ -1,4 +1,4 @@
-package sconsole;
+package sconsole.old;
 
 import java.util.ArrayList;
 import java.util.Collections;
