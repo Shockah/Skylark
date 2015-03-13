@@ -57,7 +57,7 @@ public class Console {
 		synchronized (updateRequested) {
 			while (!updateRequested.isEmpty()) {
 				View view = updateRequested.remove(0);
-				view.update();
+				view.update(null);
 			}
 		}
 	}
