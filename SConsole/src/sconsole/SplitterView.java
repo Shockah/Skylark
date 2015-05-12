@@ -53,13 +53,14 @@ public class SplitterView extends View {
 		requestUpdate();
 	}
 	
-	protected void update(Side side) {
+	protected void update(View parent, Side side) {
 		if (mainView == null ^ offView == null) {
 			View view = mainView == null ? offView : mainView;
 			view.clip.x = view.clip.y = 0;
 			view.clip.w = clip.w;
 			view.clip.h = clip.h;
-			view.update(null);
+			view.update(this, null);
+			view.putBorder();
 		} else if (mainView == null) {
 			clear();
 		} else {
@@ -101,8 +102,22 @@ public class SplitterView extends View {
 			mainView.clip.fix();
 			offView.clip.fix();
 			
-			mainView.update(this.side);
-			offView.update(this.side.opposite());
+			mainView.update(this, this.side);
+			offView.update(this, this.side.opposite());
+			mainView.putBorder();
+			offView.putBorder();
+		}
+	}
+	
+	public void focus() {
+		if (console.focus == null) {
+			View view = mainView == null ? offView : mainView;
+			if (view != null)
+				view.focus();
+		} else {
+			View view = console.focus == mainView ? offView : mainView;
+			if (view != null)
+				view.focus();
 		}
 	}
 }

@@ -2,6 +2,7 @@ package sconsole;
 
 import pl.shockah.Math2;
 import com.googlecode.lanterna.screen.Screen;
+import com.googlecode.lanterna.terminal.Terminal.Color;
 
 public class Clip {
 	public final Screen screen;
@@ -54,5 +55,34 @@ public class Clip {
 		y = Math2.limit(y, 0, parent.h - 1);
 		w = Math2.limit(w, 0, parent.w - x);
 		h = Math2.limit(h, 0, parent.h - y);
+	}
+	
+	public boolean inBounds(int x, int y) {
+		if (parent != null && !parent.inBounds(this.x + x, this.y + y))
+			return false;
+		if (x < 0 || y < 0 || x >= w || y >= h)
+			return false;
+		return true;
+	}
+	
+	public Clip inParent() {
+		if (parent == null)
+			return this;
+		return new Clip(parent, x, y, w, h);
+	}
+	
+	public void put(int x, int y, char c) {
+		put(x, y, "" + c);
+	}
+	public void put(int x, int y, String s) {
+		if (!inBounds(x, y))
+			return;
+		screen.putString(X() + x, Y() + y, s, Color.DEFAULT, Color.DEFAULT);
+	}
+	
+	public void clear() {
+		for (int yy = y; yy < y + h; yy++)
+			for (int xx = x; xx < x + w; xx++)
+				screen.putString(xx, yy, " ", Color.DEFAULT, Color.DEFAULT);
 	}
 }
