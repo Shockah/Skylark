@@ -24,10 +24,14 @@ public class Console {
 	public Clip clip = null;
 	public boolean[] borders = null;
 	
+	protected InputThread inputThread = null;
 	protected View view = null;
 	protected final List<View> updateRequested = Collections.synchronizedList(new LinkedList<View>());
 	protected View focus = null;
 	protected List<View> focusStack = Collections.synchronizedList(new LinkedList<View>());
+	protected InputHandler preInputHandler = null, postInputHandler = null;
+	protected InputHandler inputHandler = null;
+	protected List<InputHandler> inputHandlerStack = Collections.synchronizedList(new LinkedList<InputHandler>());
 	
 	public Console(Plugin plugin) {
 		this.plugin = plugin;
@@ -45,11 +49,16 @@ public class Console {
 		}
 		clip = new Clip(screen);
 		
+		preInputHandler = key -> false;
+		postInputHandler = key -> false;
+		
 		screen.getTerminal().addResizeListener(size -> onResize());
 		onResize();
 	}
 	
 	public void stop() {
+		inputThread.running = false;
+		inputHandler = null;
 		view = null;
 		updateRequested.clear();
 		clip = null;
@@ -97,6 +106,23 @@ public class Console {
 				pushFocus(view);
 			else
 				focus = focusStack.get(focusStack.size() - 1);
+		}
+	}
+	
+	public void pushInputHandler(InputHandler handler) {
+		synchronized (inputHandlerStack) {
+			inputHandlerStack.add(handler);
+			inputHandler = handler;
+		}
+	}
+	public void popInputHandler() {
+		synchronized (inputHandlerStack) {
+			if (!inputHandlerStack.isEmpty())
+				inputHandlerStack.remove(inputHandlerStack.size() - 1);
+			if (inputHandlerStack.isEmpty())
+				pushInputHandler(inputHandler);
+			else
+				inputHandler = inputHandlerStack.get(inputHandlerStack.size() - 1);
 		}
 	}
 	
