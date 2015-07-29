@@ -1,0 +1,8 @@
+{
+	"name": "Shocky: Settings",
+	"version": "r1",
+	"author": "Shockah",
+	
+	"packageName": "Shocky.Settings",
+	"baseClass": "shocky3.settings.Plugin"
+}

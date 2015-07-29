@@ -23,14 +23,12 @@ public class CustomInputParser extends InputParser {
 		Channel channel = (target.length() != 0 && configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0 && bot.getUserChannelDao().containsChannel(target)) ? bot.getUserChannelDao().getChannel(target) : null;
 		
 		if (command.equals("ACCOUNT")) {
-			if (availableAccountNotify == null) {
+			if (availableAccountNotify == null)
 				availableAccountNotify = bot.getEnabledCapabilities().contains("account-notify");
-			}
 			if (availableAccountNotify) {
 				String account = parsedLine.get(0);
-				if (account.equals("0") || account.equals("*")) {
+				if (account.equals("0") || account.equals("*"))
 					account = null;
-				}
 				User source = bot.getUserChannelDao().getUser(sourceh);
 				configuration.getListenerManager().dispatchEvent(new AccountNotifyEvent(bot, channel, new UserHostmask(source), source, account));
 				return;
@@ -39,22 +37,17 @@ public class CustomInputParser extends InputParser {
 			User source = bot.getUserChannelDao().getUser(sourceh);
 			String sourceNick = source.getNick();
 			if (!sourceNick.equalsIgnoreCase(bot.getNick())) {
-				if (availableExtendedJoin == null) {
+				if (availableExtendedJoin == null)
 					availableExtendedJoin = bot.getEnabledCapabilities().contains("extended-join");
-				}
 				if (availableExtendedJoin) {
 					String account = parsedLine.get(1);
-					if (account.equals("0") || account.equals("*")) {
+					if (account.equals("0") || account.equals("*"))
 						account = null;
-					}
 					configuration.getListenerManager().dispatchEvent(new ExtendedJoinEvent(bot, channel, new UserHostmask(source), source, account));
 				}
 			}
 		}
 		
 		super.processCommand(target, sourceh, command, line, parsedLine);
-	}
-	public void processCommand(String target, String sourceNick, String sourceLogin, String sourceHostname, String command, String line, List<String> parsedLine) throws IOException {
-		
 	}
 }

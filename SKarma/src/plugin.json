@@ -1,8 +1,0 @@
-{
-	"name": "Shocky - Karma",
-	"version": "r1",
-	"author": "Shockah",
-	
-	"internalName": "Shocky.Karma",
-	"baseClass": "skarma.Plugin"
-}

@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import org.bson.types.ObjectId;
+import pl.shockah.func.Action1;
 import pl.shockah.json.JSONList;
 import pl.shockah.json.JSONObject;
 import com.mongodb.BasicDBObject;
@@ -15,35 +16,43 @@ public final class JSONUtil {
 		BasicDBObject bdbo = new BasicDBObject();
 		for (String key : j.keys()) {
 			Object o = j.get(key);
-			if (o instanceof JSONObject) o = toDBObject((JSONObject)o);
-			if (o instanceof JSONList<?>) o = toDBList((JSONList<?>)o);
+			if (o instanceof JSONObject)
+				o = toDBObject((JSONObject)o);
+			if (o instanceof JSONList<?>)
+				o = toDBList((JSONList<?>)o);
 			bdbo.append(key, o);
 		}
 		return bdbo;
 	}
-	@SuppressWarnings("unchecked") public static List<?> toDBList(JSONList<?> j) {
+	
+	@SuppressWarnings("unchecked")
+	public static List<?> toDBList(JSONList<?> j) {
 		ListIterator<Object> lit = (ListIterator<Object>)j.listIterator();
 		while (lit.hasNext()) {
 			Object o = lit.next();
-			if (o instanceof JSONObject) lit.set(toDBObject((JSONObject)o));
-			else if (o instanceof JSONList<?>) lit.set(toDBList((JSONList<?>)o));
+			if (o instanceof JSONObject)
+				lit.set(toDBObject((JSONObject)o));
+			else if (o instanceof JSONList<?>)
+				lit.set(toDBList((JSONList<?>)o));
 		}
 		return j;
 	}
+	
 	public static JSONObject fromDBObject(DBObject dbo) {
 		JSONObject j = new JSONObject();
 		for (String key : dbo.keySet()) {
 			Object o = dbo.get(key);
-			if (o instanceof ObjectId) continue;
-			else if (o instanceof List) o = fromDBList((List<?>)o);
+			if (o instanceof ObjectId)
+				continue;
+			else if (o instanceof List)
+				o = fromDBList((List<?>)o);
 			else if (o instanceof DBObject) {
 				JSONObject jo = fromDBObject((DBObject)o);
 				if (jo.contains("0")) {
 					JSONList<Object> jl = new JSONList<>();
 					int count = jo.size();
-					for (int i = 0; i < count; i++) {
+					for (int i = 0; i < count; i++)
 						jl.add(jo.get("" + i));
-					}
 					o = jl;
 				} else {
 					o = jo;
@@ -53,12 +62,16 @@ public final class JSONUtil {
 		}
 		return j;
 	}
-	@SuppressWarnings("unchecked") public static JSONList<?> fromDBList(List<?> list) {
+	
+	@SuppressWarnings("unchecked")
+	public static JSONList<?> fromDBList(List<?> list) {
 		ListIterator<Object> lit = (ListIterator<Object>)list.listIterator();
 		while (lit.hasNext()) {
 			Object o = lit.next();
-			if (o instanceof DBObject) lit.set(fromDBObject((DBObject)o));
-			else if (o instanceof List<?>) lit.set(fromDBList((List<?>)o));
+			if (o instanceof DBObject)
+				lit.set(fromDBObject((DBObject)o));
+			else if (o instanceof List<?>)
+				lit.set(fromDBList((List<?>)o));
 		}
 		return fromList(list);
 	}
@@ -69,9 +82,20 @@ public final class JSONUtil {
 	
 	public static List<DBObject> all(DBCursor dbc) {
 		List<DBObject> list = new LinkedList<>();
-		while (dbc.hasNext()) list.add(dbc.next());
+		while (dbc.hasNext())
+			list.add(dbc.next());
 		return list;
 	}
 	
-	private JSONUtil() {}
+	public static void forEach(DBCursor dbc, Action1<DBObject> f) {
+		while (dbc.hasNext())
+			f.f(dbc.next());
+	}
+	
+	public static void forEachJSONObject(DBCursor dbc, Action1<JSONObject> f) {
+		while (dbc.hasNext())
+			f.f(fromDBObject(dbc.next()));
+	}
+	
+	private JSONUtil() { }
 }

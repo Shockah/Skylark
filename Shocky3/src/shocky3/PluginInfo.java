@@ -1,7 +1,6 @@
 package shocky3;
 
 import java.io.File;
-import java.util.LinkedList;
 import java.util.List;
 import pl.shockah.json.JSONObject;
 
@@ -18,20 +17,22 @@ public final class PluginInfo {
 		this.pluginFile = pluginFile;
 	}
 	
-	public String baseClass() {return jInfo.getString("baseClass");}
-	public String internalName() {return jInfo.getString("internalName");}
-	public List<String> dependsOn() {return jInfo.contains("dependsOn") ? jInfo.getList("dependsOn").ofStrings() : new LinkedList<String>();}
-	public String name() {return jInfo.contains("name") ? jInfo.getString("name") : null;}
-	public String version() {return jInfo.contains("version") ? jInfo.getString("version") : null;}
-	public String author() {return jInfo.contains("author") ? jInfo.getString("author") : null;}
-	public boolean defaultState() {return jInfo.contains("defaultState") ? jInfo.getBoolean("defaultState") : true;}
+	public String baseClass() { return jInfo.getString("baseClass"); }
+	public String packageName() { return jInfo.getString("package"); }
+	public List<String> dependsOn() { return jInfo.getListOrNew("dependsOn").ofStrings(); }
+	public String name() { return jInfo.getString("name", null); }
+	public String version() { return jInfo.getString("version", null); }
+	public String author() { return jInfo.getString("author", null); }
+	public boolean defaultState() { return jInfo.getBoolean("defaultState", true); }
 	
 	public void markLoad() {
-		if (markedForLoading()) return;
+		if (markedForLoading())
+			return;
 		manager.markLoad(this);
 	}
 	public void markUnload() {
-		if (!markedForLoading()) return;
+		if (!markedForLoading())
+			return;
 		manager.markUnload(this);
 	}
 	public boolean markedForLoading() {

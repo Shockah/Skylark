@@ -80,76 +80,76 @@ public abstract class ListenerPlugin extends Plugin {
 		listener = new MyListener(this);
 	}
 	
-	protected void onEvent(Event e) {}
-	protected void onAction(ActionEvent e) {}
-	protected void onChannelInfo(ChannelInfoEvent e) {}
-	protected void onConnect(ConnectEvent e) {}
-	protected void onDisconnect(DisconnectEvent e) {}
-	protected void onFinger(FingerEvent e) {}
-	protected void onGenericChannel(GenericChannelEvent e) {}
-	protected void onGenericChannelMode(GenericChannelModeEvent e) {}
-	protected void onGenericChannelUser(GenericChannelUserEvent e) {}
-	protected void onGenericCTCP(GenericCTCPEvent e) {}
-	protected void onGenericDCC(GenericDCCEvent e) {}
-	protected void onGenericMessage(GenericMessageEvent e) {}
-	protected void onGenericUser(GenericUserEvent e) {}
-	protected void onGenericUserMode(GenericUserModeEvent e) {}
-	protected void onHalfOp(HalfOpEvent e) {}
-	protected void onIncomingChatRequest(IncomingChatRequestEvent e) {}
-	protected void onIncomingFileTransfer(IncomingFileTransferEvent e) {}
-	protected void onInvite(InviteEvent e) {}
-	protected void onJoin(JoinEvent e) {}
-	protected void onKick(KickEvent e) {}
-	protected void onMessage(MessageEvent e) {}
-	protected void onMode(ModeEvent e) {}
-	protected void onMotd(MotdEvent e) {}
-	protected void onNickAlreadyInUse(NickAlreadyInUseEvent e) {}
-	protected void onNickChange(NickChangeEvent e) {}
-	protected void onNotice(NoticeEvent e) {}
-	protected void onOp(OpEvent e) {}
-	protected void onOwner(OwnerEvent e) {}
-	protected void onPart(PartEvent e) {}
-	protected void onPing(PingEvent e) {}
-	protected void onPrivateMessage(PrivateMessageEvent e) {}
-	protected void onQuit(QuitEvent e) {}
-	protected void onRemoveChannelBan(RemoveChannelBanEvent e) {}
-	protected void onRemoveChannelKey(RemoveChannelKeyEvent e) {}
-	protected void onRemoveChannelLimit(RemoveChannelLimitEvent e) {}
-	protected void onRemoveInviteOnly(RemoveInviteOnlyEvent e) {}
-	protected void onRemoveModerated(RemoveModeratedEvent e) {}
-	protected void onRemoveNoExternalMessages(RemoveNoExternalMessagesEvent e) {}
-	protected void onRemovePrivate(RemovePrivateEvent e) {}
-	protected void onRemoveSecret(RemoveSecretEvent e) {}
-	protected void onRemoveTopicProtection(RemoveTopicProtectionEvent e) {}
-	protected void onServerPing(ServerPingEvent e) {}
-	protected void onServerResponse(ServerResponseEvent e) {}
-	protected void onSetChannelBan(SetChannelBanEvent e) {}
-	protected void onSetChannelKey(SetChannelKeyEvent e) {}
-	protected void onSetChannelLimit(SetChannelLimitEvent e) {}
-	protected void onSetInviteOnly(SetInviteOnlyEvent e) {}
-	protected void onSetModerated(SetModeratedEvent e) {}
-	protected void onSetNoExternalMessages(SetNoExternalMessagesEvent e) {}
-	protected void onSetPrivate(SetPrivateEvent e) {}
-	protected void onSetSecret(SetSecretEvent e) {}
-	protected void onSetTopicProtection(SetTopicProtectionEvent e) {}
-	protected void onSocketConnect(SocketConnectEvent e) {}
-	protected void onSuperOp(SuperOpEvent e) {}
-	protected void onTime(TimeEvent e) {}
-	protected void onTopic(TopicEvent e) {}
-	protected void onUnknown(UnknownEvent e) {}
-	protected void onUserList(UserListEvent e) {}
-	protected void onUserMode(UserModeEvent e) {}
-	protected void onVersion(VersionEvent e) {}
-	protected void onVoice(VoiceEvent e) {}
-	protected void onWhois(WhoisEvent e) {}
+	protected void onEvent(Event e) { }
+	protected void onAction(ActionEvent e) { }
+	protected void onChannelInfo(ChannelInfoEvent e) { }
+	protected void onConnect(ConnectEvent e) { }
+	protected void onDisconnect(DisconnectEvent e) { }
+	protected void onFinger(FingerEvent e) { }
+	protected void onGenericChannel(GenericChannelEvent e) { }
+	protected void onGenericChannelMode(GenericChannelModeEvent e) { }
+	protected void onGenericChannelUser(GenericChannelUserEvent e) { }
+	protected void onGenericCTCP(GenericCTCPEvent e) { }
+	protected void onGenericDCC(GenericDCCEvent e) { }
+	protected void onGenericMessage(GenericMessageEvent e) { }
+	protected void onGenericUser(GenericUserEvent e) { }
+	protected void onGenericUserMode(GenericUserModeEvent e) { }
+	protected void onHalfOp(HalfOpEvent e) { }
+	protected void onIncomingChatRequest(IncomingChatRequestEvent e) { }
+	protected void onIncomingFileTransfer(IncomingFileTransferEvent e) { }
+	protected void onInvite(InviteEvent e) { }
+	protected void onJoin(JoinEvent e) { }
+	protected void onKick(KickEvent e) { }
+	protected void onMessage(MessageEvent e) { }
+	protected void onMode(ModeEvent e) { }
+	protected void onMotd(MotdEvent e) { }
+	protected void onNickAlreadyInUse(NickAlreadyInUseEvent e) { }
+	protected void onNickChange(NickChangeEvent e) { }
+	protected void onNotice(NoticeEvent e) { }
+	protected void onOp(OpEvent e) { }
+	protected void onOwner(OwnerEvent e) { }
+	protected void onPart(PartEvent e) { }
+	protected void onPing(PingEvent e) { }
+	protected void onPrivateMessage(PrivateMessageEvent e) { }
+	protected void onQuit(QuitEvent e) { }
+	protected void onRemoveChannelBan(RemoveChannelBanEvent e) { }
+	protected void onRemoveChannelKey(RemoveChannelKeyEvent e) { }
+	protected void onRemoveChannelLimit(RemoveChannelLimitEvent e) { }
+	protected void onRemoveInviteOnly(RemoveInviteOnlyEvent e) { }
+	protected void onRemoveModerated(RemoveModeratedEvent e) { }
+	protected void onRemoveNoExternalMessages(RemoveNoExternalMessagesEvent e) { }
+	protected void onRemovePrivate(RemovePrivateEvent e) { }
+	protected void onRemoveSecret(RemoveSecretEvent e) { }
+	protected void onRemoveTopicProtection(RemoveTopicProtectionEvent e) { }
+	protected void onServerPing(ServerPingEvent e) { }
+	protected void onServerResponse(ServerResponseEvent e) { }
+	protected void onSetChannelBan(SetChannelBanEvent e) { }
+	protected void onSetChannelKey(SetChannelKeyEvent e) { }
+	protected void onSetChannelLimit(SetChannelLimitEvent e) { }
+	protected void onSetInviteOnly(SetInviteOnlyEvent e) { }
+	protected void onSetModerated(SetModeratedEvent e) { }
+	protected void onSetNoExternalMessages(SetNoExternalMessagesEvent e) { }
+	protected void onSetPrivate(SetPrivateEvent e) { }
+	protected void onSetSecret(SetSecretEvent e) { }
+	protected void onSetTopicProtection(SetTopicProtectionEvent e) { }
+	protected void onSocketConnect(SocketConnectEvent e) { }
+	protected void onSuperOp(SuperOpEvent e) { }
+	protected void onTime(TimeEvent e) { }
+	protected void onTopic(TopicEvent e) { }
+	protected void onUnknown(UnknownEvent e) { }
+	protected void onUserList(UserListEvent e) { }
+	protected void onUserMode(UserModeEvent e) { }
+	protected void onVersion(VersionEvent e) { }
+	protected void onVoice(VoiceEvent e) { }
+	protected void onWhois(WhoisEvent e) { }
 	
-	protected void onExtendedJoin(ExtendedJoinEvent e) {}
-	protected void onAccountNotify(AccountNotifyEvent e) {}
-	protected void onOutAction(OutActionEvent e) {}
-	protected void onOutMessage(OutMessageEvent e) {}
-	protected void onOutNotice(OutNoticeEvent e) {}
-	protected void onOutPrivateMessage(OutPrivateMessageEvent e) {}
-	protected void onServerNotice(ServerNoticeEvent e) {}
+	protected void onExtendedJoin(ExtendedJoinEvent e) { }
+	protected void onAccountNotify(AccountNotifyEvent e) { }
+	protected void onOutAction(OutActionEvent e) { }
+	protected void onOutMessage(OutMessageEvent e) { }
+	protected void onOutNotice(OutNoticeEvent e) { }
+	protected void onOutPrivateMessage(OutPrivateMessageEvent e) { }
+	protected void onServerNotice(ServerNoticeEvent e) { }
 	
 	protected class MyListener extends CustomListenerAdapter {
 		public final ListenerPlugin plugin;
@@ -162,7 +162,9 @@ public abstract class ListenerPlugin extends Plugin {
 			try {
 				plugin.onEvent(e);
 				super.onEvent(e);
-			} catch (Exception ex) {ex.printStackTrace();}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
 		}
 		public void onAction(ActionEvent e) { plugin.onAction(e); }
 		public void onChannelInfo(ChannelInfoEvent e) { plugin.onChannelInfo(e); }

@@ -15,16 +15,16 @@ public abstract class Plugin {
 		this.pinfo = pinfo;
 	}
 	
-	protected void onLoad() {}
-	protected void postLoad() {}
+	protected void onLoad() { }
+	protected void postLoad() { }
 	
-	protected void onUnload() {}
+	protected void onUnload() { }
 	
-	protected void onBotStarted(BotManager manager, PircBotX bot) {}
-	protected void onSettingUpdated(String setting) {}
+	protected void onBotStarted(BotManager manager, PircBotX bot) { }
+	protected void onSettingUpdated(String setting) { }
 	
 	@Retention(RetentionPolicy.RUNTIME) @Target(ElementType.FIELD)
 	public static @interface Dependency {
-		public String internalName() default "";
+		public String packageName() default "";
 	}
 }

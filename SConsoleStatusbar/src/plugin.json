@@ -1,8 +1,0 @@
-{
-	"name": "Shocky - Console - Statusbar",
-	"version": "r1",
-	"author": "Shockah",
-	
-	"internalName": "Shocky.SConsole.Statusbar",
-	"baseClass": "sconsole.sbar.Plugin"
-}

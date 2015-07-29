@@ -17,19 +17,18 @@ import shocky3.pircbotx.event.ServerNoticeEvent;
 
 public class CustomListenerAdapter extends ListenerAdapter {
 	public void onEvent(Event event) throws Exception {
-		if (event instanceof ExtendedJoinEvent) {
+		if (event instanceof ExtendedJoinEvent)
 			onExtendedJoin((ExtendedJoinEvent)event);
-		} else if (event instanceof AccountNotifyEvent) {
+		else if (event instanceof AccountNotifyEvent)
 			onAccountNotify((AccountNotifyEvent)event);
-		} else if (event instanceof OutActionEvent) {
+		else if (event instanceof OutActionEvent)
 			onOutAction((OutActionEvent)event);
-		} else if (event instanceof OutMessageEvent) {
+		else if (event instanceof OutMessageEvent)
 			onOutMessage((OutMessageEvent)event);
-		} else if (event instanceof OutNoticeEvent) {
+		else if (event instanceof OutNoticeEvent)
 			onOutNotice((OutNoticeEvent)event);
-		} else if (event instanceof OutPrivateMessageEvent) {
+		else if (event instanceof OutPrivateMessageEvent)
 			onOutPrivateMessage((OutPrivateMessageEvent)event);
-		}
 		
 		if (event instanceof NoticeEvent) {
 			NoticeEvent e = (NoticeEvent)event;
@@ -52,17 +51,19 @@ public class CustomListenerAdapter extends ListenerAdapter {
 				field.set(e.getUser(), e.getDaoSnapshot());
 				
 				mfield.setInt(field, field.getModifiers() | Modifier.FINAL);
-			} catch (Exception ex) {ex.printStackTrace();}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
 		}
 		
 		super.onEvent(event);
 	}
 	
-	public void onExtendedJoin(ExtendedJoinEvent event) {}
-	public void onAccountNotify(AccountNotifyEvent event) {}
-	public void onOutAction(OutActionEvent event) {}
-	public void onOutMessage(OutMessageEvent event) {}
-	public void onOutNotice(OutNoticeEvent event) {}
-	public void onOutPrivateMessage(OutPrivateMessageEvent event) {}
-	public void onServerNotice(ServerNoticeEvent event) {}
+	public void onExtendedJoin(ExtendedJoinEvent event) { }
+	public void onAccountNotify(AccountNotifyEvent event) { }
+	public void onOutAction(OutActionEvent event) { }
+	public void onOutMessage(OutMessageEvent event) { }
+	public void onOutNotice(OutNoticeEvent event) { }
+	public void onOutPrivateMessage(OutPrivateMessageEvent event) { }
+	public void onServerNotice(ServerNoticeEvent event) { }
 }

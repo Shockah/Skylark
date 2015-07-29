@@ -3,7 +3,6 @@ package shocky3;
 import java.io.File;
 import java.util.List;
 import pl.shockah.FileIO;
-import pl.shockah.Pair;
 import pl.shockah.Util;
 import pl.shockah.json.JSONObject;
 import pl.shockah.json.JSONParser;
@@ -27,7 +26,6 @@ public class Shocky {
 		new Shocky().run();
 	}
 	
-	public final Settings settings;
 	public final ServerManager serverManager;
 	public final PluginManager pluginManager;
 	public boolean running = false;
@@ -35,7 +33,6 @@ public class Shocky {
 	protected String mongoDb = null;
 	
 	public Shocky() {
-		settings = new Settings(this);
 		serverManager = new ServerManager(this);
 		pluginManager = new PluginManager(this);
 	}
@@ -47,49 +44,50 @@ public class Shocky {
 		if (configFile.exists()) {
 			try {
 				j = new JSONParser().parseObject(FileIO.readWholeString(configFile));
-			} catch (Exception e) {}
+			} catch (Exception e) { }
 		}
-		if (j == null) j = new JSONObject();
+		if (j == null)
+			j = new JSONObject();
 		
 		try {
-			initializeMongo(j.contains("mongo") ? j.getObject("mongo") : new JSONObject());
-			
-			settings.read();
-			List<Pair<BotManager, String>> channels = serverManager.readConfig();
+			initializeMongo(j.getObjectOrNew("mongo"));
+			List<ServerManager.BotManagerChannelEntry> channels = serverManager.readConfig();
 			
 			pluginManager.readPlugins();
 			pluginManager.reload();
 			
-			for (Pair<BotManager, String> pair : channels) {
-				pair.get1().joinChannel(pair.get2());
-			}
+			for (ServerManager.BotManagerChannelEntry entry : channels)
+				entry.manager.joinChannel(entry.channel);
 			
-			settings.write();
-			
-			while (running) {
+			while (running)
 				Util.sleep(50);
-			}
-		} catch (Exception e) {e.printStackTrace();}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
-		synchronized (serverManager.botManagers) {for (BotManager bm : serverManager.botManagers) {
-			synchronized (bm.bots) {for (Bot bot : bm.bots) {
-				if (bot.isConnected()) {
-					bot.stopBotReconnect();
-					bot.sendIRC().quitServer();
+		synchronized (serverManager.botManagers) {
+			for (BotManager bm : serverManager.botManagers)
+				synchronized (bm.bots) {
+					for (Bot bot : bm.bots)
+						if (bot.isConnected()) {
+							bot.stopBotReconnect();
+							bot.sendIRC().quitServer();
+						}
 				}
-			}}
-		}}
+		}
 	}
 	
 	private void initializeMongo(JSONObject j) {
 		try {
-			String mHost = j.contains("host") ? j.getString("host") : null;
-			int mPort = j.contains("port") ? j.getInt("port") : 0;
+			String mHost = j.getString("host", null);
+			int mPort = j.getInt("port", 0);
 			
 			mongo = mPort == 0 ? (mHost == null ? new MongoClient() : new MongoClient(mHost)) : new MongoClient(mHost, mPort);
 			mongoDb = j.getString("db");
 			mongo = new MongoClient();
-		} catch (Exception e) {e.printStackTrace();}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void stop() {
@@ -103,9 +101,9 @@ public class Shocky {
 		return db().getCollection(c);
 	}
 	public DBCollection collection(Plugin plugin) {
-		return db().getCollection(plugin.pinfo.internalName());
+		return db().getCollection(plugin.pinfo.packageName());
 	}
 	public DBCollection collection(Plugin plugin, String sub) {
-		return db().getCollection(String.format("%s.%s", plugin.pinfo.internalName(), sub));
+		return db().getCollection(String.format("%s.%s", plugin.pinfo.packageName(), sub));
 	}
 }
