@@ -8,6 +8,19 @@ import pl.shockah.json.JSONObject;
 import shocky3.JSONUtil;
 
 public class Settings {
+	protected static JSONObject buildQueryJSON(SettingsContext context, String key) {
+		JSONObject query = JSONObject.make(
+			"context", context.getContextIdentifier(),
+			"key", key
+		);
+		if (context.server != null) {
+			query.put("server", context.server);
+			if (context.channel != null)
+				query.put("channel", context.channel);
+		}
+		return query;
+	}
+	
 	public final Plugin plugin;
 	
 	protected final Map<String, Object>
@@ -56,21 +69,17 @@ public class Settings {
 		});
 	}
 	
-	public void modified(SettingsContext context, String key) {
-		JSONObject query = JSONObject.make(
-			"context", context.getContextIdentifier(),
-			"key", key
-		);
-		if (context.server != null) {
-			query.put("server", context.server);
-			if (context.channel != null)
-				query.put("channel", context.channel);
-		}
-		
+	protected void modified(SettingsContext context, String key) {
+		JSONObject query = buildQueryJSON(context, key);
 		JSONObject j = query.copy();
 		j.put("value", context.getInContext(key));
 		
 		plugin.botApp.collection("settings").update(JSONUtil.toDBObject(query), JSONUtil.toDBObject(j), true, false);
+	}
+	
+	protected void removed(SettingsContext context, String key) {
+		JSONObject query = buildQueryJSON(context, key);
+		plugin.botApp.collection("settings").remove(JSONUtil.toDBObject(query));
 	}
 	
 	protected static final class ChannelContext {

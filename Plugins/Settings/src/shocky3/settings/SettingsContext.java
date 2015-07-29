@@ -195,18 +195,49 @@ public class SettingsContext {
 				if (!settings.perChannel.containsKey(channelContext))
 					settings.perChannel.put(channelContext, new HashMap<String, Object>());
 				settings.perChannel.get(channelContext).put(key, obj);
+				settings.modified(this, key);
 				return;
 			}
 			if (!settings.perServer.containsKey(server))
 				settings.perServer.put(server, new HashMap<String, Object>());
 			settings.perServer.get(server).put(key, obj);
+			settings.modified(this, key);
 			return;
 		}
 		settings.global.put(key, obj);
+		settings.modified(this, key);
 	}
 	
 	public void putDefault(String key, Object obj) {
 		if (!containsKeyInContext(key))
 			put(key, obj);
+	}
+	
+	public void remove(String key, Object obj) {
+		if (server != null) {
+			if (channel != null) {
+				Settings.ChannelContext channelContext = new Settings.ChannelContext(server, channel);
+				if (settings.perChannel.containsKey(channelContext)) {
+					Map<String, Object> perChannel = settings.perChannel.get(channelContext);
+					if (perChannel.containsKey(key)) {
+						perChannel.remove(key);
+						settings.removed(this, key);
+					}
+				}
+				return;
+			}
+			if (settings.perServer.containsKey(server)) {
+				Map<String, Object> perServer = settings.perServer.get(server);
+				if (perServer.containsKey(key)) {
+					perServer.remove(key);
+					settings.removed(this, key);
+				}
+			}
+			return;
+		}
+		if (settings.global.containsKey(key)) {
+			settings.global.remove(key);
+			settings.removed(this, key);
+		}
 	}
 }
