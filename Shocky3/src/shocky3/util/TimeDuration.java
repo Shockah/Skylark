@@ -1,4 +1,4 @@
-package shocky3;
+package shocky3.util;
 
 import java.util.Date;
 

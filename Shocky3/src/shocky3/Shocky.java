@@ -6,7 +6,7 @@ import pl.shockah.FileIO;
 import pl.shockah.Util;
 import pl.shockah.json.JSONObject;
 import pl.shockah.json.JSONParser;
-import shocky3.pircbotx.Bot;
+import shocky3.util.Synced;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
@@ -65,16 +65,14 @@ public class Shocky {
 			e.printStackTrace();
 		}
 		
-		synchronized (serverManager.botManagers) {
-			for (BotManager bm : serverManager.botManagers)
-				synchronized (bm.bots) {
-					for (Bot bot : bm.bots)
-						if (bot.isConnected()) {
-							bot.stopBotReconnect();
-							bot.sendIRC().quitServer();
-						}
+		Synced.forEach(serverManager.botManagers, bm -> {
+			Synced.forEach(bm.bots, bot -> {
+				if (bot.isConnected()) {
+					bot.stopBotReconnect();
+					bot.sendIRC().quitServer();
 				}
-		}
+			});
+		});
 	}
 	
 	private void initializeMongo(JSONObject j) {

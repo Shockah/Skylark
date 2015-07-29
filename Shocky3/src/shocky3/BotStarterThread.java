@@ -8,6 +8,7 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.cap.EnableCapHandler;
 import shocky3.pircbotx.Bot;
 import shocky3.pircbotx.CustomInputParser;
+import shocky3.util.Synced;
 
 public class BotStarterThread extends Thread {
 	public final Shocky botApp;
@@ -39,11 +40,10 @@ public class BotStarterThread extends Thread {
 				.setAutoReconnect(true)
 				.addServer(manager.host)
 				.addListener(new BotListener(this));
-			synchronized (botApp.pluginManager.plugins) {
-				for (Plugin plugin : botApp.pluginManager.plugins)
-					if (plugin instanceof ListenerPlugin)
-						cfgb.addListener(((ListenerPlugin)plugin).listener);
-			}
+			Synced.forEach(botApp.pluginManager.plugins, plugin -> {
+				if (plugin instanceof ListenerPlugin)
+					cfgb.addListener(((ListenerPlugin)plugin).listener);
+			});
 			
 			bot = new Bot(cfgb.buildConfiguration(), manager);
 			bot.startBot();

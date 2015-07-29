@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.pircbotx.Channel;
 import pl.shockah.json.JSONObject;
-import shocky3.JSONUtil;
+import shocky3.util.JSON;
 
 public class Settings {
 	protected static JSONObject buildQueryJSON(SettingsContext context, String key) {
@@ -51,7 +51,7 @@ public class Settings {
 	}
 	
 	public void read() {
-		JSONUtil.forEachJSONObject(plugin.botApp.collection("settings").find(), j -> {
+		JSON.forEachJSONObject(plugin.botApp.collection("settings").find(), j -> {
 			SettingsContext context = null;
 			switch (j.getString("context", "global")) {
 				case "global":
@@ -74,12 +74,12 @@ public class Settings {
 		JSONObject j = query.copy();
 		j.put("value", context.getInContext(key));
 		
-		plugin.botApp.collection("settings").update(JSONUtil.toDBObject(query), JSONUtil.toDBObject(j), true, false);
+		plugin.botApp.collection("settings").update(JSON.toDBObject(query), JSON.toDBObject(j), true, false);
 	}
 	
 	protected void removed(SettingsContext context, String key) {
 		JSONObject query = buildQueryJSON(context, key);
-		plugin.botApp.collection("settings").remove(JSONUtil.toDBObject(query));
+		plugin.botApp.collection("settings").remove(JSON.toDBObject(query));
 	}
 	
 	protected static final class ChannelContext {

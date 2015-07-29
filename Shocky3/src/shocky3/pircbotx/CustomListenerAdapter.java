@@ -1,7 +1,5 @@
 package shocky3.pircbotx;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.NoticeEvent;
@@ -14,6 +12,7 @@ import shocky3.pircbotx.event.OutMessageEvent;
 import shocky3.pircbotx.event.OutNoticeEvent;
 import shocky3.pircbotx.event.OutPrivateMessageEvent;
 import shocky3.pircbotx.event.ServerNoticeEvent;
+import shocky3.util.Reflection;
 
 public class CustomListenerAdapter extends ListenerAdapter {
 	public void onEvent(Event event) throws Exception {
@@ -40,20 +39,9 @@ public class CustomListenerAdapter extends ListenerAdapter {
 		
 		if (event instanceof QuitEvent) {
 			QuitEvent e = (QuitEvent)event;
-			try {
-				Field field = UserSnapshot.class.getDeclaredField("dao");
-				field.setAccessible(true);
-				
-				Field mfield = Field.class.getDeclaredField("modifiers");
-				mfield.setAccessible(true);
-				mfield.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-				
-				field.set(e.getUser(), e.getDaoSnapshot());
-				
-				mfield.setInt(field, field.getModifiers() | Modifier.FINAL);
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
+			Reflection.run(r -> {
+				r.setFinalFieldValue(UserSnapshot.class, "dao", e.getUser(), e.getDaoSnapshot());
+			});
 		}
 		
 		super.onEvent(event);

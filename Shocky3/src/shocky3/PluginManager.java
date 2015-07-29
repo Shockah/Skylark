@@ -6,7 +6,6 @@ import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,7 +17,7 @@ import org.apache.commons.io.IOUtils;
 import pl.shockah.json.JSONObject;
 import pl.shockah.json.JSONParser;
 import pl.shockah.json.JSONPrettyPrinter;
-import shocky3.pircbotx.Bot;
+import shocky3.util.Synced;
 
 public class PluginManager {
 	public static final File
@@ -67,9 +66,9 @@ public class PluginManager {
 	}
 	
 	public final Shocky botApp;
-	protected List<PluginInfo> pluginInfos = Collections.synchronizedList(new ArrayList<PluginInfo>());
-	public List<Plugin> plugins = Collections.synchronizedList(new ArrayList<Plugin>());
-	protected List<PluginInfo> toLoad = Collections.synchronizedList(new ArrayList<PluginInfo>());
+	protected List<PluginInfo> pluginInfos = Synced.list();
+	public List<Plugin> plugins = Synced.list();
+	protected List<PluginInfo> toLoad = Synced.list();
 	protected URLClassLoader currentClassLoader = null;
 	protected JSONObject enabledInConfig = new JSONObject();
 	
@@ -129,15 +128,13 @@ public class PluginManager {
 	public void reload() {
 		synchronized (plugins) {
 			synchronized (toLoad) {
-				synchronized (botApp.serverManager.botManagers) {
-					for (BotManager bm : botApp.serverManager.botManagers)
-						synchronized (bm.bots) {
-							for (Bot bot : bm.bots)
-								for (Plugin plugin : plugins)
-									if (plugin instanceof ListenerPlugin)
-										bot.getConfiguration().getListenerManager().removeListener(((ListenerPlugin)plugin).listener);
-						}
-				}
+				Synced.forEach(botApp.serverManager.botManagers, bm -> {
+					Synced.forEach(bm.bots, bot -> {
+						for (Plugin plugin : plugins)
+							if (plugin instanceof ListenerPlugin)
+								bot.getConfiguration().getListenerManager().removeListener(((ListenerPlugin)plugin).listener);
+					});
+				});
 				while (!plugins.isEmpty())
 					actualUnload(plugins.get(plugins.size() - 1));
 				if (currentClassLoader != null) {
@@ -202,15 +199,13 @@ public class PluginManager {
 					}
 				for (Plugin plugin : plugins)
 					setReflectionFields(plugin.pinfo);
-				synchronized (botApp.serverManager.botManagers) {
-					for (BotManager bm : botApp.serverManager.botManagers)
-						synchronized (bm.bots) {
-							for (Bot bot : bm.bots)
-								for (Plugin plugin : plugins)
-									if (plugin instanceof ListenerPlugin)
-										bot.getConfiguration().getListenerManager().addListener(((ListenerPlugin)plugin).listener);
-						}
-				}
+				Synced.forEach(botApp.serverManager.botManagers, bm -> {
+					Synced.forEach(bm.bots, bot -> {
+						for (Plugin plugin : plugins)
+							if (plugin instanceof ListenerPlugin)
+								bot.getConfiguration().getListenerManager().addListener(((ListenerPlugin)plugin).listener);
+					});
+				});
 				for (Plugin plugin : plugins)
 					try {
 						plugin.onLoad();
@@ -236,14 +231,10 @@ public class PluginManager {
 		}
 	}
 	public void markUnload(PluginInfo pinfo) {
-		synchronized (toLoad) {
-			toLoad.remove(pinfo);
-		}
+		toLoad.remove(pinfo);
 	}
 	public boolean markedForLoading(PluginInfo pinfo) {
-		synchronized (toLoad) {
-			return toLoad.contains(pinfo);
-		}
+		return toLoad.contains(pinfo);
 	}
 	
 	private void actualLoad(PluginInfo pinfo) {

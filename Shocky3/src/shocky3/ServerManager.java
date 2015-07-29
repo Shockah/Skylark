@@ -1,15 +1,16 @@
 package shocky3;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import pl.shockah.json.JSONObject;
+import shocky3.util.JSON;
+import shocky3.util.Synced;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 
 public class ServerManager {
 	public final Shocky botApp;
-	public List<BotManager> botManagers = Collections.synchronizedList(new ArrayList<BotManager>());
+	public List<BotManager> botManagers = Synced.list();
 	
 	public ServerManager(Shocky botApp) {
 		this.botApp = botApp;
@@ -18,8 +19,8 @@ public class ServerManager {
 	public List<BotManagerChannelEntry> readConfig() {
 		List<BotManagerChannelEntry> ret = new ArrayList<>();
 		DBCollection dbc = botApp.collection("servers");
-		for (DBObject dbo : JSONUtil.all(dbc.find())) {
-			JSONObject j = JSONUtil.fromDBObject(dbo);
+		for (DBObject dbo : JSON.all(dbc.find())) {
+			JSONObject j = JSON.fromDBObject(dbo);
 			
 			BotManager bm = new BotManager(this, j.getString("name"), j.getString("host"));
 			if (j.contains("botName"))

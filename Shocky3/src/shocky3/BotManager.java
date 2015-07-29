@@ -1,11 +1,10 @@
 package shocky3;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.pircbotx.Channel;
 import pl.shockah.Util;
 import shocky3.pircbotx.Bot;
+import shocky3.util.Synced;
 
 public class BotManager {
 	public static final int
@@ -17,7 +16,7 @@ public class BotManager {
 	public final String name, host;
 	public String botName = "Shocky";
 	public int channelsPerConn = -1, messageDelay = BASE_MESSAGEDELAY;
-	public final List<Bot> bots = Collections.synchronizedList(new ArrayList<Bot>());
+	public final List<Bot> bots = Synced.list();
 	
 	public BotManager(ServerManager manager, String name, String host) {
 		this.botApp = manager.botApp;

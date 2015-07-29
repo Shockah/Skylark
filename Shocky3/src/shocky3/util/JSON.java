@@ -1,4 +1,4 @@
-package shocky3;
+package shocky3.util;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -11,7 +11,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
-public final class JSONUtil {
+public final class JSON {
 	public static DBObject toDBObject(JSONObject j) {
 		BasicDBObject bdbo = new BasicDBObject();
 		for (String key : j.keys()) {
@@ -97,5 +97,5 @@ public final class JSONUtil {
 			f.f(fromDBObject(dbc.next()));
 	}
 	
-	private JSONUtil() { }
+	private JSON() { }
 }
