@@ -1,0 +1,8 @@
+{
+	"name": "Shocky: Ident",
+	"version": "r1",
+	"author": "Shockah",
+	
+	"packageName": "Shocky.Ident",
+	"baseClass": "shocky3.ident.Plugin"
+}
