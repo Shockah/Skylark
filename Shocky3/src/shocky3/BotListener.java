@@ -29,6 +29,7 @@ public class BotListener extends ListenerAdapter {
 		}
 		super.onEvent(e);
 	}
+	
 	public void onOutput(OutputEvent e) {
 		PircBotX bot = e.getBot();
 		Configuration configuration = bot.getConfiguration();

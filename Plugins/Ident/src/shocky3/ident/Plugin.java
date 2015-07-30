@@ -25,7 +25,7 @@ public class Plugin extends shocky3.Plugin {
 				(factory, manager) -> new IdentMethod.Delegate(manager, factory, IdentMethod.CREDIBILITY_MEDIUM_LOW,
 					user -> user.getHostname())),
 			new IdentMethodFactory.Delegate("srv", "Server",
-				(factory, manager) -> new IdentMethod.Delegate(manager, factory, IdentMethod.CREDIBILITY_MEDIUM_LOW,
+				(factory, manager) -> new IdentMethod.Delegate(manager, factory, IdentMethod.CREDIBILITY_LOW,
 					user -> user.getBot().getServerHostname()))
 		);
 	}

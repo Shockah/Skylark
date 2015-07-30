@@ -6,6 +6,7 @@
 	"packageName": "Shocky.Ident.NickServ",
 	"baseClass": "shocky3.ident.nickserv.Plugin",
 	"dependsOn": [
+		"Shocky.Settings",
 		"Shocky.Ident"
 	]
 }

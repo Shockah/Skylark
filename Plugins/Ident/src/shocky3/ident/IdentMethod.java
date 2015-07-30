@@ -23,6 +23,7 @@ public abstract class IdentMethod {
 		this.name = name;
 		this.credibility = credibility;
 	}
+	
 	protected IdentMethod(BotManager manager, IdentMethodFactory factory, int credibility) {
 		this(manager, factory.id, factory.name, credibility);
 	}
@@ -44,6 +45,7 @@ public abstract class IdentMethod {
 			super(manager, id, name, credibility);
 			this.func = func;
 		}
+		
 		public Delegate(BotManager manager, IdentMethodFactory factory, int credibility, Func1<User, String> func) {
 			super(manager, factory, credibility);
 			this.func = func;
