@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.pircbotx.Channel;
 import pl.shockah.json.JSONObject;
+import shocky3.PluginInfo;
 import shocky3.util.JSON;
 
 public class Settings {
@@ -48,6 +49,38 @@ public class Settings {
 	
 	public SettingsContext getContext(Channel channel) {
 		return new SettingsContext(this, channel.getBot().getServerHostname(), channel.getName());
+	}
+	
+	public SettingsContext getContext(PluginInfo pinfo) {
+		return new SettingsContext(this, pinfo, null, null);
+	}
+	
+	public SettingsContext getContext(PluginInfo pinfo, String server) {
+		return new SettingsContext(this, pinfo, server, null);
+	}
+	
+	public SettingsContext getContext(PluginInfo pinfo, String server, String channel) {
+		return new SettingsContext(this, pinfo, server, channel);
+	}
+	
+	public SettingsContext getContext(PluginInfo pinfo, Channel channel) {
+		return new SettingsContext(this, pinfo, channel.getBot().getServerHostname(), channel.getName());
+	}
+	
+	public SettingsContext getContext(shocky3.Plugin plugin) {
+		return new SettingsContext(this, plugin, null, null);
+	}
+	
+	public SettingsContext getContext(shocky3.Plugin plugin, String server) {
+		return new SettingsContext(this, plugin, server, null);
+	}
+	
+	public SettingsContext getContext(shocky3.Plugin plugin, String server, String channel) {
+		return new SettingsContext(this, plugin, server, channel);
+	}
+	
+	public SettingsContext getContext(shocky3.Plugin plugin, Channel channel) {
+		return new SettingsContext(this, plugin, channel.getBot().getServerHostname(), channel.getName());
 	}
 	
 	public void read() {
