@@ -61,4 +61,10 @@ public class GenericUserMessageEvent extends Event implements GenericMessageEven
 		else if (eChannelUser != null)
 			throw new UnsupportedOperationException();
 	}
+	public void respondWith(String response) {
+		if (eMessage != null)
+			eMessage.respondWith(response);
+		else if (eChannelUser != null)
+			throw new UnsupportedOperationException();
+	}
 }

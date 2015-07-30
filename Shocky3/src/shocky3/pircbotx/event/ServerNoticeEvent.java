@@ -35,4 +35,7 @@ public class ServerNoticeEvent extends Event implements GenericMessageEvent {
 	public void respondPrivateMessage(String response) {
 		throw new UnsupportedOperationException();
 	}
+	public void respondWith(String response) {
+		throw new UnsupportedOperationException();
+	}
 }

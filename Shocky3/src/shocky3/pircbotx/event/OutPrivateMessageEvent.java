@@ -20,7 +20,7 @@ public class OutPrivateMessageEvent extends Event implements GenericMessageEvent
 		return bot.getUserBot();
 	}
 	public UserHostmask getUserHostmask() {
-		return new UserHostmask(bot, getUser().getHostmask());
+		return bot.getConfiguration().getBotFactory().createUserHostmask(bot, getUser().getHostmask());
 	}
 	public User getRecipient() {
 		return recipient;
@@ -33,6 +33,9 @@ public class OutPrivateMessageEvent extends Event implements GenericMessageEvent
 		throw new UnsupportedOperationException();
 	}
 	public void respondPrivateMessage(String response) {
+		throw new UnsupportedOperationException();
+	}
+	public void respondWith(String response) {
 		throw new UnsupportedOperationException();
 	}
 }

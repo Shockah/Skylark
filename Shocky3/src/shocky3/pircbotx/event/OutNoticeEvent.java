@@ -24,7 +24,7 @@ public class OutNoticeEvent extends Event implements GenericChannelUserEvent, Ge
 		return channel;
 	}
 	public UserHostmask getUserHostmask() {
-		return new UserHostmask(bot, getUser().getHostmask());
+		return bot.getConfiguration().getBotFactory().createUserHostmask(bot, getUser().getHostmask());
 	}
 	public User getUser() {
 		return bot.getUserBot();
@@ -41,6 +41,9 @@ public class OutNoticeEvent extends Event implements GenericChannelUserEvent, Ge
 		throw new UnsupportedOperationException();
 	}
 	public void respondPrivateMessage(String response) {
+		throw new UnsupportedOperationException();
+	}
+	public void respondWith(String response) {
 		throw new UnsupportedOperationException();
 	}
 }

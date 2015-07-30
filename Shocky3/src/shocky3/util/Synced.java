@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import pl.shockah.func.Action1;
+import pl.shockah.func.Action2;
 
 public final class Synced {
 	public static <T> List<T> list(List<T> list) {
@@ -28,6 +29,20 @@ public final class Synced {
 		synchronized (list) {
 			for (T t : list)
 				func.f(t);
+		}
+	}
+	
+	public static <K, V> void forEach(Map<K, V> map, Action2<K, V> func) {
+		synchronized (map) {
+			for (Map.Entry<K, V> entry : map.entrySet())
+				func.f(entry.getKey(), entry.getValue());
+		}
+	}
+	
+	public static <K, V> void forEach(Map<K, V> map, Action1<V> func) {
+		synchronized (map) {
+			for (Map.Entry<K, V> entry : map.entrySet())
+				func.f(entry.getValue());
 		}
 	}
 	

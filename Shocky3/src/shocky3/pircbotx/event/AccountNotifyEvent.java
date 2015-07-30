@@ -10,14 +10,12 @@ import org.pircbotx.hooks.types.GenericChannelUserEvent;
 public class AccountNotifyEvent extends Event implements GenericChannelUserEvent {
 	protected final Channel channel;
 	protected final User user;
-	protected final UserHostmask userHostmask;
 	protected final String account;
 	
-	public AccountNotifyEvent(PircBotX bot, Channel channel, UserHostmask userHostmask, User user, String account) {
+	public AccountNotifyEvent(PircBotX bot, Channel channel, User user, String account) {
 		super(bot);
 		this.channel = channel;
 		this.user = user;
-		this.userHostmask = userHostmask;
 		this.account = account;
 	}
 	
@@ -25,7 +23,7 @@ public class AccountNotifyEvent extends Event implements GenericChannelUserEvent
 		return user;
 	}
 	public UserHostmask getUserHostmask() {
-		return userHostmask;
+		return bot.getConfiguration().getBotFactory().createUserHostmask(bot, user.getHostmask());
 	}
 	public Channel getChannel() {
 		return channel;

@@ -12,6 +12,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/slf4j-api-1.7.7.jar"/>
 	<classpathentry kind="lib" path="libs/slf4j-simple-1.7.7.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jsoup-1.7.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/pircbotx-2.1-20141126.160823-86.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/pircbotx-2.1-20150729.003833-138.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

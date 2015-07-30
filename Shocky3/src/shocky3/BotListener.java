@@ -43,7 +43,7 @@ public class BotListener extends ListenerAdapter {
 			Channel channel = (target.length() != 0 && configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0 && bot.getUserChannelDao().containsChannel(target)) ? bot.getUserChannelDao().getChannel(target) : null;
 			if (channel == null) {
 				User recipient = bot.getUserChannelDao().getUser(target);
-				configuration.getListenerManager().dispatchEvent(new OutPrivateMessageEvent(bot, recipient, message));
+				configuration.getListenerManager().onEvent(new OutPrivateMessageEvent(bot, recipient, message));
 			} else {
 				if (message.startsWith("\u0001") && message.endsWith("\u0001")) {
 					message = message.substring(1, message.length() - 1);
@@ -52,9 +52,9 @@ public class BotListener extends ListenerAdapter {
 					message = message.substring(spl[0].length() + 1);
 					
 					if (spl[0].equals("ACTION"))
-						configuration.getListenerManager().dispatchEvent(new OutActionEvent(bot, channel, message));
+						configuration.getListenerManager().onEvent(new OutActionEvent(bot, channel, message));
 				} else {
-					configuration.getListenerManager().dispatchEvent(new OutMessageEvent(bot, channel, message));
+					configuration.getListenerManager().onEvent(new OutMessageEvent(bot, channel, message));
 				}
 			}
 		} else if (spl[0].equals("NOTICE")) {
@@ -64,9 +64,9 @@ public class BotListener extends ListenerAdapter {
 			Channel channel = (target.length() != 0 && configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0 && bot.getUserChannelDao().containsChannel(target)) ? bot.getUserChannelDao().getChannel(target) : null;
 			if (channel == null) {
 				User recipient = bot.getUserChannelDao().getUser(target);
-				configuration.getListenerManager().dispatchEvent(new OutNoticeEvent(bot, null, recipient, message));
+				configuration.getListenerManager().onEvent(new OutNoticeEvent(bot, null, recipient, message));
 			} else {
-				configuration.getListenerManager().dispatchEvent(new OutNoticeEvent(bot, channel, null, message));
+				configuration.getListenerManager().onEvent(new OutNoticeEvent(bot, channel, null, message));
 			}
 		}
 	}

@@ -9,15 +9,13 @@ import org.pircbotx.hooks.types.GenericChannelUserEvent;
 
 public class ExtendedJoinEvent extends Event implements GenericChannelUserEvent {
 	protected final Channel channel;
-	protected final UserHostmask userHostmask;
 	protected final User user;
 	protected final String account;
 	
-	public ExtendedJoinEvent(PircBotX bot, Channel channel, UserHostmask userHostmask, User user, String account) {
+	public ExtendedJoinEvent(PircBotX bot, Channel channel, User user, String account) {
 		super(bot);
 		this.channel = channel;
 		this.user = user;
-		this.userHostmask = userHostmask;
 		this.account = account;
 	}
 	
@@ -25,7 +23,7 @@ public class ExtendedJoinEvent extends Event implements GenericChannelUserEvent 
 		return user;
 	}
 	public UserHostmask getUserHostmask() {
-		return userHostmask;
+		return bot.getConfiguration().getBotFactory().createUserHostmask(bot, user.getHostmask());
 	}
 	public Channel getChannel() {
 		return channel;

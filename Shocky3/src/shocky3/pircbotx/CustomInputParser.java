@@ -7,6 +7,7 @@ import org.pircbotx.InputParser;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.UserHostmask;
+import com.google.common.collect.ImmutableMap;
 import shocky3.pircbotx.event.AccountNotifyEvent;
 import shocky3.pircbotx.event.ExtendedJoinEvent;
 
@@ -19,7 +20,7 @@ public class CustomInputParser extends InputParser {
 		super(bot);
 	}
 	
-	public void processCommand(String target, UserHostmask sourceh, String command, String line, List<String> parsedLine) throws IOException {
+	public void processCommand(String target, UserHostmask sourceh, String command, String line, List<String> parsedLine, ImmutableMap<String, String> map) throws IOException {
 		Channel channel = (target.length() != 0 && configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0 && bot.getUserChannelDao().containsChannel(target)) ? bot.getUserChannelDao().getChannel(target) : null;
 		
 		if (command.equals("ACCOUNT")) {
@@ -30,7 +31,7 @@ public class CustomInputParser extends InputParser {
 				if (account.equals("0") || account.equals("*"))
 					account = null;
 				User source = bot.getUserChannelDao().getUser(sourceh);
-				configuration.getListenerManager().dispatchEvent(new AccountNotifyEvent(bot, channel, new UserHostmask(source), source, account));
+				configuration.getListenerManager().onEvent(new AccountNotifyEvent(bot, channel, source, account));
 				return;
 			}
 		} else if (command.equals("JOIN")) {
@@ -43,11 +44,11 @@ public class CustomInputParser extends InputParser {
 					String account = parsedLine.get(1);
 					if (account.equals("0") || account.equals("*"))
 						account = null;
-					configuration.getListenerManager().dispatchEvent(new ExtendedJoinEvent(bot, channel, new UserHostmask(source), source, account));
+					configuration.getListenerManager().onEvent(new ExtendedJoinEvent(bot, channel, source, account));
 				}
 			}
 		}
 		
-		super.processCommand(target, sourceh, command, line, parsedLine);
+		super.processCommand(target, sourceh, command, line, parsedLine, map);
 	}
 }

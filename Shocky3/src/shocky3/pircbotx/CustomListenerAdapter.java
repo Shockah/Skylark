@@ -3,8 +3,6 @@ package shocky3.pircbotx;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.NoticeEvent;
-import org.pircbotx.hooks.events.QuitEvent;
-import org.pircbotx.snapshot.UserSnapshot;
 import shocky3.pircbotx.event.AccountNotifyEvent;
 import shocky3.pircbotx.event.ExtendedJoinEvent;
 import shocky3.pircbotx.event.OutActionEvent;
@@ -12,7 +10,6 @@ import shocky3.pircbotx.event.OutMessageEvent;
 import shocky3.pircbotx.event.OutNoticeEvent;
 import shocky3.pircbotx.event.OutPrivateMessageEvent;
 import shocky3.pircbotx.event.ServerNoticeEvent;
-import shocky3.util.Reflection;
 
 public class CustomListenerAdapter extends ListenerAdapter {
 	public void onEvent(Event event) throws Exception {
@@ -37,12 +34,13 @@ public class CustomListenerAdapter extends ListenerAdapter {
 			}
 		}
 		
-		if (event instanceof QuitEvent) {
+		//TODO: make sure it's fixed in latest PircBotX
+		/*if (event instanceof QuitEvent) {
 			QuitEvent e = (QuitEvent)event;
 			Reflection.run(r -> {
 				r.setFinalFieldValue(UserSnapshot.class, "dao", e.getUser(), e.getDaoSnapshot());
 			});
-		}
+		}*/
 		
 		super.onEvent(event);
 	}

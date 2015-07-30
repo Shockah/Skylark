@@ -22,7 +22,7 @@ public class OutActionEvent extends Event implements GenericMessageEvent, Generi
 		return bot.getUserBot();
 	}
 	public UserHostmask getUserHostmask() {
-		return new UserHostmask(bot, getUser().getHostmask());
+		return bot.getConfiguration().getBotFactory().createUserHostmask(bot, getUser().getHostmask());
 	}
 	public Channel getChannel() {
 		return channel;
@@ -35,6 +35,9 @@ public class OutActionEvent extends Event implements GenericMessageEvent, Generi
 		throw new UnsupportedOperationException();
 	}
 	public void respondPrivateMessage(String response) {
+		throw new UnsupportedOperationException();
+	}
+	public void respondWith(String response) {
 		throw new UnsupportedOperationException();
 	}
 }
