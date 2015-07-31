@@ -1,8 +1,8 @@
 {
-	"name": "Shocky: Ident",
+	"name": "Skylark: Ident",
 	"version": "r1",
 	"author": "Shockah",
 	
-	"packageName": "Shocky.Ident",
-	"baseClass": "shocky3.ident.Plugin"
+	"packageName": "Skylark.Ident",
+	"baseClass": "skylark.ident.Plugin"
 }

@@ -1,8 +1,8 @@
 {
-	"name": "Shocky: Settings",
+	"name": "Skylark: Settings",
 	"version": "r1",
 	"author": "Shockah",
 	
-	"packageName": "Shocky.Settings",
-	"baseClass": "shocky3.settings.Plugin"
+	"packageName": "Skylark.Settings",
+	"baseClass": "skylark.settings.Plugin"
 }
