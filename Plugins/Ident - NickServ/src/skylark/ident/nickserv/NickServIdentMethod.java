@@ -6,6 +6,7 @@ import org.pircbotx.User;
 import skylark.BotManager;
 import skylark.ident.IdentMethod;
 import skylark.ident.IdentMethodFactory;
+import skylark.util.Dates;
 import skylark.util.Lazy;
 import skylark.util.Synced;
 
@@ -13,6 +14,7 @@ public class NickServIdentMethod extends IdentMethod {
 	public static final long
 		DEFAULT_TRUST_TIME = 1000l * 60l * 5l;
 	
+	protected final Plugin plugin;
 	protected final Map<User, Entry> cache = Synced.map();
 	protected boolean hasWhoX = false;
 	protected boolean hasExtendedJoin = false;
@@ -20,12 +22,13 @@ public class NickServIdentMethod extends IdentMethod {
 	
 	protected Lazy<Boolean> available = Lazy.of(this::checkAvailability);
 	
-	protected NickServIdentMethod(BotManager manager, String id, String name) {
+	protected NickServIdentMethod(Plugin plugin, BotManager manager, String id, String name) {
 		super(manager, id, name, CREDIBILITY_HIGH);
+		this.plugin = plugin;
 	}
 	
-	protected NickServIdentMethod(BotManager manager, IdentMethodFactory factory) {
-		this(manager, factory.id, factory.name);
+	protected NickServIdentMethod(Plugin plugin, BotManager manager, IdentMethodFactory factory) {
+		this(plugin, manager, factory.id, factory.name);
 	}
 	
 	public boolean isAvailable() {
@@ -33,11 +36,28 @@ public class NickServIdentMethod extends IdentMethod {
 	}
 	
 	protected boolean checkAvailability() {
+		//TODO: actual check
 		return true;
 	}
 	
 	public String getIdentFor(User user) {
+		Entry entry = cache.get(user);
+		if (entry == null || (entry.trustedUntil != null && Dates.isInPast(entry.trustedUntil)))
+			entry = retrieveFor(user);
+		return entry == null ? null : entry.account;
+	}
+	
+	public void putIdentFor(User user, String account, Source source) {
+		cache.put(user, new Entry(user, account));
+	}
+	
+	public Entry retrieveFor(User user) {
+		//TODO: /msg NickServ acc status
 		return null;
+	}
+	
+	public boolean alwaysTrusts() {
+		return hasWhoX && hasExtendedJoin && hasAccountNotify;
 	}
 	
 	public class Entry {
@@ -45,10 +65,18 @@ public class NickServIdentMethod extends IdentMethod {
 		public final String account;
 		public final Date trustedUntil;
 		
+		public Entry(User user, String account) {
+			this(user, account, alwaysTrusts() ? null : Dates.inFuture(plugin.trustTimeSetting.get()));
+		}
+		
 		public Entry(User user, String account, Date trustedUntil) {
 			this.user = user;
 			this.account = account;
 			this.trustedUntil = trustedUntil;
 		}
+	}
+	
+	public static enum Source {
+		ExtendedJoin, AccountNotify, WhoX;
 	}
 }

@@ -80,11 +80,12 @@ public class Plugin extends skylark.Plugin {
 		}
 	}
 	
-	public IdentMethod getForID(BotManager manager, String id) {
+	@SuppressWarnings("unchecked")
+	public <T extends IdentMethod> T getForID(BotManager manager, String id) {
 		synchronized (identMethods) {
 			prepareForManager(manager);
 			Map<String, IdentMethod> methods = identMethods.get(manager);
-			return methods.containsKey(id) ? methods.get(id) : null;
+			return methods.containsKey(id) ? (T)methods.get(id) : null;
 		}
 	}
 	
@@ -97,13 +98,14 @@ public class Plugin extends skylark.Plugin {
 		return getForID(id);
 	}
 	
-	public IdentMethod getForFullIdent(BotManager manager, String ident) {
+	@SuppressWarnings("unchecked")
+	public <T extends IdentMethod> T getForFullIdent(BotManager manager, String ident) {
 		int index = ident.indexOf(':');
 		if (index == -1)
 			return null;
 		String id = ident.substring(0, index);
 		//ident = ident.substring(index + 1);
-		return getForID(manager, id);
+		return (T)getForID(manager, id);
 	}
 	
 	public boolean matches(User user, String ident) {
