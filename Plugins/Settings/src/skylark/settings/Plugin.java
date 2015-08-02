@@ -66,4 +66,16 @@ public class Plugin extends skylark.Plugin {
 	public SettingsContext getContext(skylark.Plugin plugin, Channel channel) {
 		return settings.getContext(plugin, channel);
 	}
+	
+	public <T> Setting<T> getSetting(String key) {
+		return settings.getSetting(key);
+	}
+	
+	public <T> Setting<T> getSetting(PluginInfo pinfo, String key) {
+		return settings.getSetting(pinfo, key);
+	}
+	
+	public <T> Setting<T> getSetting(skylark.Plugin plugin, String key) {
+		return settings.getSetting(plugin, key);
+	}
 }

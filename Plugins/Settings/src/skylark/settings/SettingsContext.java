@@ -259,7 +259,7 @@ public class SettingsContext {
 			put(key, obj);
 	}
 	
-	public void remove(String key, Object obj) {
+	public void remove(String key) {
 		String pkey = prefixedKey(key);
 		if (server != null) {
 			if (channel != null) {

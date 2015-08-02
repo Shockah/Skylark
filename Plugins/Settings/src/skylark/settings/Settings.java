@@ -83,6 +83,18 @@ public class Settings {
 		return new SettingsContext(this, plugin, channel.getBot().getServerHostname(), channel.getName());
 	}
 	
+	public <T> Setting<T> getSetting(String key) {
+		return new Setting<T>(this, (String)null, key);
+	}
+	
+	public <T> Setting<T> getSetting(PluginInfo pinfo, String key) {
+		return new Setting<T>(this, pinfo, key);
+	}
+	
+	public <T> Setting<T> getSetting(skylark.Plugin plugin, String key) {
+		return new Setting<T>(this, plugin, key);
+	}
+	
 	public void read() {
 		JSON.forEachJSONObject(plugin.botApp.collection("settings").find(), j -> {
 			SettingsContext context = null;
