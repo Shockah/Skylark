@@ -6,6 +6,7 @@ import org.pircbotx.User;
 import skylark.BotManager;
 import skylark.ident.IdentMethod;
 import skylark.ident.IdentMethodFactory;
+import skylark.pircbotx.Bot;
 import skylark.util.Dates;
 import skylark.util.Lazy;
 import skylark.util.Synced;
@@ -36,13 +37,29 @@ public class NickServIdentMethod extends IdentMethod {
 	}
 	
 	protected boolean checkAvailability() {
-		//TODO: actual check
+		if (manager == null)
+			return false;
+		
+		Bot bot = null;
+		synchronized (manager.bots) {
+			if (manager.bots.isEmpty())
+				manager.connectNewBot();
+			bot = manager.bots.get(0);
+		}
+		
+		hasWhoX = bot.getServerInfo().isWhoX();
+		hasExtendedJoin = bot.getEnabledCapabilities().contains("extended-join");
+		hasAccountNotify = bot.getEnabledCapabilities().contains("account-notify");
+		
+		//TODO: do /whois NickServ to check if it's available
+		//TODO: should probably write a WHOIS helper class with methods which takes a delegate, and a blocking version which returns the info directly
+		
 		return true;
 	}
 	
 	public String getIdentFor(User user) {
 		Entry entry = cache.get(user);
-		if (entry == null || (entry.trustedUntil != null && Dates.isInPast(entry.trustedUntil)))
+		if (entry == null || entry.account == null || (entry.trustedUntil != null && Dates.isInPast(entry.trustedUntil)))
 			entry = retrieveFor(user);
 		return entry == null ? null : entry.account;
 	}
@@ -52,7 +69,7 @@ public class NickServIdentMethod extends IdentMethod {
 	}
 	
 	public Entry retrieveFor(User user) {
-		//TODO: /msg NickServ acc status
+		//TODO: /msg NickServ acc <user> *
 		return null;
 	}
 	
