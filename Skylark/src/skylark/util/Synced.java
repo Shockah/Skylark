@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import pl.shockah.Lists;
 import pl.shockah.func.Action1;
 import pl.shockah.func.Action2;
 
@@ -43,6 +44,12 @@ public final class Synced {
 		synchronized (map) {
 			for (Map.Entry<K, V> entry : map.entrySet())
 				func.f(entry.getValue());
+		}
+	}
+	
+	public static <T> void iterate(List<T> list, Action2<T, Lists.IteratorHandler<T>> f) {
+		synchronized (list) {
+			Lists.iterate(list, f);
 		}
 	}
 	

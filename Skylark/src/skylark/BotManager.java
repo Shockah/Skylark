@@ -106,6 +106,7 @@ public class BotManager {
 		try {
 			synchronized (bots) {
 				if (botStarter.bot != null) {
+					botStarter.bot.getConfiguration().getListenerManager().addListener(botStarter.bot.whoisManager);
 					bots.add(botStarter.bot);
 					synchronized (botApp.pluginManager.plugins) {
 						for (Plugin plugin : botApp.pluginManager.plugins)

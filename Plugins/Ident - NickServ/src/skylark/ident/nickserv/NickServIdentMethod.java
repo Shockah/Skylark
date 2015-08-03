@@ -51,10 +51,7 @@ public class NickServIdentMethod extends IdentMethod {
 		hasExtendedJoin = bot.getEnabledCapabilities().contains("extended-join");
 		hasAccountNotify = bot.getEnabledCapabilities().contains("account-notify");
 		
-		//TODO: do /whois NickServ to check if it's available
-		//TODO: should probably write a WHOIS helper class with methods which takes a delegate, and a blocking version which returns the info directly
-		
-		return true;
+		return bot.whoisManager.syncRequestForUser("NickServ") != null;
 	}
 	
 	public String getIdentFor(User user) {
