@@ -7,6 +7,7 @@ import skylark.BotManager;
 import skylark.ident.IdentMethod;
 import skylark.ident.IdentMethodFactory;
 import skylark.pircbotx.Bot;
+import skylark.pircbotx.event.Whois2Event;
 import skylark.util.Dates;
 import skylark.util.Lazy;
 import skylark.util.Synced;
@@ -51,7 +52,8 @@ public class NickServIdentMethod extends IdentMethod {
 		hasExtendedJoin = bot.getEnabledCapabilities().contains("extended-join");
 		hasAccountNotify = bot.getEnabledCapabilities().contains("account-notify");
 		
-		return bot.whoisManager.syncRequestForUser("NickServ") != null;
+		Whois2Event whois = bot.whoisManager.syncRequestForUser("NickServ");
+		return whois != null && whois.getMessages().length != 0 && whois.getMessages()[0].equals("is a Network Service");
 	}
 	
 	public String getIdentFor(User user) {

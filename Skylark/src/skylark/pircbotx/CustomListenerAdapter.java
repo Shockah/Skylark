@@ -10,6 +10,7 @@ import skylark.pircbotx.event.OutMessageEvent;
 import skylark.pircbotx.event.OutNoticeEvent;
 import skylark.pircbotx.event.OutPrivateMessageEvent;
 import skylark.pircbotx.event.ServerNoticeEvent;
+import skylark.pircbotx.event.Whois2Event;
 
 public class CustomListenerAdapter extends ListenerAdapter {
 	public void onEvent(Event event) throws Exception {
@@ -25,6 +26,8 @@ public class CustomListenerAdapter extends ListenerAdapter {
 			onOutNotice((OutNoticeEvent)event);
 		else if (event instanceof OutPrivateMessageEvent)
 			onOutPrivateMessage((OutPrivateMessageEvent)event);
+		else if (event instanceof Whois2Event)
+			onWhois2((Whois2Event)event);
 		
 		if (event instanceof NoticeEvent) {
 			NoticeEvent e = (NoticeEvent)event;
@@ -51,5 +54,6 @@ public class CustomListenerAdapter extends ListenerAdapter {
 	public void onOutMessage(OutMessageEvent event) { }
 	public void onOutNotice(OutNoticeEvent event) { }
 	public void onOutPrivateMessage(OutPrivateMessageEvent event) { }
+	public void onWhois2(Whois2Event event) { }
 	public void onServerNotice(ServerNoticeEvent event) { }
 }

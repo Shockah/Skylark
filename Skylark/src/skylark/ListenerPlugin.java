@@ -71,6 +71,7 @@ import skylark.pircbotx.event.OutMessageEvent;
 import skylark.pircbotx.event.OutNoticeEvent;
 import skylark.pircbotx.event.OutPrivateMessageEvent;
 import skylark.pircbotx.event.ServerNoticeEvent;
+import skylark.pircbotx.event.Whois2Event;
 
 public abstract class ListenerPlugin extends Plugin {
 	public final Listener listener;
@@ -149,6 +150,7 @@ public abstract class ListenerPlugin extends Plugin {
 	protected void onOutMessage(OutMessageEvent e) { }
 	protected void onOutNotice(OutNoticeEvent e) { }
 	protected void onOutPrivateMessage(OutPrivateMessageEvent e) { }
+	protected void onWhois2(Whois2Event e) { }
 	protected void onServerNotice(ServerNoticeEvent e) { }
 	
 	protected class MyListener extends CustomListenerAdapter {
@@ -234,6 +236,7 @@ public abstract class ListenerPlugin extends Plugin {
 		public void onOutMessage(OutMessageEvent e) { plugin.onOutMessage(e); }
 		public void onOutNotice(OutNoticeEvent e) { plugin.onOutNotice(e); }
 		public void onOutPrivateMessage(OutPrivateMessageEvent e) { plugin.onOutPrivateMessage(e); }
+		public void onWhois2(Whois2Event e) { plugin.onWhois2(e); }
 		public void onServerNotice(ServerNoticeEvent e) { plugin.onServerNotice(e); }
 	}
 }
