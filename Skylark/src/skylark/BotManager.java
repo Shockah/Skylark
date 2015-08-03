@@ -1,6 +1,7 @@
 package skylark;
 
 import java.util.List;
+import java.util.Random;
 import org.pircbotx.Channel;
 import pl.shockah.Util;
 import skylark.pircbotx.Bot;
@@ -57,6 +58,7 @@ public class BotManager {
 		}
 		return joinChannel(channelName);
 	}
+	
 	public Bot partChannel(String channelName) {
 		synchronized (bots) {
 			Bot bot = botForChannel(channelName);
@@ -73,6 +75,7 @@ public class BotManager {
 	public boolean inChannel(String channelName) {
 		return botForChannel(channelName) != null;
 	}
+	
 	public Bot botForChannel(String channelName) {
 		synchronized (bots) {
 			for (Bot bot : bots)
@@ -83,6 +86,14 @@ public class BotManager {
 			return null;
 		}
 	}
+	
+	public Bot anyBot() {
+		//TODO: could sometime in future pick the bot having the least queued messages
+		if (bots.isEmpty())
+			return null;
+		return bots.get(new Random().nextInt(bots.size()));
+	}
+	
 	public boolean inAnyChannels() {
 		synchronized (bots) {
 			for (Bot bot : bots)

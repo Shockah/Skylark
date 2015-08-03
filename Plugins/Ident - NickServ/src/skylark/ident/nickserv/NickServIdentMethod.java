@@ -20,7 +20,8 @@ public class NickServIdentMethod extends IdentMethod {
 		DEFAULT_TRUST_TIME = 1000l * 60l * 5l;
 	
 	protected final Plugin plugin;
-	protected final Map<User, Entry> cache = Synced.map();
+	protected final NickServManager nickServManager;
+	protected final Map<String, Entry> cache = Synced.map();
 	protected boolean hasWhoX = false;
 	protected boolean hasExtendedJoin = false;
 	protected boolean hasAccountNotify = false;
@@ -30,6 +31,7 @@ public class NickServIdentMethod extends IdentMethod {
 	protected NickServIdentMethod(Plugin plugin, BotManager manager, String id, String name) {
 		super(manager, id, name, CREDIBILITY_HIGH);
 		this.plugin = plugin;
+		nickServManager = new NickServManager(this);
 	}
 	
 	protected NickServIdentMethod(Plugin plugin, BotManager manager, IdentMethodFactory factory) {
@@ -60,19 +62,19 @@ public class NickServIdentMethod extends IdentMethod {
 	}
 	
 	public String getIdentFor(User user) {
-		Entry entry = cache.get(user);
+		Entry entry = cache.get(user.getNick());
 		if (entry == null || entry.account == null || (entry.trustedUntil != null && Dates.isInPast(entry.trustedUntil)))
 			entry = retrieveFor(user);
 		return entry == null ? null : entry.account;
 	}
 	
 	public void putIdentFor(User user, String account, Source source) {
-		cache.put(user, new Entry(user, account));
+		cache.put(user.getNick(), new Entry(user, account));
 	}
 	
 	public Entry retrieveFor(User user) {
-		//TODO: /msg NickServ acc <user> *
-		return null;
+		String account = nickServManager.syncRequestForUser(user);
+		return new Entry(user, account);
 	}
 	
 	public boolean alwaysTrusts() {
