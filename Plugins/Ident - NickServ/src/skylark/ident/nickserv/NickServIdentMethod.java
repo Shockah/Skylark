@@ -13,6 +13,9 @@ import skylark.util.Lazy;
 import skylark.util.Synced;
 
 public class NickServIdentMethod extends IdentMethod {
+	public static final String
+		OPERATOR_STATUS_NETWORK_SERVICE = "Network Service";
+	
 	public static final long
 		DEFAULT_TRUST_TIME = 1000l * 60l * 5l;
 	
@@ -53,7 +56,7 @@ public class NickServIdentMethod extends IdentMethod {
 		hasAccountNotify = bot.getEnabledCapabilities().contains("account-notify");
 		
 		Whois2Event whois = bot.whoisManager.syncRequestForUser("NickServ");
-		return whois != null && whois.getMessages().length != 0 && whois.getMessages()[0].equals("is a Network Service");
+		return whois != null && OPERATOR_STATUS_NETWORK_SERVICE.equals(whois.getOperatorStatus());
 	}
 	
 	public String getIdentFor(User user) {

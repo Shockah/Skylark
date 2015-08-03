@@ -18,6 +18,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 public class CustomInputParser extends InputParser {
+	public static final String
+		OPERATOR_STATUS_PREFIX = "is a ";
+	
 	public static final int
 		RPL_WHOISMESSAGE = 313;
 	
@@ -25,7 +28,7 @@ public class CustomInputParser extends InputParser {
 		availableAccountNotify = null,
 		availableExtendedJoin = null;
 	protected
-		Map<String, List<String>> whoisMessagesBuilder = Synced.map();
+		Map<String, String> whoisOperatorStatusBuilder = Synced.map();
 	
 	public CustomInputParser(PircBotX bot) {
 		super(bot);
@@ -67,14 +70,11 @@ public class CustomInputParser extends InputParser {
 		ImmutableList<String> parsedResponse = ImmutableList.copyOf(parsedResponseOrig);
 		
 		if (code == RPL_WHOISMESSAGE) {
-			synchronized (whoisMessagesBuilder) {
-				String whoisNick = parsedResponse.get(1);
-				List<String> messages = whoisMessagesBuilder.get(whoisNick);
-				if (messages == null) {
-					messages = Synced.<String>list();
-					whoisMessagesBuilder.put(whoisNick, messages);
-				}
-				messages.add(parsedResponse.get(2));
+			String whoisNick = parsedResponse.get(1);
+			String operatorStatus = parsedResponse.get(2);
+			if (operatorStatus.startsWith(OPERATOR_STATUS_PREFIX)) {
+				operatorStatus = operatorStatus.substring(OPERATOR_STATUS_PREFIX.length());
+				whoisOperatorStatusBuilder.put(whoisNick, operatorStatus);
 			}
 		} else if (code == ReplyConstants.RPL_ENDOFWHOIS) {
 			String whoisNick = parsedResponse.get(1);
@@ -87,13 +87,12 @@ public class CustomInputParser extends InputParser {
 				builder.nick(whoisNick);
 				builder.exists(false);
 			}
-			List<String> messages = whoisMessagesBuilder.get(whoisNick);
-			String[] messagesArray = messages == null ? new String[0] : messages.toArray(new String[0]);
+			String operatorStatus = whoisOperatorStatusBuilder.get(whoisNick);
 			WhoisEvent event = builder.generateEvent(bot);
 			configuration.getListenerManager().onEvent(event);
-			configuration.getListenerManager().onEvent(new Whois2Event(event, messagesArray));
+			configuration.getListenerManager().onEvent(new Whois2Event(event, operatorStatus));
 			whoisBuilder.remove(whoisNick);
-			whoisMessagesBuilder.remove(whoisNick);
+			whoisOperatorStatusBuilder.remove(whoisNick);
 		} else {
 			super.processServerResponse(code, rawResponse, parsedResponseOrig);
 		}

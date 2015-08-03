@@ -6,12 +6,12 @@ import com.google.common.collect.ImmutableList;
 
 public class Whois2Event extends Event {
 	protected final WhoisEvent event;
-	protected final String[] messages;
+	protected final String operatorStatus;
 	
-	public Whois2Event(WhoisEvent event, String[] messages) {
+	public Whois2Event(WhoisEvent event, String operatorStatus) {
 		super(event.getBot());
 		this.event = event;
-		this.messages = messages;
+		this.operatorStatus = operatorStatus;
 	}
 	
 	public String getNick() {
@@ -62,8 +62,8 @@ public class Whois2Event extends Event {
 		return event.getAwayMessage();
 	}
 	
-	public String[] getMessages() {
-		return messages;
+	public String getOperatorStatus() {
+		return operatorStatus;
 	}
 	
 	public boolean isRegistered() {
