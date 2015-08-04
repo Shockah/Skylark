@@ -1,0 +1,8 @@
+{
+	"name": "Skylark: Privileges",
+	"version": "r1",
+	"author": "Shockah",
+	
+	"packageName": "Skylark.Privileges",
+	"baseClass": "skylark.privileges.Plugin"
+}

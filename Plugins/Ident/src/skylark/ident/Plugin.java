@@ -26,12 +26,13 @@ public class Plugin extends skylark.Plugin {
 					user -> user.getHostname())),
 			new IdentMethodFactory.Delegate("srv", "Server",
 				(factory, manager) -> new IdentMethod.Delegate(manager, factory, IdentMethod.CREDIBILITY_LOW,
-					user -> user.getBot().getServerHostname()))
+					user -> ((Bot)user.getBot()).manager.name))
 		);
 	}
 	
 	protected void onUnload() {
 		identMethodFactories.clear();
+		identMethods.clear();
 	}
 	
 	public void register(IdentMethodFactory factory) {
