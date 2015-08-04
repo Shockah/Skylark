@@ -10,7 +10,8 @@ import skylark.util.Synced;
 
 public class Group {
 	public final Plugin plugin;
-	public String name;
+	
+	public final String name;
 	public final List<Ident> idents = Synced.list();
 	public final List<String> privileges = Synced.list();
 	

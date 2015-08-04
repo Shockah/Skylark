@@ -106,7 +106,6 @@ public class Plugin extends skylark.Plugin {
 		if (index == -1)
 			return null;
 		String id = ident.substring(0, index);
-		//ident = ident.substring(index + 1);
 		return getForID(id);
 	}
 	
@@ -116,8 +115,15 @@ public class Plugin extends skylark.Plugin {
 		if (index == -1)
 			return null;
 		String id = ident.substring(0, index);
-		//ident = ident.substring(index + 1);
 		return (T)getForID(manager, id);
+	}
+	
+	public String getIdentFromFullIdent(String ident) {
+		int index = ident.indexOf(':');
+		if (index == -1)
+			return null;
+		ident = ident.substring(index + 1);
+		return ident;
 	}
 	
 	public boolean matches(User user, String ident) {
