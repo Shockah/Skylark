@@ -74,6 +74,17 @@ public class Plugin extends skylark.Plugin {
 		identMethods.remove(manager);
 	}
 	
+	@SuppressWarnings("unchecked")
+	public <T extends IdentMethod> T getForClass(BotManager manager, Class<T> cls) {
+		synchronized (identMethods) {
+			prepareForManager(manager);
+			for (Map.Entry<String, IdentMethod> entry : identMethods.get(manager).entrySet())
+				if (cls == entry.getValue().getClass())
+					return (T)entry.getValue();
+		}
+		return null;
+	}
+	
 	public IdentMethodFactory getForID(String id) {
 		synchronized (identMethodFactories) {
 			return identMethodFactories.containsKey(id) ? identMethodFactories.get(id) : null;

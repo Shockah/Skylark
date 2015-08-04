@@ -3,6 +3,7 @@ package skylark.ident.nickserv;
 import java.util.Date;
 import java.util.Map;
 import org.pircbotx.User;
+import org.pircbotx.snapshot.UserSnapshot;
 import skylark.BotManager;
 import skylark.ident.IdentMethod;
 import skylark.ident.IdentMethodFactory;
@@ -68,13 +69,34 @@ public class NickServIdentMethod extends IdentMethod {
 		return entry == null ? null : entry.account;
 	}
 	
-	public void putIdentFor(User user, String account, Source source) {
-		cache.put(user.getNick(), new Entry(user, account));
+	public String getIdentFor(String nick) {
+		Entry entry = cache.get(nick);
+		if (entry == null || entry.account == null || (entry.trustedUntil != null && Dates.isInPast(entry.trustedUntil)))
+			return null;
+		return entry.account;
+	}
+	
+	public void putIdentFor(String nick, String account, Source source) {
+		cache.put(nick, new Entry(nick, account));
+	}
+	
+	public void userNickChanged(String oldNick, String newNick) {
+		synchronized (cache) {
+			Entry entry = cache.get(oldNick);
+			if (entry != null) {
+				cache.put(newNick, entry);
+				cache.remove(oldNick);
+			}
+		}
+	}
+	
+	public void userQuit(UserSnapshot user) {
+		cache.remove(user.getNick());
 	}
 	
 	public Entry retrieveFor(User user) {
 		String account = nickServManager.syncRequestForUser(user);
-		return new Entry(user, account);
+		return new Entry(user.getNick(), account);
 	}
 	
 	public boolean alwaysTrusts() {
@@ -82,16 +104,16 @@ public class NickServIdentMethod extends IdentMethod {
 	}
 	
 	public class Entry {
-		public final User user;
+		public final String nick;
 		public final String account;
 		public final Date trustedUntil;
 		
-		public Entry(User user, String account) {
-			this(user, account, alwaysTrusts() ? null : Dates.inFuture(plugin.trustTimeSetting.get()));
+		public Entry(String nick, String account) {
+			this(nick, account, alwaysTrusts() ? null : Dates.inFuture(plugin.trustTimeSetting.get()));
 		}
 		
-		public Entry(User user, String account, Date trustedUntil) {
-			this.user = user;
+		public Entry(String nick, String account, Date trustedUntil) {
+			this.nick = nick;
 			this.account = account;
 			this.trustedUntil = trustedUntil;
 		}
