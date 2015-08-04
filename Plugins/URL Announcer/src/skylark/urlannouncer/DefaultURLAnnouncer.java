@@ -17,7 +17,7 @@ public class DefaultURLAnnouncer extends URLAnnouncer {
 	}
 	
 	public String text(String url) {
-		return null;
+		return retrieveTitle(url);
 	}
 	
 	public String retrieveTitle(String url) {
