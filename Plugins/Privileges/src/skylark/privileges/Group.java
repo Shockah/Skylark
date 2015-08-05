@@ -3,16 +3,20 @@ package skylark.privileges;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.pircbotx.User;
+import pl.shockah.json.JSONList;
+import pl.shockah.json.JSONObject;
 import skylark.BotManager;
 import skylark.ident.IdentMethod;
 import skylark.pircbotx.Bot;
+import skylark.util.JSON;
 import skylark.util.Synced;
+import com.mongodb.DBCollection;
 
 public class Group {
 	public final Plugin plugin;
 	
 	public final String name;
-	public final List<Ident> idents = Synced.list();
+	public final List<IdentSet> idents = Synced.list();
 	public final List<String> privileges = Synced.list();
 	
 	public Group(Plugin plugin, String name) {
@@ -23,10 +27,17 @@ public class Group {
 	public boolean isMember(User user) {
 		synchronized (idents) {
 			BotManager manager = ((Bot)user.getBot()).manager;
-			for (Ident ident : idents) {
-				IdentMethod method = plugin.identPlugin.getForID(manager, ident.id);
-				String acc = method.getIdentFor(user);
-				if (ident.pattern.matcher(acc).find())
+			for (IdentSet identSet : idents) {
+				boolean all = true;
+				for (Ident ident : identSet.idents) {
+					IdentMethod method = plugin.identPlugin.getForID(manager, ident.id);
+					String acc = method.getIdentFor(user);
+					if (acc == null || !ident.pattern.matcher(acc).find()) {
+						all = false;
+						break;
+					}
+				}
+				if (all)
 					return true;
 			}
 		}
@@ -52,6 +63,33 @@ public class Group {
 		return false;
 	}
 	
+	public void upsert() {
+		JSONObject query = JSONObject.make(
+			"name", name
+		);
+		JSONObject j = query.copy();
+		
+		JSONList<JSONList<?>> jIdents = j.putNewList("idents").ofLists();
+		Synced.forEach(idents, identSet -> {
+			JSONList<String> jIdentSet = jIdents.addNewList().ofStrings();
+			Synced.forEach(identSet.idents, ident -> {
+				jIdentSet.add(ident.getFullIdent());
+			});
+		});
+		
+		JSONList<String> jPrivileges = j.putNewList("privileges").ofStrings();
+		Synced.forEach(privileges, privilege -> {
+			jPrivileges.add(privilege);
+		});
+		
+		DBCollection dbc = plugin.botApp.collection(plugin);
+		dbc.update(JSON.toDBObject(query), JSON.toDBObject(j), true, false);
+	}
+	
+	public static class IdentSet {
+		public final List<Ident> idents = Synced.list();
+	}
+	
 	public static class Ident {
 		public final String id;
 		public final Pattern pattern;
@@ -63,6 +101,10 @@ public class Group {
 		public Ident(String id, Pattern pattern) {
 			this.id = id;
 			this.pattern = pattern;
+		}
+		
+		public String getFullIdent() {
+			return String.format("%s:%s", id, pattern.pattern());
 		}
 	}
 }
