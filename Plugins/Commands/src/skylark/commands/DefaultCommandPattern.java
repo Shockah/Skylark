@@ -24,7 +24,7 @@ public class DefaultCommandPattern extends CommandPattern {
 	}
 	
 	public Call match(GenericUserMessageEvent e) {
-		String triggerCharacters = e.getChannel() == null ? triggerCharactersSetting.get(((Bot)e.getUser().getBot()).manager.name) : triggerCharactersSetting.get(e.getChannel());
+		String triggerCharacters = e.getChannel() == null ? triggerCharactersSetting.get(e.getUser().<Bot>getBot().manager.name) : triggerCharactersSetting.get(e.getChannel());
 		Pattern pattern = Pattern.compile("^[" + Pattern.quote(triggerCharacters) + "](.+?)(?:\\s(.+))$");
 		Matcher m = pattern.matcher(e.getMessage());
 		if (m.find()) {

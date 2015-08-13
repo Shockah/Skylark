@@ -26,7 +26,7 @@ public class Group {
 	
 	public boolean isMember(User user) {
 		synchronized (idents) {
-			BotManager manager = ((Bot)user.getBot()).manager;
+			BotManager manager = user.<Bot>getBot().manager;
 			for (IdentSet identSet : idents) {
 				boolean all = true;
 				for (Ident ident : identSet.idents) {
