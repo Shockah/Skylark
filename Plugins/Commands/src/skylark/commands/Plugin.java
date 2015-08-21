@@ -2,6 +2,7 @@ package skylark.commands;
 
 import java.util.List;
 import org.pircbotx.hooks.events.MessageEvent;
+import pl.shockah.SortedArrayList;
 import skylark.PluginInfo;
 import skylark.pircbotx.event.GenericUserMessageEvent;
 import skylark.util.Synced;
@@ -13,15 +14,26 @@ public class Plugin extends skylark.ListenerPlugin {
 	protected static skylark.settings.Plugin settingsPlugin;
 	
 	protected final List<CommandPattern> patterns = Synced.list();
-	protected final List<CommandProvider> providers = Synced.list();
+	protected final List<CommandProvider> providers = Synced.list(new SortedArrayList<CommandProvider>((i1, i2) -> {
+		return i1.priority == i2.priority ? 0 : (i1.priority > i2.priority ? -1 : 1);
+	}));
 	
 	protected DefaultCommandProvider provider;
+	
+	protected CommandInputParser
+		simpleParser,
+		splitParser,
+		complexParser;
 	
 	public Plugin(PluginInfo pinfo) {
 		super(pinfo);
 	}
 	
 	protected void onLoad() {
+		simpleParser = new SimpleCommandInputParser();
+		splitParser = new SplitCommandInputParser();
+		complexParser = new ComplexCommandInputParser();
+		
 		register(
 			new DefaultCommandPattern(this)
 		);
@@ -34,6 +46,22 @@ public class Plugin extends skylark.ListenerPlugin {
 	protected void onUnload() {
 		patterns.clear();
 		providers.clear();
+		
+		simpleParser = null;
+		splitParser = null;
+		complexParser = null;
+	}
+	
+	public CommandInputParser getSimpleCommandInputParser() {
+		return simpleParser;
+	}
+	
+	public CommandInputParser getSplitCommandInputParser() {
+		return splitParser;
+	}
+	
+	public CommandInputParser getComplexCommandInputParser() {
+		return complexParser;
 	}
 	
 	public void register(CommandProvider provider) {
@@ -116,8 +144,8 @@ public class Plugin extends skylark.ListenerPlugin {
 			return;
 		
 		CommandStack stack = new CommandStack(e);
-		CommandResult result = stack.execute(command, match.args);
-		outputCommand(e, result.text);
+		CommandOutput output = stack.execute(command, match.args);
+		outputCommand(e, output.text);
 	}
 	
 	protected void outputCommand(GenericUserMessageEvent e, String text) {

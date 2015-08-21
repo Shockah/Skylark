@@ -21,28 +21,28 @@ public abstract class Command {
 		this.parser = parser;
 	}
 	
-	protected final CommandResult execute(CommandStack stack, GenericUserMessageEvent e, JSONThing json) {
+	protected final CommandOutput execute(CommandStack stack, GenericUserMessageEvent e, JSONThing json) {
 		if (privilege != null && !Plugin.privilegesPlugin.hasPrivilege(e.getUser(), privilege))
-			return new CommandResult(String.format("Missing privilege '%s'", privilege));
+			return new CommandOutput(String.format("Missing privilege '%s'", privilege));
 		return onExecute(stack, e, json);
 	}
 	
-	protected abstract CommandResult onExecute(CommandStack stack, GenericUserMessageEvent e, JSONThing json);
+	protected abstract CommandOutput onExecute(CommandStack stack, GenericUserMessageEvent e, JSONThing json);
 	
 	public static class Delegate extends Command {
-		public final Func2<GenericUserMessageEvent, JSONThing, CommandResult> func;
+		public final Func2<GenericUserMessageEvent, JSONThing, CommandOutput> func;
 		
-		public Delegate(skylark.Plugin plugin, String name, CommandInputParser parser, Func2<GenericUserMessageEvent, JSONThing, CommandResult> func) {
+		public Delegate(skylark.Plugin plugin, String name, CommandInputParser parser, Func2<GenericUserMessageEvent, JSONThing, CommandOutput> func) {
 			super(plugin, name, parser);
 			this.func = func;
 		}
 		
-		public Delegate(skylark.Plugin plugin, String name, String privilege, CommandInputParser parser, Func2<GenericUserMessageEvent, JSONThing, CommandResult> func) {
+		public Delegate(skylark.Plugin plugin, String name, String privilege, CommandInputParser parser, Func2<GenericUserMessageEvent, JSONThing, CommandOutput> func) {
 			super(plugin, name, privilege, parser);
 			this.func = func;
 		}
 		
-		protected CommandResult onExecute(CommandStack stack, GenericUserMessageEvent e, JSONThing json) {
+		protected CommandOutput onExecute(CommandStack stack, GenericUserMessageEvent e, JSONThing json) {
 			return func.f(e, json);
 		}
 	}

@@ -30,6 +30,11 @@ public final class JSONThing {
 	}
 	
 	public JSONList<?> asList() {
-		return list == null ? JSONList.make(object) : list;
+		if (list == null) {
+			if (object.size() == 1 && object.contains("args"))
+				return object.getList("args");
+			return JSONList.make(object);
+		}
+		return list;
 	}
 }

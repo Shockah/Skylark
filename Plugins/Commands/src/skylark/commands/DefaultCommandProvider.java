@@ -9,7 +9,7 @@ public class DefaultCommandProvider extends CommandProvider {
 	protected final Map<String, Command> commands = Synced.map();
 	
 	public DefaultCommandProvider(Plugin plugin) {
-		super(plugin);
+		super(plugin, PRIORITY_MEDIUM);
 	}
 	
 	public void register(Command command) {
