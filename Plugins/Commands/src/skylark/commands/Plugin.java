@@ -1,15 +1,21 @@
 package skylark.commands;
 
 import java.util.List;
+import org.pircbotx.hooks.events.MessageEvent;
 import skylark.PluginInfo;
+import skylark.pircbotx.event.GenericUserMessageEvent;
 import skylark.util.Synced;
 
-public class Plugin extends skylark.Plugin {
+public class Plugin extends skylark.ListenerPlugin {
+	@Dependency
+	protected static skylark.privileges.Plugin privilegesPlugin;
+	@Dependency
+	protected static skylark.settings.Plugin settingsPlugin;
+	
 	protected final List<CommandPattern> patterns = Synced.list();
 	protected final List<CommandProvider> providers = Synced.list();
 	
-	@Dependency
-	protected skylark.settings.Plugin settingsPlugin;
+	protected DefaultCommandProvider provider;
 	
 	public Plugin(PluginInfo pinfo) {
 		super(pinfo);
@@ -21,7 +27,7 @@ public class Plugin extends skylark.Plugin {
 		);
 		
 		register(
-			new DefaultCommandProvider()
+			provider = new DefaultCommandProvider(this)
 		);
 	}
 	
@@ -64,5 +70,31 @@ public class Plugin extends skylark.Plugin {
 	public void unregister(CommandPattern... patterns) {
 		for (CommandPattern pattern : patterns)
 			unregister(pattern);
+	}
+	
+	public void register(Command command) {
+		provider.register(command);
+	}
+	
+	public void register(Command... commands) {
+		provider.register(commands);
+	}
+	
+	public void unregister(Command command) {
+		provider.unregister(command);
+	}
+	
+	public void unregister(Command... commands) {
+		provider.unregister(commands);
+	}
+	
+	protected void onMessage(MessageEvent e) {
+		GenericUserMessageEvent ge = new GenericUserMessageEvent(e);
+		Synced.iterate(patterns, (pattern, ith) -> {
+			CommandMatch match = pattern.match(ge);
+			if (match != null) {
+				ith.stop();
+			}
+		});
 	}
 }

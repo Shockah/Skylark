@@ -8,6 +8,12 @@ public final class CommandResult {
 	public final JSONThing json;
 	public final String text;
 	
+	public CommandResult(String text) {
+		this(JSONObject.make(
+			"arg", text
+		), text);
+	}
+	
 	public CommandResult(JSONObject j, String text) {
 		json = new JSONThing(j);
 		this.text = text;

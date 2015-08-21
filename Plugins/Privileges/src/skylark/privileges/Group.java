@@ -30,7 +30,7 @@ public class Group {
 			for (IdentSet identSet : idents) {
 				boolean all = true;
 				for (Ident ident : identSet.idents) {
-					IdentMethod method = plugin.identPlugin.getForID(manager, ident.id);
+					IdentMethod method = Plugin.identPlugin.getForID(manager, ident.id);
 					String acc = method.getIdentFor(user);
 					if (acc == null || !ident.pattern.matcher(acc).find()) {
 						all = false;

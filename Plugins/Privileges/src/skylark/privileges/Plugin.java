@@ -13,7 +13,7 @@ public class Plugin extends skylark.Plugin {
 	protected final Map<String, Group> groups = Synced.map();
 	
 	@Dependency
-	protected skylark.ident.Plugin identPlugin;
+	protected static skylark.ident.Plugin identPlugin;
 	
 	public Plugin(PluginInfo pinfo) {
 		super(pinfo);

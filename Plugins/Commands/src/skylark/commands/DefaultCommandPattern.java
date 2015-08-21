@@ -19,18 +19,18 @@ public class DefaultCommandPattern extends CommandPattern {
 	public DefaultCommandPattern(Plugin plugin) {
 		super(plugin);
 		this.plugin = plugin;
-		triggerCharactersSetting = plugin.settingsPlugin.<String>getSetting(plugin, TRIGGER_CHARACTERS_KEY);
+		triggerCharactersSetting = Plugin.settingsPlugin.<String>getSetting(plugin, TRIGGER_CHARACTERS_KEY);
 		triggerCharactersSetting.putDefault(DEFAULT_TRIGGER_CHARACTERS);
 	}
 	
-	public Call match(GenericUserMessageEvent e) {
+	public CommandMatch match(GenericUserMessageEvent e) {
 		String triggerCharacters = e.getChannel() == null ? triggerCharactersSetting.get(e.getUser().<Bot>getBot().manager.name) : triggerCharactersSetting.get(e.getChannel());
 		Pattern pattern = Pattern.compile("^[" + Pattern.quote(triggerCharacters) + "](.+?)(?:\\s(.+))$");
 		Matcher m = pattern.matcher(e.getMessage());
 		if (m.find()) {
 			String command = m.group(1);
 			String args = m.groupCount() == 2 ? m.group(2) : "";
-			return new Call(command, args);
+			return new CommandMatch(command, args);
 		}
 		return null;
 	}

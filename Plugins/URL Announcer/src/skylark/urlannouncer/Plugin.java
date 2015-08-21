@@ -31,7 +31,7 @@ public class Plugin extends skylark.ListenerPlugin {
 		DEFAULT_THROTTLE_TIME = 1000l * 60l;
 	
 	@Dependency
-	protected skylark.settings.Plugin settingsPlugin;
+	protected static skylark.settings.Plugin settingsPlugin;
 	
 	protected final List<URLAnnouncer> announcers = Synced.list();
 	protected final Map<EntryKey, Map<String, Entry>> lastLinked = Synced.map();

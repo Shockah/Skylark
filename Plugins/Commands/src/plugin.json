@@ -6,6 +6,7 @@
 	"packageName": "Skylark.Commands",
 	"baseClass": "skylark.commands.Plugin",
 	"dependsOn": [
+		"Skylark.Settings",
 		"Skylark.Privileges"
 	]
 }

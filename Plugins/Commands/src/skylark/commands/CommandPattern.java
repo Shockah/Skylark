@@ -9,15 +9,5 @@ public abstract class CommandPattern {
 		this.plugin = plugin;
 	}
 	
-	public abstract Call match(GenericUserMessageEvent e);
-	
-	public static class Call {
-		public final String command;
-		public final String args;
-		
-		public Call(String command, String args) {
-			this.command = command;
-			this.args = args;
-		}
-	}
+	public abstract CommandMatch match(GenericUserMessageEvent e);
 }

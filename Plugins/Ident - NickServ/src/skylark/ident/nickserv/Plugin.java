@@ -26,9 +26,9 @@ public class Plugin extends skylark.ListenerPlugin {
 		IDENT_METHOD_NAME = "NickServ account";
 	
 	@Dependency
-	protected skylark.settings.Plugin settingsPlugin;
+	protected static skylark.settings.Plugin settingsPlugin;
 	@Dependency
-	protected skylark.ident.Plugin identPlugin;
+	protected static skylark.ident.Plugin identPlugin;
 	
 	protected Setting<Long> trustTimeSetting;
 	
