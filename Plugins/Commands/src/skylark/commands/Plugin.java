@@ -89,12 +89,44 @@ public class Plugin extends skylark.ListenerPlugin {
 	}
 	
 	protected void onMessage(MessageEvent e) {
-		GenericUserMessageEvent ge = new GenericUserMessageEvent(e);
-		Synced.iterate(patterns, (pattern, ith) -> {
-			CommandMatch match = pattern.match(ge);
-			if (match != null) {
-				ith.stop();
+		triggerCommand(new GenericUserMessageEvent(e));
+	}
+	
+	public void triggerCommand(GenericUserMessageEvent e) {
+		CommandMatch match = null;
+		synchronized (patterns) {
+			for (CommandPattern pattern : patterns) {
+				match = pattern.match(e);
+				if (match != null)
+					break;
 			}
-		});
+		}
+		if (match == null)
+			return;
+		
+		Command command = null;
+		synchronized (providers) {
+			for (CommandProvider provider : providers) {
+				command = provider.provide(e, match.command);
+				if (command != null)
+					break;
+			}
+		}
+		if (command == null)
+			return;
+		
+		CommandStack stack = new CommandStack(e);
+		CommandResult result = stack.execute(command, match.args);
+		outputCommand(e, result.text);
+	}
+	
+	protected void outputCommand(GenericUserMessageEvent e, String text) {
+		String[] lines = text.split("\\r?\\n");
+		for (String line : lines) {
+			if (e.getChannel() == null)
+				e.getUser().send().message(line);
+			else
+				e.getChannel().send().message(line);
+		}
 	}
 }

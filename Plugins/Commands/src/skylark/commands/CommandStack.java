@@ -13,14 +13,14 @@ public final class CommandStack {
 		this.event = event;
 	}
 	
-	public CommandResult execute(GenericUserMessageEvent e, Command command, String args) {
+	public CommandResult execute(Command command, String args) {
 		entries.add(command);
-		JSONThing json = command.parser.parse(e, args);
-		return command.execute(this, e, json);
+		JSONThing json = command.parser.parse(event, args);
+		return command.execute(this, event, json);
 	}
 	
-	public CommandResult execute(GenericUserMessageEvent e, Command command, JSONThing json) {
+	public CommandResult execute(Command command, JSONThing json) {
 		entries.add(command);
-		return command.execute(this, e, json);
+		return command.execute(this, event, json);
 	}
 }
