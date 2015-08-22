@@ -1,5 +1,7 @@
 package skylark.commands;
 
+import java.util.ArrayList;
+import java.util.List;
 import pl.shockah.func.Func2;
 import pl.shockah.json.JSONObject;
 import skylark.pircbotx.event.GenericUserMessageEvent;
@@ -38,9 +40,27 @@ public abstract class Command {
 	}
 	
 	protected final CommandOutput execute(CommandStack stack, GenericUserMessageEvent e, JSONObject json) {
-		if (privilege != null && !Plugin.privilegesPlugin.hasPrivilege(e.getUser(), privilege))
-			return new CommandOutput(String.format("Missing privilege '%s'", privilege));
+		List<String> messages = new ArrayList<>();
+		boolean allowed = isAllowed(stack, e, json, messages);
+		
+		if (!allowed) {
+			String message = String.join(" ", messages);
+			return new CommandOutput("Not allowed to use this command" + (message.equals("") ? "." : ": " + message));
+		}
 		return onExecute(stack, e, json);
+	}
+	
+	protected final boolean isAllowed(CommandStack stack, GenericUserMessageEvent e, JSONObject json) {
+		return isAllowed(stack, e, json, null);
+	}
+	
+	protected boolean isAllowed(CommandStack stack, GenericUserMessageEvent e, JSONObject json, List<String> messages) {
+		if (privilege != null && !Plugin.privilegesPlugin.hasPrivilege(e.getUser(), privilege)) {
+			if (messages != null)
+				messages.add(String.format("Missing privilege '%s'.", privilege));
+			return false;
+		}
+		return true;
 	}
 	
 	protected abstract CommandOutput onExecute(CommandStack stack, GenericUserMessageEvent e, JSONObject json);

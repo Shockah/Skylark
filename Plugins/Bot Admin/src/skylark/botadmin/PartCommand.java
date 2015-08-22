@@ -2,6 +2,7 @@ package skylark.botadmin;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.pircbotx.Channel;
 import pl.shockah.json.JSONObject;
 import skylark.BotManager;
 import skylark.commands.Command;
@@ -16,6 +17,26 @@ public class PartCommand extends Command {
 	
 	public PartCommand(Plugin plugin) {
 		super(plugin, COMMAND_NAME, String.format("%s.%s", plugin.pinfo.packageName(), COMMAND_NAME), Plugin.commandsPlugin.getSplitCommandInputParser());
+	}
+	
+	protected boolean isAllowed(CommandStack stack, GenericUserMessageEvent e, JSONObject json, List<String> messages) {
+		boolean _super = super.isAllowed(stack, e, json, messages);
+		if (_super)
+			return true;
+		
+		BotManager manager = e.<Bot>getBot().manager;
+		for (String channelName : getSplitArgs(json)) {
+			Bot bot = manager.botForChannel(channelName);
+			if (bot != null) {
+				Channel channel = bot.getUserChannelDao().getChannel(channelName);
+				if (!channel.isOp(e.getUser())) {
+					if (messages != null)
+						messages.add(String.format("Not an op of channel '%s'.", channelName));
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 	
 	protected CommandOutput onExecute(CommandStack stack, GenericUserMessageEvent e, JSONObject json) {
