@@ -7,7 +7,6 @@ import pl.shockah.Pair;
 import pl.shockah.StrBuffer;
 import pl.shockah.json.JSONList;
 import pl.shockah.json.JSONObject;
-import skylark.JSONThing;
 import skylark.pircbotx.event.GenericUserMessageEvent;
 
 public class ComplexCommandInputParser extends CommandInputParser {
@@ -94,7 +93,7 @@ public class ComplexCommandInputParser extends CommandInputParser {
 		return new Pair<>(tokens.toArray(new String[0]), separators.toArray(new String[0]));
 	}
 	
-	public JSONThing parse(GenericUserMessageEvent e, String arg) {
-		return new JSONThing(parseComplexArgs(arg));
+	public JSONObject parse(GenericUserMessageEvent e, String arg) {
+		return parseComplexArgs(arg);
 	}
 }

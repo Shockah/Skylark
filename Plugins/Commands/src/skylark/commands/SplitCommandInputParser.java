@@ -2,13 +2,13 @@ package skylark.commands;
 
 import java.util.Arrays;
 import pl.shockah.json.JSONList;
-import skylark.JSONThing;
+import pl.shockah.json.JSONObject;
 import skylark.pircbotx.event.GenericUserMessageEvent;
 
 public class SplitCommandInputParser extends CommandInputParser {
-	public JSONThing parse(GenericUserMessageEvent e, String arg) {
+	public JSONObject parse(GenericUserMessageEvent e, String arg) {
 		JSONList<String> list = new JSONList<>();
 		list.addAll(Arrays.asList(arg.split("\\s")));
-		return new JSONThing(list);
+		return JSONObject.make("args", list);
 	}
 }

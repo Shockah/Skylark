@@ -1,10 +1,26 @@
 package skylark.commands;
 
 import pl.shockah.func.Func2;
-import skylark.JSONThing;
+import pl.shockah.json.JSONObject;
 import skylark.pircbotx.event.GenericUserMessageEvent;
 
 public abstract class Command {
+	public static String getSimpleArg(JSONObject json) {
+		if (json.contains("arg"))
+			return json.getString("arg");
+		else if (json.contains("args"))
+			return String.join(" ", json.getList("args").ofStrings());
+		return "";
+	}
+	
+	public static String[] getSplitArgs(JSONObject json) {
+		if (json.contains("args"))
+			return json.getList("args").ofStrings().toArray(new String[0]);
+		else if (json.contains("arg"))
+			return json.getString("arg").split("\\s");
+		return new String[0];
+	}
+	
 	public final skylark.Plugin plugin;
 	public final String name;
 	public final String privilege;
@@ -21,28 +37,28 @@ public abstract class Command {
 		this.parser = parser;
 	}
 	
-	protected final CommandOutput execute(CommandStack stack, GenericUserMessageEvent e, JSONThing json) {
+	protected final CommandOutput execute(CommandStack stack, GenericUserMessageEvent e, JSONObject json) {
 		if (privilege != null && !Plugin.privilegesPlugin.hasPrivilege(e.getUser(), privilege))
 			return new CommandOutput(String.format("Missing privilege '%s'", privilege));
 		return onExecute(stack, e, json);
 	}
 	
-	protected abstract CommandOutput onExecute(CommandStack stack, GenericUserMessageEvent e, JSONThing json);
+	protected abstract CommandOutput onExecute(CommandStack stack, GenericUserMessageEvent e, JSONObject json);
 	
 	public static class Delegate extends Command {
-		public final Func2<GenericUserMessageEvent, JSONThing, CommandOutput> func;
+		public final Func2<GenericUserMessageEvent, JSONObject, CommandOutput> func;
 		
-		public Delegate(skylark.Plugin plugin, String name, CommandInputParser parser, Func2<GenericUserMessageEvent, JSONThing, CommandOutput> func) {
+		public Delegate(skylark.Plugin plugin, String name, CommandInputParser parser, Func2<GenericUserMessageEvent, JSONObject, CommandOutput> func) {
 			super(plugin, name, parser);
 			this.func = func;
 		}
 		
-		public Delegate(skylark.Plugin plugin, String name, String privilege, CommandInputParser parser, Func2<GenericUserMessageEvent, JSONThing, CommandOutput> func) {
+		public Delegate(skylark.Plugin plugin, String name, String privilege, CommandInputParser parser, Func2<GenericUserMessageEvent, JSONObject, CommandOutput> func) {
 			super(plugin, name, privilege, parser);
 			this.func = func;
 		}
 		
-		protected CommandOutput onExecute(CommandStack stack, GenericUserMessageEvent e, JSONThing json) {
+		protected CommandOutput onExecute(CommandStack stack, GenericUserMessageEvent e, JSONObject json) {
 			return func.f(e, json);
 		}
 	}

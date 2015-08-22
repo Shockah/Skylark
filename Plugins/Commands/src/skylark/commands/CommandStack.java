@@ -2,7 +2,7 @@ package skylark.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-import skylark.JSONThing;
+import pl.shockah.json.JSONObject;
 import skylark.pircbotx.event.GenericUserMessageEvent;
 
 public final class CommandStack {
@@ -15,11 +15,11 @@ public final class CommandStack {
 	
 	public CommandOutput execute(Command command, String args) {
 		entries.add(command);
-		JSONThing json = command.parser.parse(event, args);
+		JSONObject json = command.parser.parse(event, args);
 		return command.execute(this, event, json);
 	}
 	
-	public CommandOutput execute(Command command, JSONThing json) {
+	public CommandOutput execute(Command command, JSONObject json) {
 		entries.add(command);
 		return command.execute(this, event, json);
 	}
