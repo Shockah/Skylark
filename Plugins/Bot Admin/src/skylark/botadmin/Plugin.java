@@ -1,7 +1,10 @@
 package skylark.botadmin;
 
+import org.pircbotx.hooks.events.InviteEvent;
+import skylark.BotManager;
 import skylark.PluginInfo;
 import skylark.commands.Command;
+import skylark.pircbotx.Bot;
 
 public class Plugin extends skylark.ListenerPlugin {
 	@Dependency
@@ -27,5 +30,12 @@ public class Plugin extends skylark.ListenerPlugin {
 			joinCommand,
 			partCommand
 		);
+	}
+	
+	protected void onInvite(InviteEvent e) {
+		BotManager manager = e.<Bot>getBot().manager;
+		Bot bot = manager.botForChannel(e.getChannel());
+		if (bot == null)
+			manager.joinChannel(e.getChannel());
 	}
 }

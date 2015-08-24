@@ -5,13 +5,13 @@ import java.util.List;
 import org.pircbotx.Channel;
 import pl.shockah.json.JSONObject;
 import skylark.BotManager;
-import skylark.commands.Command;
 import skylark.commands.CommandOutput;
 import skylark.commands.CommandStack;
+import skylark.commands.TypedArgCommand;
 import skylark.pircbotx.Bot;
 import skylark.pircbotx.event.GenericUserMessageEvent;
 
-public class PartCommand extends Command {
+public class PartCommand extends TypedArgCommand<String[]> {
 	public static final String
 		COMMAND_NAME = "part";
 	
@@ -19,13 +19,20 @@ public class PartCommand extends Command {
 		super(plugin, COMMAND_NAME, String.format("%s.%s", plugin.pinfo.packageName(), COMMAND_NAME), Plugin.commandsPlugin.getSplitCommandInputParser());
 	}
 	
-	protected boolean isAllowed(CommandStack stack, GenericUserMessageEvent e, JSONObject json, List<String> messages) {
-		boolean _super = super.isAllowed(stack, e, json, messages);
+	protected String[] getArg(GenericUserMessageEvent e, JSONObject json) {
+		String[] args = getSplitArgs(json);
+		if (args.length == 0)
+			args = new String[] { e.getChannel().getName() };
+		return args;
+	}
+	
+	protected boolean isAllowed(CommandStack stack, GenericUserMessageEvent e, String[] arg, List<String> messages) {
+		boolean _super = super.isAllowed(stack, e, arg, messages);
 		if (_super)
 			return true;
 		
 		BotManager manager = e.<Bot>getBot().manager;
-		for (String channelName : getSplitArgs(json)) {
+		for (String channelName : arg) {
 			Bot bot = manager.botForChannel(channelName);
 			if (bot != null) {
 				Channel channel = bot.getUserChannelDao().getChannel(channelName);
@@ -39,13 +46,13 @@ public class PartCommand extends Command {
 		return true;
 	}
 	
-	protected CommandOutput onExecute(CommandStack stack, GenericUserMessageEvent e, JSONObject json) {
+	protected CommandOutput onExecute(CommandStack stack, GenericUserMessageEvent e, String[] arg) {
 		JSONObject j = new JSONObject();
 		JSONObject jChannels = j.putNewObject("channels");
 		
 		List<String> parted = new ArrayList<>();
 		BotManager manager = e.<Bot>getBot().manager;
-		for (String channelName : getSplitArgs(json)) {
+		for (String channelName : arg) {
 			Bot bot = manager.partChannel(channelName);
 			if (bot != null) {
 				jChannels.put(channelName, bot.getNick());
