@@ -1,6 +1,8 @@
 package skylark.commands;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import org.pircbotx.hooks.events.MessageEvent;
 import pl.shockah.SortedArrayList;
 import skylark.PluginInfo;
@@ -114,6 +116,23 @@ public class Plugin extends skylark.ListenerPlugin {
 	
 	public void unregister(Command... commands) {
 		provider.unregister(commands);
+	}
+	
+	public void unregister(skylark.Plugin plugin) {
+		Synced.iterate(patterns, (pattern, ith) -> {
+			if (pattern.plugin == plugin)
+				ith.remove();
+		});
+		Synced.iterate(providers, (provider, ith) -> {
+			if (provider.plugin == plugin)
+				ith.remove();
+		});
+		synchronized (provider.commands) {
+			Iterator<Map.Entry<String, Command>> it = provider.commands.entrySet().iterator();
+			while (it.hasNext())
+				if (it.next().getValue().plugin == plugin)
+					it.remove();
+		}
 	}
 	
 	protected void onMessage(MessageEvent e) {

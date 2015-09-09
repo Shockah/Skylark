@@ -3,16 +3,11 @@ package skylark.botadmin;
 import org.pircbotx.hooks.events.InviteEvent;
 import skylark.BotManager;
 import skylark.PluginInfo;
-import skylark.commands.Command;
 import skylark.pircbotx.Bot;
 
 public class Plugin extends skylark.ListenerPlugin {
 	@Dependency
 	protected static skylark.commands.Plugin commandsPlugin;
-	
-	protected Command
-		joinCommand,
-		partCommand;
 	
 	public Plugin(PluginInfo pinfo) {
 		super(pinfo);
@@ -20,16 +15,13 @@ public class Plugin extends skylark.ListenerPlugin {
 	
 	protected void onLoad() {
 		commandsPlugin.register(
-			joinCommand = new JoinCommand(this),
-			partCommand = new PartCommand(this)
+			new JoinCommand(this),
+			new PartCommand(this)
 		);
 	}
 	
 	protected void onUnload() {
-		commandsPlugin.unregister(
-			joinCommand,
-			partCommand
-		);
+		commandsPlugin.unregister(this);
 	}
 	
 	protected void onInvite(InviteEvent e) {
