@@ -48,7 +48,7 @@ public class Plugin extends skylark.ListenerPlugin {
 		
 		synchronized (lastLinked) {
 			register(
-				new DefaultURLAnnouncer()
+				new DefaultURLAnnouncer(this)
 			);
 			
 			JSON.forEachJSONObject(botApp.collection(this).find(), j -> {
@@ -86,6 +86,13 @@ public class Plugin extends skylark.ListenerPlugin {
 	public void unregister(URLAnnouncer... announcers) {
 		for (URLAnnouncer announcer : announcers)
 			unregister(announcer);
+	}
+	
+	public void unregister(skylark.Plugin plugin) {
+		Synced.iterate(announcers, (announcer, ith) -> {
+			if (announcer.plugin == plugin)
+				ith.remove();
+		});
 	}
 	
 	protected void onMessage(MessageEvent e) {
