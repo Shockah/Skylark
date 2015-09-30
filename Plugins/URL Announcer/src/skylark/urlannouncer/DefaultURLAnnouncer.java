@@ -23,13 +23,16 @@ public class DefaultURLAnnouncer extends URLAnnouncer {
 	public String retrieveTitle(String url) {
 		try {
 			HttpRequest req = HttpRequest.get(url).accept("text/html").followRedirects(true);
-			String[] splitContentType = req.contentType().split(";");
-			for (int i = 0; i < splitContentType.length; i++)
-				splitContentType[i] = splitContentType[i].trim();
-			if (splitContentType[0].equals("text/html")) {
-				Matcher m = TITLE_PATTERN.matcher(req.body());
-				if (m.find())
-					return m.group(1).replaceAll("\\s+", " ").trim();
+			//TODO: handle HTTP 301 redirects
+			if (req.ok()) {
+				String[] splitContentType = req.contentType().split(";");
+				for (int i = 0; i < splitContentType.length; i++)
+					splitContentType[i] = splitContentType[i].trim();
+				if (splitContentType[0].equals("text/html")) {
+					Matcher m = TITLE_PATTERN.matcher(req.body());
+					if (m.find())
+						return m.group(1).replaceAll("\\s+", " ").trim();
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
