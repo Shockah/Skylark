@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="build" name="Skylark.YouTube">
+	<target name="build">
+		<mkdir dir="bin"/>
+		<delete file="../../bin/Plugins/Skylark.YouTube.jar"/>
+		<jar destfile="../../bin/Plugins/Skylark.YouTube.jar" filesetmanifest="mergewithoutmain">
+		<fileset dir="bin"/>
+		</jar>
+	</target>
+</project>

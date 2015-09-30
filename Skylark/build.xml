@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="build" name="Skylark">
+	<target name="build">
+		<mkdir dir="bin"/>
+		<delete file="../bin/Skylark.jar"/>
+		<jar destfile="../bin/Skylark.jar" filesetmanifest="mergewithoutmain">
+		    <manifest>
+                <attribute name="Main-Class" value="skylark.Skylark"/>
+                <attribute name="Class-Path" value=". libs/commons-codec-1.9.jar libs/commons-io-2.4.jar libs/commons-lang3-3.2.1.jar libs/guava-16.0.jar libs/jsoup-1.7.3.jar libs/mongo-java-driver-2.12.3.jar libs/pircbotx-2.1-20150809.213909-141.jar libs/slf4j-api-1.7.7.jar libs/slf4j-simple-1.7.7.jar"/>
+            </manifest>
+			<fileset dir="bin"/>
+		</jar>
+	</target>
+</project>

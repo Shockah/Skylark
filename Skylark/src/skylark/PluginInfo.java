@@ -18,7 +18,7 @@ public final class PluginInfo {
 	}
 	
 	public String baseClass() { return jInfo.getString("baseClass"); }
-	public String packageName() { return jInfo.getString("package"); }
+	public String packageName() { return jInfo.getString("packageName"); }
 	public List<String> dependsOn() { return jInfo.getListOrNew("dependsOn").ofStrings(); }
 	public String name() { return jInfo.getString("name", null); }
 	public String version() { return jInfo.getString("version", null); }

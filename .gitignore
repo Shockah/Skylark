@@ -3,6 +3,7 @@
 /Shocky3/plugins/*
 /Shocky3/temp/*
 /*/bin/*
+/bin/*
 
 *.class
 

@@ -44,6 +44,8 @@ public class SettingsContext {
 	}
 	
 	protected String prefixedKey(String key) {
+		if (key.indexOf('|') != -1)
+			return key;
 		if (prefix == null)
 			return key;
 		return String.format("%s|%s", prefix, key);

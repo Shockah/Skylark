@@ -117,7 +117,8 @@ public class Settings {
 	protected void modified(SettingsContext context, String key) {
 		JSONObject query = buildQueryJSON(context, key);
 		JSONObject j = query.copy();
-		j.put("value", context.getInContext(key));
+		Object val = context.getInContext(key);
+		j.put("value", val);
 		
 		plugin.botApp.collection("settings").update(JSON.toDBObject(query), JSON.toDBObject(j), true, false);
 	}

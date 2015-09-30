@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="build" name="Skylark.Ident.NickServ">
+	<target name="build">
+		<mkdir dir="bin"/>
+		<delete file="../../bin/Plugins/Skylark.Ident.NickServ.jar"/>
+		<jar destfile="../../bin/Plugins/Skylark.Ident.NickServ.jar" filesetmanifest="mergewithoutmain">
+		<fileset dir="bin"/>
+		</jar>
+	</target>
+</project>
