@@ -105,7 +105,9 @@ public class PluginManager {
 							PluginInfo pinfo = new PluginInfo(this, file);
 							pinfo.jInfo = j;
 							pluginInfos.add(pinfo);
-						} catch (Exception e) { }
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
 				}
 				
@@ -152,7 +154,7 @@ public class PluginManager {
 				L: for (PluginInfo pinfo : toLoad) {
 					List<PluginInfo> deps = new LinkedList<PluginInfo>();
 					for (String s : pinfo.dependsOn()) {
-						PluginInfo pinfo2 = byPluginInfoInternalName(s);
+						PluginInfo pinfo2 = pluginInfoByPackageName(s);
 						if (pinfo2 == null) {
 							dontLoad.add(pinfo);
 							System.out.println(String.format("Couldn't load %s: missing dependency %s", pinfo.packageName(), s));
@@ -295,7 +297,7 @@ public class PluginManager {
 		}
 	}
 	
-	public PluginInfo byPluginInfoInternalName(String name) {
+	public PluginInfo pluginInfoByPackageName(String name) {
 		synchronized (pluginInfos) {
 			for (PluginInfo pinfo : pluginInfos)
 				if (pinfo.packageName().equals(name))
@@ -305,7 +307,7 @@ public class PluginManager {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <T extends Plugin> T byInternalName(String name) {
+	public <T extends Plugin> T pluginByPackageName(String name) {
 		synchronized (plugins) {
 			for (Plugin plugin : plugins)
 				if (plugin.pinfo.packageName().equals(name))

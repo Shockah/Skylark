@@ -146,6 +146,8 @@ public class JSONParser {
 				val = true;
 			} else if (word.equals("false")) {
 				val = false;
+			} else if (word.equals("null")) {
+				val = null;
 			} else {
 				try {
 					val = Integer.parseInt(word);
@@ -159,7 +161,7 @@ public class JSONParser {
 							try {
 								val = Double.parseDouble(word);
 							} catch (Exception e4) {
-								val = null;
+								throw new IOException("Invalid JSON input.");
 							}
 						}
 					}

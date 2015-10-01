@@ -7,6 +7,6 @@
 	"baseClass": "skylark.botadmin.Plugin",
 	"dependsOn": [
 		"Skylark.Privileges",
-		"Skylark.Commands",
+		"Skylark.Commands"
 	]
 }
