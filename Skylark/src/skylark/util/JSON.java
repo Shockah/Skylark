@@ -39,6 +39,8 @@ public final class JSON {
 	}
 	
 	public static JSONObject fromDBObject(DBObject dbo) {
+		if (dbo == null)
+			return null;
 		JSONObject j = new JSONObject();
 		for (String key : dbo.keySet()) {
 			Object o = dbo.get(key);

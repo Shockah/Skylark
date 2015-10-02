@@ -5,6 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.pircbotx.PircBotX;
+import com.mongodb.DBCollection;
 
 public abstract class Plugin {
 	public final Skylark botApp;
@@ -22,6 +23,10 @@ public abstract class Plugin {
 	
 	protected void onBotStarted(BotManager manager, PircBotX bot) { }
 	protected void onSettingUpdated(String setting) { }
+	
+	public final DBCollection collection() {
+		return botApp.collection(this);
+	}
 	
 	@Retention(RetentionPolicy.RUNTIME) @Target(ElementType.FIELD)
 	public static @interface Dependency {

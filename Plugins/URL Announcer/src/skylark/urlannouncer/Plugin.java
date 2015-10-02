@@ -4,12 +4,10 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.pircbotx.hooks.events.MessageEvent;
 import pl.shockah.json.JSONObject;
-import skylark.BotManager;
 import skylark.PluginInfo;
 import skylark.pircbotx.Bot;
 import skylark.settings.Setting;
@@ -34,7 +32,6 @@ public class Plugin extends skylark.ListenerPlugin {
 	protected static skylark.settings.Plugin settingsPlugin;
 	
 	protected final List<URLAnnouncer> announcers = Synced.list();
-	protected final Map<EntryKey, Map<String, Entry>> lastLinked = Synced.map();
 	
 	protected Setting<Long> throttleTimeSetting;
 	
@@ -46,25 +43,13 @@ public class Plugin extends skylark.ListenerPlugin {
 		throttleTimeSetting = settingsPlugin.<Long>getSetting(this, THROTTLE_TIME_KEY);
 		throttleTimeSetting.putDefault(DEFAULT_THROTTLE_TIME);
 		
-		synchronized (lastLinked) {
-			register(
-				new DefaultURLAnnouncer(this)
-			);
-			
-			JSON.forEachJSONObject(botApp.collection(this).find(), j -> {
-				EntryKey entryKey = new EntryKey(botApp.serverManager.byServerName(j.getString("server")), j.getString("channel"));
-				if (!lastLinked.containsKey(entryKey))
-					lastLinked.put(entryKey, Synced.map());
-				Map<String, Entry> lastLinked2 = lastLinked.get(entryKey);
-				Entry entry = new Entry(j.getString("nick"), new Date(j.getLong("timestamp")), j.getInt("counter"));
-				lastLinked2.put(j.getString("url"), entry);
-			});
-		}
+		register(
+			new DefaultURLAnnouncer(this)
+		);
 	}
 	
 	protected void onUnload() {
 		announcers.clear();
-		lastLinked.clear();
 	}
 	
 	public void register(URLAnnouncer announcer) {
@@ -105,51 +90,49 @@ public class Plugin extends skylark.ListenerPlugin {
 				try {
 					new URL(s);
 					String url = normalizeURL(s);
-					EntryKey entryKey = new EntryKey(e.<Bot>getBot().manager, e.getChannel().getName());
+					DBCollection dbc = collection();
+					
+					JSONObject query = JSONObject.make(
+						"server", e.<Bot>getBot().manager.name,
+						"channel", e.getChannel().getName(),
+						"url", url
+					);
+					
+					JSONObject jEntry = JSON.fromDBObject(dbc.findOne(JSON.toDBObject(query)));
 					
 					String sLastLinked = null;
-					synchronized (lastLinked) {
-						if (!lastLinked.containsKey(entryKey))
-							lastLinked.put(entryKey, Synced.map());
-						Map<String, Entry> lastLinked2 = lastLinked.get(entryKey);
-						synchronized (lastLinked2) {
-							Entry entry = lastLinked2.get(url);
-							Entry entry2 = new Entry(e.getUser().getNick());
-							DBCollection dbc = botApp.collection(this);
-							if (entry == null) {
-								dbc.insert(JSON.toDBObject(JSONObject.make(
-									"server", entryKey.manager.name,
-									"channel", entryKey.channel,
-									"url", url,
-									"counter", 0,
-									"nick", entry2.nick,
-									"timestamp", entry2.date.getTime()
-								)));
-							} else {
-								dbc.update(JSON.toDBObject(JSONObject.make(
-									"server", entryKey.manager.name,
-									"channel", entryKey.channel,
-									"url", url
-								)), JSON.toDBObject(JSONObject.make("$set", JSONObject.make(
-									"counter", 
-									"nick", entry2.nick,
-									"timestamp", entry2.date.getTime()
-								))));
-								sLastLinked = String.format("Last linked by %s, %s ago; %d times total.", entry.nick, TimeDuration.format(entry.date), entry2.counter);
-							}
-							lastLinked2.put(url, entry2);
-							
-							if (entry != null && entry2.date.getTime() - entry.date.getTime() < throttleTime)
-								continue;
-							
-							String announcement = getAnnouncement(url);
-							if (announcement != null)
-								e.respond(announcement);
-							if (sLastLinked != null)
-								e.respond(sLastLinked);
-						}
+					if (jEntry == null) {
+						JSONObject doc = query.copy();
+						doc.put("counter", 1);
+						doc.put("nick", e.getUser().getNick());
+						doc.put("timestamp", new Date().getTime());
+						dbc.insert(JSON.toDBObject(doc));
+					} else {
+						JSONObject doc = query.copy();
+						doc.put("counter", jEntry.getInt("counter") + 1);
+						doc.put("nick", e.getUser().getNick());
+						doc.put("timestamp", new Date().getTime());
+						dbc.update(JSON.toDBObject(query), JSON.toDBObject(doc));
+						
+						sLastLinked = String.format(
+							"Last linked by %s, %s ago; %d times total.",
+							jEntry.getString("nick"),
+							TimeDuration.format(new Date(jEntry.getLong("timestamp"))),
+							doc.getInt("counter")
+						);
 					}
-				} catch (Exception ex) { }
+					
+					if (jEntry != null && new Date().getTime() - jEntry.getLong("timestamp") < throttleTime)
+						continue;
+					
+					String announcement = getAnnouncement(url);
+					if (announcement != null)
+						e.respond(announcement);
+					if (sLastLinked != null)
+						e.respond(sLastLinked);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
 		}
 	}
 	
@@ -172,23 +155,6 @@ public class Plugin extends skylark.ListenerPlugin {
 				}
 		}
 		return null;
-	}
-	
-	public static final class EntryKey {
-		public final BotManager manager;
-		public final String channel;
-		
-		public EntryKey(BotManager manager, String channel) {
-			this.manager = manager;
-			this.channel = channel;
-		}
-		
-		public boolean equals(Object other) {
-			if (!(other instanceof EntryKey))
-				return false;
-			EntryKey o = (EntryKey)other;
-			return o.manager == manager && o.channel.equals(channel);
-		}
 	}
 	
 	public static final class Entry {

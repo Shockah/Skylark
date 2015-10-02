@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project default="build" name="Skylark - All">
 	<target name="build">
-	    <ant antfile="build.xml" target="build" />
-		<ant antfile="../Plugins/Bot Admin/build.xml" target="build" />
-		<ant antfile="../Plugins/Commands/build.xml" target="build" />
-		<ant antfile="../Plugins/Ident/build.xml" target="build" />
-		<ant antfile="../Plugins/Ident - NickServ/build.xml" target="build" />
-		<ant antfile="../Plugins/Privileges/build.xml" target="build" />
-		<ant antfile="../Plugins/Settings/build.xml" target="build" />
-		<ant antfile="../Plugins/URL Announcer/build.xml" target="build" />
-		<ant antfile="../Plugins/YouTube/build.xml" target="build" />
+	    <ant useNativeBasedir="true" antfile="build.xml" target="build" />
+		<ant useNativeBasedir="true" antfile="../Plugins/Bot Admin/build.xml" target="build" />
+		<ant useNativeBasedir="true" antfile="../Plugins/Commands/build.xml" target="build" />
+		<ant useNativeBasedir="true" antfile="../Plugins/Ident/build.xml" target="build" />
+		<ant useNativeBasedir="true" antfile="../Plugins/Ident - NickServ/build.xml" target="build" />
+		<ant useNativeBasedir="true" antfile="../Plugins/Privileges/build.xml" target="build" />
+		<ant useNativeBasedir="true" antfile="../Plugins/Settings/build.xml" target="build" />
+		<ant useNativeBasedir="true" antfile="../Plugins/URL Announcer/build.xml" target="build" />
+		<ant useNativeBasedir="true" antfile="../Plugins/YouTube/build.xml" target="build" />
 	</target>
 </project>

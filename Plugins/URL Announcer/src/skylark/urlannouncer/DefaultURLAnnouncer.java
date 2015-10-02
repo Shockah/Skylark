@@ -22,7 +22,7 @@ public class DefaultURLAnnouncer extends URLAnnouncer {
 	
 	public String retrieveTitle(String url) {
 		try {
-			HttpRequest req = HttpRequest.get(url).accept("text/html").followRedirects(true);
+			HttpRequest req = HttpRequest.get(url).accept("text/html");
 			//TODO: handle HTTP 301 redirects
 			if (req.ok()) {
 				String[] splitContentType = req.contentType().split(";");
