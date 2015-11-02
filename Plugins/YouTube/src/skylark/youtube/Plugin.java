@@ -8,23 +8,23 @@ import com.github.kevinsawicki.http.HttpRequest;
 
 public class Plugin extends skylark.ListenerPlugin {
 	public static final Pattern
-		FULL_URL_PATTERN = Pattern.compile("https?\\://youtube\\.com/watch.*[\\?&]v=([^\\?&#]+).*"),
+		FULL_URL_PATTERN = Pattern.compile("https?\\://(?:www.)?youtube\\.com/watch.*[\\?&]v=([^\\?&#]+).*"),
 		SHORT_URL_PATTERN = Pattern.compile("https?\\://youtu\\.be/(.*)");
 	public static final String
 		API_SEARCH_URL = "http://gdata.youtube.com/feeds/api/videos",
 		API_GET_URL = "http://gdata.youtube.com/feeds/api/videos/";
 	
-	@Dependency(packageName = "Shocky.Commands")
+	@Dependency(packageName = "Skylark.Commands")
 	protected static skylark.Plugin commandsPlugin;
 	
-	@Dependency(packageName = "Shocky.URLAnnouncer")
+	@Dependency(packageName = "Skylark.URLAnnouncer")
 	protected static skylark.Plugin urlAnnouncerPlugin;
 	
 	public Plugin(PluginInfo pinfo) {
 		super(pinfo);
 	}
 	
-	protected void onLoad() {
+	protected void postLoad() {
 		if (Plugin.commandsPlugin != null) {
 			skylark.commands.Plugin commandsPlugin = (skylark.commands.Plugin)Plugin.commandsPlugin;
 			commandsPlugin.register(

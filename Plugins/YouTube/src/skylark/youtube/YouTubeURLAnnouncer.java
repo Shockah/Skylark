@@ -25,7 +25,7 @@ public class YouTubeURLAnnouncer extends URLAnnouncer {
 			if (m.find()) {
 				String id = m.group(1);
 				VideoInfo info = plugin.performGetRequest(id);
-				if (id != null)
+				if (info != null)
 					return info.format(false);
 			}
 		}
