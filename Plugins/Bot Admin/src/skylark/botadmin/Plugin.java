@@ -1,11 +1,11 @@
 package skylark.botadmin;
 
 import org.pircbotx.hooks.events.InviteEvent;
-import skylark.BotManager;
-import skylark.PluginInfo;
-import skylark.pircbotx.Bot;
+import skylark.old.BotManager;
+import skylark.old.PluginInfo;
+import skylark.old.pircbotx.Bot;
 
-public class Plugin extends skylark.ListenerPlugin {
+public class Plugin extends skylark.old.ListenerPlugin {
 	@Dependency
 	protected static skylark.commands.Plugin commandsPlugin;
 	

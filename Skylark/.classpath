@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="libs/slf4j-simple-1.7.7.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jsoup-1.7.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/pircbotx-2.1-20150809.213909-141.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/io.shockah.json"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

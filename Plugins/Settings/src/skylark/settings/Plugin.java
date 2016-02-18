@@ -1,9 +1,9 @@
 package skylark.settings;
 
 import org.pircbotx.Channel;
-import skylark.PluginInfo;
+import skylark.old.PluginInfo;
 
-public class Plugin extends skylark.Plugin {
+public class Plugin extends skylark.old.Plugin {
 	protected Settings settings = null;
 	
 	public Plugin(PluginInfo pinfo) {
@@ -51,19 +51,19 @@ public class Plugin extends skylark.Plugin {
 		return settings.getContext(pinfo, channel);
 	}
 	
-	public SettingsContext getContext(skylark.Plugin plugin) {
+	public SettingsContext getContext(skylark.old.Plugin plugin) {
 		return settings.getContext(plugin);
 	}
 	
-	public SettingsContext getContext(skylark.Plugin plugin, String server) {
+	public SettingsContext getContext(skylark.old.Plugin plugin, String server) {
 		return settings.getContext(plugin, server);
 	}
 	
-	public SettingsContext getContext(skylark.Plugin plugin, String server, String channel) {
+	public SettingsContext getContext(skylark.old.Plugin plugin, String server, String channel) {
 		return settings.getContext(plugin, server, channel);
 	}
 	
-	public SettingsContext getContext(skylark.Plugin plugin, Channel channel) {
+	public SettingsContext getContext(skylark.old.Plugin plugin, Channel channel) {
 		return settings.getContext(plugin, channel);
 	}
 	
@@ -75,7 +75,7 @@ public class Plugin extends skylark.Plugin {
 		return settings.getSetting(pinfo, key);
 	}
 	
-	public <T> Setting<T> getSetting(skylark.Plugin plugin, String key) {
+	public <T> Setting<T> getSetting(skylark.old.Plugin plugin, String key) {
 		return settings.getSetting(plugin, key);
 	}
 }

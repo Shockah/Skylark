@@ -8,15 +8,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.pircbotx.hooks.events.MessageEvent;
 import pl.shockah.json.JSONObject;
-import skylark.PluginInfo;
-import skylark.pircbotx.Bot;
+import skylark.old.PluginInfo;
+import skylark.old.pircbotx.Bot;
+import skylark.old.util.JSON;
+import skylark.old.util.Synced;
+import skylark.old.util.TimeDuration;
 import skylark.settings.Setting;
-import skylark.util.JSON;
-import skylark.util.Synced;
-import skylark.util.TimeDuration;
 import com.mongodb.DBCollection;
 
-public class Plugin extends skylark.ListenerPlugin {
+public class Plugin extends skylark.old.ListenerPlugin {
 	public static final Pattern
 		HTTP_URL_PATTERN = Pattern.compile(".*(?:https?\\://).*"),
 		WWW_URL_PATTERN = Pattern.compile(".*www\\..*"),
@@ -73,7 +73,7 @@ public class Plugin extends skylark.ListenerPlugin {
 			unregister(announcer);
 	}
 	
-	public void unregister(skylark.Plugin plugin) {
+	public void unregister(skylark.old.Plugin plugin) {
 		Synced.iterate(announcers, (announcer, ith) -> {
 			if (announcer.plugin == plugin)
 				ith.remove();

@@ -2,8 +2,8 @@ package skylark.commands;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import skylark.pircbotx.Bot;
-import skylark.pircbotx.event.GenericUserMessageEvent;
+import skylark.old.pircbotx.Bot;
+import skylark.old.pircbotx.event.GenericUserMessageEvent;
 import skylark.settings.Setting;
 
 public class DefaultCommandPattern extends CommandPattern {

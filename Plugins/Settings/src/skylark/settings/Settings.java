@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.pircbotx.Channel;
 import pl.shockah.json.JSONObject;
-import skylark.PluginInfo;
-import skylark.util.JSON;
+import skylark.old.PluginInfo;
+import skylark.old.util.JSON;
 
 public class Settings {
 	protected static JSONObject buildQueryJSON(SettingsContext context, String key) {
@@ -67,19 +67,19 @@ public class Settings {
 		return new SettingsContext(this, pinfo, channel.getBot().getServerHostname(), channel.getName());
 	}
 	
-	public SettingsContext getContext(skylark.Plugin plugin) {
+	public SettingsContext getContext(skylark.old.Plugin plugin) {
 		return new SettingsContext(this, plugin, null, null);
 	}
 	
-	public SettingsContext getContext(skylark.Plugin plugin, String server) {
+	public SettingsContext getContext(skylark.old.Plugin plugin, String server) {
 		return new SettingsContext(this, plugin, server, null);
 	}
 	
-	public SettingsContext getContext(skylark.Plugin plugin, String server, String channel) {
+	public SettingsContext getContext(skylark.old.Plugin plugin, String server, String channel) {
 		return new SettingsContext(this, plugin, server, channel);
 	}
 	
-	public SettingsContext getContext(skylark.Plugin plugin, Channel channel) {
+	public SettingsContext getContext(skylark.old.Plugin plugin, Channel channel) {
 		return new SettingsContext(this, plugin, channel.getBot().getServerHostname(), channel.getName());
 	}
 	
@@ -91,7 +91,7 @@ public class Settings {
 		return new Setting<T>(this, pinfo, key);
 	}
 	
-	public <T> Setting<T> getSetting(skylark.Plugin plugin, String key) {
+	public <T> Setting<T> getSetting(skylark.old.Plugin plugin, String key) {
 		return new Setting<T>(this, plugin, key);
 	}
 	

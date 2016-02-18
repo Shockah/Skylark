@@ -10,10 +10,10 @@ public abstract class URLAnnouncer {
 		PRIORITY_MEDIUM_LOW = (PRIORITY_MEDIUM + PRIORITY_LOW) / 2,
 		PRIORITY_MEDIUM_HIGH = (PRIORITY_MEDIUM + PRIORITY_HIGH) / 2;
 	
-	public final skylark.Plugin plugin;
+	public final skylark.old.Plugin plugin;
 	public final int priority;
 	
-	public URLAnnouncer(skylark.Plugin plugin, int priority) {
+	public URLAnnouncer(skylark.old.Plugin plugin, int priority) {
 		this.plugin = plugin;
 		this.priority = priority;
 	}
@@ -26,7 +26,7 @@ public abstract class URLAnnouncer {
 		protected final Func1<String, Boolean> funcMatches;
 		protected final Func1<String, String> funcText;
 		
-		public Delegate(skylark.Plugin plugin, int priority, Func1<String, Boolean> funcMatches, Func1<String, String> funcText) {
+		public Delegate(skylark.old.Plugin plugin, int priority, Func1<String, Boolean> funcMatches, Func1<String, String> funcText) {
 			super(plugin, priority);
 			this.funcMatches = funcMatches;
 			this.funcText = funcText;

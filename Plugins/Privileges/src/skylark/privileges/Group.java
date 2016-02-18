@@ -5,11 +5,11 @@ import java.util.regex.Pattern;
 import org.pircbotx.User;
 import pl.shockah.json.JSONList;
 import pl.shockah.json.JSONObject;
-import skylark.BotManager;
 import skylark.ident.IdentMethod;
-import skylark.pircbotx.Bot;
-import skylark.util.JSON;
-import skylark.util.Synced;
+import skylark.old.BotManager;
+import skylark.old.pircbotx.Bot;
+import skylark.old.util.JSON;
+import skylark.old.util.Synced;
 import com.mongodb.DBCollection;
 
 public class Group {

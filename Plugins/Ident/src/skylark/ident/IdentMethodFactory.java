@@ -1,7 +1,7 @@
 package skylark.ident;
 
 import pl.shockah.func.Func2;
-import skylark.BotManager;
+import skylark.old.BotManager;
 
 public abstract class IdentMethodFactory {
 	public final String id;

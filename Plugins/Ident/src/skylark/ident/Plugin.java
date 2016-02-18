@@ -3,12 +3,12 @@ package skylark.ident;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.pircbotx.User;
-import skylark.BotManager;
-import skylark.PluginInfo;
-import skylark.pircbotx.Bot;
-import skylark.util.Synced;
+import skylark.old.BotManager;
+import skylark.old.PluginInfo;
+import skylark.old.pircbotx.Bot;
+import skylark.old.util.Synced;
 
-public class Plugin extends skylark.Plugin {
+public class Plugin extends skylark.old.Plugin {
 	protected final Map<String, IdentMethodFactory> identMethodFactories = Synced.map(new LinkedHashMap<>());
 	protected final Map<BotManager, Map<String, IdentMethod>> identMethods = Synced.map();
 	

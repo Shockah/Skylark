@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Map;
 import org.pircbotx.User;
 import pl.shockah.json.JSONList;
-import skylark.PluginInfo;
-import skylark.util.JSON;
-import skylark.util.Synced;
+import skylark.old.PluginInfo;
+import skylark.old.util.JSON;
+import skylark.old.util.Synced;
 
-public class Plugin extends skylark.Plugin {
+public class Plugin extends skylark.old.Plugin {
 	protected final Map<String, Group> groups = Synced.map();
 	
 	@Dependency

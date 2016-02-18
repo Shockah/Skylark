@@ -2,8 +2,8 @@ package skylark.commands;
 
 import java.util.List;
 import pl.shockah.json.JSONObject;
-import skylark.Plugin;
-import skylark.pircbotx.event.GenericUserMessageEvent;
+import skylark.old.Plugin;
+import skylark.old.pircbotx.event.GenericUserMessageEvent;
 
 public abstract class TypedArgCommand<T> extends Command {
 	public TypedArgCommand(Plugin plugin, String name, CommandInputParser parser) {

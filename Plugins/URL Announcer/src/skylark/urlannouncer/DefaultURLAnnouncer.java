@@ -8,7 +8,7 @@ public class DefaultURLAnnouncer extends URLAnnouncer {
 	public static final Pattern
 		TITLE_PATTERN = Pattern.compile("\\<title\\>(.*?)\\</title\\>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 	
-	public DefaultURLAnnouncer(skylark.Plugin plugin) {
+	public DefaultURLAnnouncer(skylark.old.Plugin plugin) {
 		super(plugin, PRIORITY_LOW);
 	}
 	

@@ -3,7 +3,7 @@ package skylark.commands;
 import java.util.Arrays;
 import pl.shockah.json.JSONList;
 import pl.shockah.json.JSONObject;
-import skylark.pircbotx.event.GenericUserMessageEvent;
+import skylark.old.pircbotx.event.GenericUserMessageEvent;
 
 public class SplitCommandInputParser extends CommandInputParser {
 	public JSONObject parse(GenericUserMessageEvent e, String arg) {

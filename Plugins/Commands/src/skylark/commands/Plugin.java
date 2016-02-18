@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Map;
 import org.pircbotx.hooks.events.MessageEvent;
 import pl.shockah.SortedArrayList;
-import skylark.PluginInfo;
-import skylark.pircbotx.event.GenericUserMessageEvent;
-import skylark.util.Synced;
+import skylark.old.PluginInfo;
+import skylark.old.pircbotx.event.GenericUserMessageEvent;
+import skylark.old.util.Synced;
 
-public class Plugin extends skylark.ListenerPlugin {
+public class Plugin extends skylark.old.ListenerPlugin {
 	@Dependency
 	protected static skylark.privileges.Plugin privilegesPlugin;
 	@Dependency
@@ -118,7 +118,7 @@ public class Plugin extends skylark.ListenerPlugin {
 		provider.unregister(commands);
 	}
 	
-	public void unregister(skylark.Plugin plugin) {
+	public void unregister(skylark.old.Plugin plugin) {
 		Synced.iterate(patterns, (pattern, ith) -> {
 			if (pattern.plugin == plugin)
 				ith.remove();

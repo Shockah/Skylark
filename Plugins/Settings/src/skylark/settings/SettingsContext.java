@@ -2,7 +2,7 @@ package skylark.settings;
 
 import java.util.HashMap;
 import java.util.Map;
-import skylark.PluginInfo;
+import skylark.old.PluginInfo;
 
 public class SettingsContext {
 	public static final String
@@ -26,7 +26,7 @@ public class SettingsContext {
 		this(settings, pinfo.packageName(), server, channel);
 	}
 	
-	protected SettingsContext(Settings settings, skylark.Plugin plugin, String server, String channel) {
+	protected SettingsContext(Settings settings, skylark.old.Plugin plugin, String server, String channel) {
 		this(settings, plugin.pinfo, server, channel);
 	}
 	

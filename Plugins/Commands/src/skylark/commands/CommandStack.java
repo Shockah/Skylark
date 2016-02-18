@@ -3,7 +3,7 @@ package skylark.commands;
 import java.util.ArrayList;
 import java.util.List;
 import pl.shockah.json.JSONObject;
-import skylark.pircbotx.event.GenericUserMessageEvent;
+import skylark.old.pircbotx.event.GenericUserMessageEvent;
 
 public final class CommandStack {
 	public final GenericUserMessageEvent event;

@@ -4,7 +4,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import org.pircbotx.Colors;
 import pl.shockah.json.JSONObject;
-import skylark.util.TimeDuration;
+import skylark.old.util.TimeDuration;
 
 public final class VideoInfo {
 	public final String id;

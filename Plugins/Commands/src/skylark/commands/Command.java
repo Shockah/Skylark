@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import pl.shockah.func.Func2;
 import pl.shockah.json.JSONObject;
-import skylark.pircbotx.event.GenericUserMessageEvent;
+import skylark.old.pircbotx.event.GenericUserMessageEvent;
 
 public abstract class Command {
 	public static String getSimpleArg(JSONObject json) {
@@ -23,16 +23,16 @@ public abstract class Command {
 		return new String[0];
 	}
 	
-	public final skylark.Plugin plugin;
+	public final skylark.old.Plugin plugin;
 	public final String name;
 	public final String privilege;
 	public final CommandInputParser parser;
 	
-	public Command(skylark.Plugin plugin, String name, CommandInputParser parser) {
+	public Command(skylark.old.Plugin plugin, String name, CommandInputParser parser) {
 		this(plugin, name, null, parser);
 	}
 	
-	public Command(skylark.Plugin plugin, String name, String privilege, CommandInputParser parser) {
+	public Command(skylark.old.Plugin plugin, String name, String privilege, CommandInputParser parser) {
 		this.plugin = plugin;
 		this.name = name;
 		this.privilege = privilege;
@@ -68,12 +68,12 @@ public abstract class Command {
 	public static class Delegate extends Command {
 		public final Func2<GenericUserMessageEvent, JSONObject, CommandOutput> func;
 		
-		public Delegate(skylark.Plugin plugin, String name, CommandInputParser parser, Func2<GenericUserMessageEvent, JSONObject, CommandOutput> func) {
+		public Delegate(skylark.old.Plugin plugin, String name, CommandInputParser parser, Func2<GenericUserMessageEvent, JSONObject, CommandOutput> func) {
 			super(plugin, name, parser);
 			this.func = func;
 		}
 		
-		public Delegate(skylark.Plugin plugin, String name, String privilege, CommandInputParser parser, Func2<GenericUserMessageEvent, JSONObject, CommandOutput> func) {
+		public Delegate(skylark.old.Plugin plugin, String name, String privilege, CommandInputParser parser, Func2<GenericUserMessageEvent, JSONObject, CommandOutput> func) {
 			super(plugin, name, privilege, parser);
 			this.func = func;
 		}

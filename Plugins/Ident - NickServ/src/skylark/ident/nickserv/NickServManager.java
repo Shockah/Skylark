@@ -8,9 +8,9 @@ import org.pircbotx.User;
 import pl.shockah.Box;
 import pl.shockah.Util;
 import pl.shockah.func.Action1;
-import skylark.BotManager;
-import skylark.WhoisManager;
-import skylark.util.Synced;
+import skylark.old.BotManager;
+import skylark.old.WhoisManager;
+import skylark.old.util.Synced;
 
 public class NickServManager {
 	public final NickServIdentMethod identMethod;

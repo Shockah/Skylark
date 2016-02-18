@@ -1,9 +1,9 @@
 package skylark.commands;
 
 import java.util.Map;
-import skylark.Plugin;
-import skylark.pircbotx.event.GenericUserMessageEvent;
-import skylark.util.Synced;
+import skylark.old.Plugin;
+import skylark.old.pircbotx.event.GenericUserMessageEvent;
+import skylark.old.util.Synced;
 
 public class DefaultCommandProvider extends CommandProvider {
 	protected final Map<String, Command> commands = Synced.map();

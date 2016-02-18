@@ -1,11 +1,11 @@
 package skylark.commands;
 
-import skylark.pircbotx.event.GenericUserMessageEvent;
+import skylark.old.pircbotx.event.GenericUserMessageEvent;
 
 public abstract class CommandPattern {
-	public final skylark.Plugin plugin;
+	public final skylark.old.Plugin plugin;
 	
-	public CommandPattern(skylark.Plugin plugin) {
+	public CommandPattern(skylark.old.Plugin plugin) {
 		this.plugin = plugin;
 	}
 	

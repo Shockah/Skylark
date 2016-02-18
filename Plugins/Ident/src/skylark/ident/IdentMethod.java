@@ -2,7 +2,7 @@ package skylark.ident;
 
 import org.pircbotx.User;
 import pl.shockah.func.Func1;
-import skylark.BotManager;
+import skylark.old.BotManager;
 
 public abstract class IdentMethod {
 	public static final int

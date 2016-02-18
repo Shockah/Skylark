@@ -4,14 +4,14 @@ import java.util.Date;
 import java.util.Map;
 import org.pircbotx.User;
 import org.pircbotx.snapshot.UserSnapshot;
-import skylark.BotManager;
 import skylark.ident.IdentMethod;
 import skylark.ident.IdentMethodFactory;
-import skylark.pircbotx.Bot;
-import skylark.pircbotx.event.Whois2Event;
-import skylark.util.Dates;
-import skylark.util.Lazy;
-import skylark.util.Synced;
+import skylark.old.BotManager;
+import skylark.old.pircbotx.Bot;
+import skylark.old.pircbotx.event.Whois2Event;
+import skylark.old.util.Dates;
+import skylark.old.util.Lazy;
+import skylark.old.util.Synced;
 
 public class NickServIdentMethod extends IdentMethod {
 	public static final String

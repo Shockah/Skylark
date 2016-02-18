@@ -3,12 +3,12 @@ package skylark.botadmin;
 import java.util.ArrayList;
 import java.util.List;
 import pl.shockah.json.JSONObject;
-import skylark.BotManager;
 import skylark.commands.CommandOutput;
 import skylark.commands.CommandStack;
 import skylark.commands.TypedArgCommand;
-import skylark.pircbotx.Bot;
-import skylark.pircbotx.event.GenericUserMessageEvent;
+import skylark.old.BotManager;
+import skylark.old.pircbotx.Bot;
+import skylark.old.pircbotx.event.GenericUserMessageEvent;
 
 public class JoinCommand extends TypedArgCommand<String[]> {
 	public static final String

@@ -3,10 +3,10 @@ package skylark.youtube;
 import java.util.regex.Pattern;
 import pl.shockah.json.JSONObject;
 import pl.shockah.json.JSONParser;
-import skylark.PluginInfo;
+import skylark.old.PluginInfo;
 import com.github.kevinsawicki.http.HttpRequest;
 
-public class Plugin extends skylark.ListenerPlugin {
+public class Plugin extends skylark.old.ListenerPlugin {
 	public static final Pattern
 		FULL_URL_PATTERN = Pattern.compile("https?\\://(?:www.)?youtube\\.com/watch.*[\\?&]v=([^\\?&#]+).*"),
 		SHORT_URL_PATTERN = Pattern.compile("https?\\://youtu\\.be/(.*)");
@@ -15,10 +15,10 @@ public class Plugin extends skylark.ListenerPlugin {
 		API_GET_URL = "http://gdata.youtube.com/feeds/api/videos/";
 	
 	@Dependency(packageName = "Skylark.Commands")
-	protected static skylark.Plugin commandsPlugin;
+	protected static skylark.old.Plugin commandsPlugin;
 	
 	@Dependency(packageName = "Skylark.URLAnnouncer")
-	protected static skylark.Plugin urlAnnouncerPlugin;
+	protected static skylark.old.Plugin urlAnnouncerPlugin;
 	
 	public Plugin(PluginInfo pinfo) {
 		super(pinfo);

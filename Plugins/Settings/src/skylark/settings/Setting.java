@@ -1,7 +1,7 @@
 package skylark.settings;
 
 import org.pircbotx.Channel;
-import skylark.PluginInfo;
+import skylark.old.PluginInfo;
 
 public class Setting<T> {
 	protected final Settings settings;
@@ -18,7 +18,7 @@ public class Setting<T> {
 		this(settings, pinfo.packageName(), key);
 	}
 	
-	protected Setting(Settings settings, skylark.Plugin plugin, String key) {
+	protected Setting(Settings settings, skylark.old.Plugin plugin, String key) {
 		this(settings, plugin.pinfo, key);
 	}
 	
