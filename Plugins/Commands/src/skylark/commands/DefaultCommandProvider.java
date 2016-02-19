@@ -1,8 +1,8 @@
 package skylark.commands;
 
 import java.util.Map;
+import me.shockah.skylark.event.GenericUserMessageEvent;
 import skylark.old.Plugin;
-import skylark.old.pircbotx.event.GenericUserMessageEvent;
 import skylark.old.util.Synced;
 
 public class DefaultCommandProvider extends CommandProvider {

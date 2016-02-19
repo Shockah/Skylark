@@ -3,10 +3,10 @@ package skylark.commands;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import me.shockah.skylark.event.GenericUserMessageEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import pl.shockah.SortedArrayList;
 import skylark.old.PluginInfo;
-import skylark.old.pircbotx.event.GenericUserMessageEvent;
 import skylark.old.util.Synced;
 
 public class Plugin extends skylark.old.ListenerPlugin {

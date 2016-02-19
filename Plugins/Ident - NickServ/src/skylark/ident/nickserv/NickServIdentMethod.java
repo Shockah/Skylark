@@ -2,13 +2,13 @@ package skylark.ident.nickserv;
 
 import java.util.Date;
 import java.util.Map;
+import me.shockah.skylark.event.Whois2Event;
 import org.pircbotx.User;
 import org.pircbotx.snapshot.UserSnapshot;
 import skylark.ident.IdentMethod;
 import skylark.ident.IdentMethodFactory;
 import skylark.old.BotManager;
 import skylark.old.pircbotx.Bot;
-import skylark.old.pircbotx.event.Whois2Event;
 import skylark.old.util.Dates;
 import skylark.old.util.Lazy;
 import skylark.old.util.Synced;

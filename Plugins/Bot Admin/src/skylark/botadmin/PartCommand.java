@@ -2,6 +2,7 @@ package skylark.botadmin;
 
 import java.util.ArrayList;
 import java.util.List;
+import me.shockah.skylark.event.GenericUserMessageEvent;
 import org.pircbotx.Channel;
 import pl.shockah.json.JSONObject;
 import skylark.commands.CommandOutput;
@@ -9,7 +10,6 @@ import skylark.commands.CommandStack;
 import skylark.commands.TypedArgCommand;
 import skylark.old.BotManager;
 import skylark.old.pircbotx.Bot;
-import skylark.old.pircbotx.event.GenericUserMessageEvent;
 
 public class PartCommand extends TypedArgCommand<String[]> {
 	public static final String

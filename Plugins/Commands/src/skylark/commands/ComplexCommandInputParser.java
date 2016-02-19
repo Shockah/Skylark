@@ -2,12 +2,12 @@ package skylark.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import me.shockah.skylark.event.GenericUserMessageEvent;
 import org.apache.commons.lang3.StringUtils;
 import pl.shockah.Pair;
 import pl.shockah.StrBuffer;
 import pl.shockah.json.JSONList;
 import pl.shockah.json.JSONObject;
-import skylark.old.pircbotx.event.GenericUserMessageEvent;
 
 public class ComplexCommandInputParser extends CommandInputParser {
 	public static JSONObject parseComplexArgs(String arg) {

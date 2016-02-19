@@ -1,6 +1,8 @@
 package skylark.ident.nickserv;
 
 import java.util.List;
+import me.shockah.skylark.event.AccountNotifyEvent;
+import me.shockah.skylark.event.ExtendedJoinEvent;
 import org.pircbotx.Channel;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.NickChangeEvent;
@@ -12,8 +14,6 @@ import skylark.ident.IdentMethodFactory;
 import skylark.old.BotManager;
 import skylark.old.PluginInfo;
 import skylark.old.pircbotx.Bot;
-import skylark.old.pircbotx.event.AccountNotifyEvent;
-import skylark.old.pircbotx.event.ExtendedJoinEvent;
 import skylark.old.util.Synced;
 import skylark.settings.Setting;
 

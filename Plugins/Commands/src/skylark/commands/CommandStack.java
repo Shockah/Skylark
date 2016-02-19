@@ -2,8 +2,8 @@ package skylark.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import me.shockah.skylark.event.GenericUserMessageEvent;
 import pl.shockah.json.JSONObject;
-import skylark.old.pircbotx.event.GenericUserMessageEvent;
 
 public final class CommandStack {
 	public final GenericUserMessageEvent event;

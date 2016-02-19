@@ -1,7 +1,7 @@
 package skylark.commands;
 
+import me.shockah.skylark.event.GenericUserMessageEvent;
 import pl.shockah.json.JSONObject;
-import skylark.old.pircbotx.event.GenericUserMessageEvent;
 
 public abstract class CommandInputParser {
 	protected CommandInputParser() { }

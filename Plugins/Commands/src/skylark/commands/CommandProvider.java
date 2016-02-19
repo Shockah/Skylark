@@ -1,6 +1,6 @@
 package skylark.commands;
 
-import skylark.old.pircbotx.event.GenericUserMessageEvent;
+import me.shockah.skylark.event.GenericUserMessageEvent;
 
 public abstract class CommandProvider {
 	public static final int

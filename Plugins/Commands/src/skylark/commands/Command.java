@@ -2,9 +2,9 @@ package skylark.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import me.shockah.skylark.event.GenericUserMessageEvent;
 import pl.shockah.func.Func2;
 import pl.shockah.json.JSONObject;
-import skylark.old.pircbotx.event.GenericUserMessageEvent;
 
 public abstract class Command {
 	public static String getSimpleArg(JSONObject json) {

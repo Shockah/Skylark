@@ -1,10 +1,10 @@
 package skylark.youtube;
 
+import me.shockah.skylark.event.GenericUserMessageEvent;
 import pl.shockah.json.JSONObject;
 import skylark.commands.CommandOutput;
 import skylark.commands.CommandStack;
 import skylark.commands.TypedArgCommand;
-import skylark.old.pircbotx.event.GenericUserMessageEvent;
 
 public class YouTubeCommand extends TypedArgCommand<String> {
 	public static final String
