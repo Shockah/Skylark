@@ -22,12 +22,15 @@ public class ExtendedJoinEvent extends Event implements GenericChannelUserEvent 
 	public User getUser() {
 		return user;
 	}
+	
 	public UserHostmask getUserHostmask() {
 		return bot.getConfiguration().getBotFactory().createUserHostmask(bot, user.getHostmask());
 	}
+	
 	public Channel getChannel() {
 		return channel;
 	}
+	
 	public String getAccount() {
 		return account;
 	}

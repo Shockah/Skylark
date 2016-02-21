@@ -6,6 +6,7 @@ public final class TimeDuration {
 	public static String format(Date date) {
 		return format(date, new Date());
 	}
+	
 	public static String format(Date date1, Date date2) {
 		return formatMiliseconds(date2.getTime() - date1.getTime());
 	}
@@ -39,6 +40,7 @@ public final class TimeDuration {
 			sb.append(String.format(" %ds", s));
 		return sb.toString().substring(1);
 	}
+	
 	public static String formatMiliseconds(long ms) {
 		return formatSeconds((int)(ms / 1000l));
 	}

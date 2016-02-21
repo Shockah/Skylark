@@ -5,9 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import me.shockah.skylark.event.AccountNotifyEvent;
-import me.shockah.skylark.event.ExtendedJoinEvent;
-import me.shockah.skylark.event.Whois2Event;
 import org.pircbotx.Channel;
 import org.pircbotx.InputParser;
 import org.pircbotx.PircBotX;
@@ -17,6 +14,9 @@ import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.events.WhoisEvent;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import me.shockah.skylark.event.AccountNotifyEvent;
+import me.shockah.skylark.event.ExtendedJoinEvent;
+import me.shockah.skylark.event.Whois2Event;
 
 public class SkylarkInputParser extends InputParser {
 	public static final String OPERATOR_STATUS_PREFIX = "is a ";

@@ -1,4 +1,4 @@
-package me.shockah.skylark;
+package me.shockah.skylark.plugin;
 
 import io.shockah.json.JSONObject;
 import java.io.Closeable;

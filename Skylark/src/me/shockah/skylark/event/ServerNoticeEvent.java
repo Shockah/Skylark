@@ -21,6 +21,7 @@ public class ServerNoticeEvent extends Event implements GenericMessageEvent {
 	public User getUser() {
 		return user;
 	}
+	
 	public UserHostmask getUserHostmask() {
 		return userHostmask;
 	}
@@ -32,9 +33,11 @@ public class ServerNoticeEvent extends Event implements GenericMessageEvent {
 	public void respond(String response) {
 		throw new UnsupportedOperationException();
 	}
+	
 	public void respondPrivateMessage(String response) {
 		throw new UnsupportedOperationException();
 	}
+	
 	public void respondWith(String response) {
 		throw new UnsupportedOperationException();
 	}

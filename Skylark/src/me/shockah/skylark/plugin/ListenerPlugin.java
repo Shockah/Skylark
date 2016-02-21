@@ -1,5 +1,6 @@
-package me.shockah.skylark;
+package me.shockah.skylark.plugin;
 
+import me.shockah.skylark.SkylarkListenerAdapter;
 import me.shockah.skylark.event.AccountNotifyEvent;
 import me.shockah.skylark.event.ExtendedJoinEvent;
 import me.shockah.skylark.event.OutActionEvent;

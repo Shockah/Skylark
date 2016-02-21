@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.regex.Pattern;
-import me.shockah.skylark.util.Box;
 import org.pircbotx.Configuration;
 import org.pircbotx.Configuration.BotFactory;
 import org.pircbotx.InputParser;
@@ -14,6 +13,11 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ConnectEvent;
+import me.shockah.skylark.plugin.BotManagerService;
+import me.shockah.skylark.plugin.ListenerPlugin;
+import me.shockah.skylark.plugin.Plugin;
+import me.shockah.skylark.plugin.PluginManager;
+import me.shockah.skylark.util.Box;
 
 public class BotManager {
 	public static final String CHANNELS_PER_CONNECTION_CAPABILITY = "CHANLIMIT";
@@ -32,6 +36,7 @@ public class BotManager {
 	public String botName = DEFAULT_BOT_NAME;
 	
 	public final List<Bot> bots = Collections.synchronizedList(new ArrayList<>());
+	public final List<BotManagerService.Instance> services = Collections.synchronizedList(new ArrayList<>());
 	
 	public BotManager(ServerManager serverManager, String name, String host) {
 		this(serverManager, name, host, null);
@@ -42,6 +47,17 @@ public class BotManager {
 		this.name = name;
 		this.host = host;
 		this.port = port;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T extends BotManagerService.Instance> T getService(Class<T> clazz) {
+		synchronized (services) {
+			for (BotManagerService.Instance service : services) {
+				if (clazz.isInstance(service))
+					return (T)service;
+			}
+		}
+		return null;
 	}
 	
 	public int getChannelsPerConnection() {

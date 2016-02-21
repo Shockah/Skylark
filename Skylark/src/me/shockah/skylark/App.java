@@ -2,6 +2,7 @@ package me.shockah.skylark;
 
 import io.shockah.json.JSONObject;
 import io.shockah.json.JSONParser;
+import me.shockah.skylark.plugin.PluginManager;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

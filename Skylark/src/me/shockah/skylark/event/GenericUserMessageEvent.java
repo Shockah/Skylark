@@ -20,16 +20,19 @@ public class GenericUserMessageEvent extends Event implements GenericMessageEven
 		eMessage = e;
 		eChannelUser = e;
 	}
+	
 	public GenericUserMessageEvent(ActionEvent e) {
 		super(e.getBot());
 		eMessage = e;
 		eChannelUser = e;
 	}
+	
 	public GenericUserMessageEvent(PrivateMessageEvent e) {
 		super(e.getBot());
 		eMessage = e;
 		eChannelUser = null;
 	}
+	
 	public GenericUserMessageEvent(NoticeEvent e) {
 		super(e.getBot());
 		eMessage = e;
@@ -39,12 +42,15 @@ public class GenericUserMessageEvent extends Event implements GenericMessageEven
 	public Channel getChannel() {
 		return eChannelUser != null ? eChannelUser.getChannel() : null;
 	}
+	
 	public UserHostmask getUserHostmask() {
 		return eMessage != null ? eMessage.getUserHostmask() : (eChannelUser != null ? eChannelUser.getUserHostmask() : null);
 	}
+	
 	public User getUser() {
 		return eMessage != null ? eMessage.getUser() : (eChannelUser != null ? eChannelUser.getUser() : null);
 	}
+	
 	public String getMessage() {
 		return eMessage != null ? eMessage.getMessage() : null;
 	}
@@ -55,12 +61,14 @@ public class GenericUserMessageEvent extends Event implements GenericMessageEven
 		else if (eChannelUser != null)
 			eChannelUser.respond(response);
 	}
+	
 	public void respondPrivateMessage(String response) {
 		if (eMessage != null)
 			eMessage.respondPrivateMessage(response);
 		else if (eChannelUser != null)
 			throw new UnsupportedOperationException();
 	}
+	
 	public void respondWith(String response) {
 		if (eMessage != null)
 			eMessage.respondWith(response);

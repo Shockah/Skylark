@@ -1,11 +1,11 @@
 package me.shockah.skylark;
 
-import io.shockah.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import me.shockah.skylark.util.JSON;
 import com.mongodb.DBCollection;
+import io.shockah.json.JSONObject;
+import me.shockah.skylark.util.JSON;
 
 public class ServerManager {
 	public static final String COLLECTION_NAME = "servers";

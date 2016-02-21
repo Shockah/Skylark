@@ -1,7 +1,5 @@
-package me.shockah.skylark;
+package me.shockah.skylark.plugin;
 
-import io.shockah.json.JSONObject;
-import io.shockah.json.JSONParser;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.nio.file.FileSystem;
@@ -12,6 +10,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import io.shockah.json.JSONObject;
+import io.shockah.json.JSONParser;
+import me.shockah.skylark.App;
+import me.shockah.skylark.Bot;
+import me.shockah.skylark.BotManager;
+import me.shockah.skylark.ServerManager;
 import me.shockah.skylark.util.FileUtils;
 import me.shockah.skylark.util.PathClassLoader;
 import me.shockah.skylark.util.Sync;
@@ -24,6 +28,8 @@ public class PluginManager {
 	public ClassLoader pluginClassLoader = null;
 	public List<Plugin.Info> pluginInfos = Collections.synchronizedList(new ArrayList<>());
 	public List<Plugin> plugins = Collections.synchronizedList(new ArrayList<>());
+	public List<BotManagerService> botManagerServices = Collections.synchronizedList(new ArrayList<>());
+	public List<BotService> botServices = Collections.synchronizedList(new ArrayList<>());
 	
 	public PluginManager(App app) {
 		this.app = app;
@@ -45,6 +51,7 @@ public class PluginManager {
 			for (Plugin plugin : plugins) {
 				plugin.onUnload();
 			}
+			clearServices();
 			plugins.clear();
 			
 			for (Plugin.Info info : pluginInfos) {
@@ -61,7 +68,9 @@ public class PluginManager {
 	
 	protected void load() {
 		Sync.on(pluginInfos, plugins, () -> {
-			pluginInfos.addAll(findPlugins());
+			List<Plugin.Info> infos = findPlugins();
+			infos = dependencySort(infos);
+			pluginInfos.addAll(infos);
 			pluginClassLoader = createClassLoader(pluginInfos);
 			
 			for (Plugin.Info info : pluginInfos) {
@@ -70,12 +79,13 @@ public class PluginManager {
 					if (plugin != null) {
 						plugins.add(plugin);
 						plugin.onLoad();
+						setupServices(plugin);
 					}
 				}
 			}
 			
 			for (Plugin plugin : plugins) {
-				setupDependencies(plugin);
+				setupDependencyFields(plugin);
 			}
 			
 			for (Plugin plugin : plugins) {
@@ -95,7 +105,7 @@ public class PluginManager {
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected void setupDependencies(Plugin plugin) {
+	protected void setupDependencyFields(Plugin plugin) {
 		for (Field field : plugin.getClass().getDeclaredFields()) {
 			try {
 				Plugin.Dependency dependencyAnnotation = field.getAnnotation(Plugin.Dependency.class);
@@ -122,6 +132,52 @@ public class PluginManager {
 			} catch (Exception e) {
 			}
 		}
+	}
+	
+	protected void setupServices(Plugin plugin) {
+		if (plugin instanceof BotManagerService) {
+			BotManagerService service = (BotManagerService)plugin;
+			botManagerServices.add(service);
+			
+			ServerManager serverManager = app.serverManager;
+			synchronized (serverManager.botManagers) {
+				for (BotManager botManager : serverManager.botManagers) {
+					botManager.services.add(service.createService(botManager));
+				}
+			}
+		}
+		if (plugin instanceof BotService) {
+			BotService service = (BotService)plugin;
+			botServices.add(service);
+			
+			ServerManager serverManager = app.serverManager;
+			synchronized (serverManager.botManagers) {
+				for (BotManager botManager : serverManager.botManagers) {
+					synchronized (botManager.bots) {
+						for (Bot bot : botManager.bots) {
+							bot.services.add(service.createService(bot));
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	protected void clearServices() {
+		ServerManager serverManager = app.serverManager;
+		synchronized (serverManager.botManagers) {
+			for (BotManager botManager : serverManager.botManagers) {
+				botManager.services.clear();
+				synchronized (botManager.bots) {
+					for (Bot bot : botManager.bots) {
+						bot.services.clear();
+					}
+				}
+			}
+		}
+		
+		botManagerServices.clear();
+		botServices.clear();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -164,6 +220,40 @@ public class PluginManager {
 		}
 		
 		return infos;
+	}
+	
+	protected List<Plugin.Info> dependencySort(List<Plugin.Info> input) {
+		input = new ArrayList<>(input);
+		List<Plugin.Info> output = new ArrayList<>(input.size());
+		List<String> loadedPackageNames = new ArrayList<>(input.size());
+		
+		while (!input.isEmpty()) {
+			int oldSize = input.size();
+			
+			for (int i = 0; i < input.size(); i++) {
+				Plugin.Info info = input.get(i);
+				
+				boolean allDependenciesLoaded = true;
+				for (String dependency : info.dependsOn()) {
+					if (!loadedPackageNames.contains(dependency)) {
+						allDependenciesLoaded = false;
+						break;
+					}
+				}
+				if (allDependenciesLoaded) {
+					loadedPackageNames.add(info.packageName());
+					output.add(info);
+					input.remove(i--);
+				}
+			}
+			
+			if (oldSize == input.size()) {
+				//TODO: log plugins with missing dependencies (the ones left in $input)
+				break;
+			}
+		}
+		
+		return output;
 	}
 	
 	protected ClassLoader createClassLoader(List<Plugin.Info> infos) {
