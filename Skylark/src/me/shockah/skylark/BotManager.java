@@ -36,7 +36,7 @@ public class BotManager {
 	public String botName = DEFAULT_BOT_NAME;
 	
 	public final List<Bot> bots = Collections.synchronizedList(new ArrayList<>());
-	public final List<BotManagerService.Instance> services = Collections.synchronizedList(new ArrayList<>());
+	public final List<BotManagerService> services = Collections.synchronizedList(new ArrayList<>());
 	
 	public BotManager(ServerManager serverManager, String name, String host) {
 		this(serverManager, name, host, null);
@@ -47,12 +47,24 @@ public class BotManager {
 		this.name = name;
 		this.host = host;
 		this.port = port;
+		setupServices();
+	}
+	
+	public void setupServices() {
+		synchronized (services) {
+			PluginManager pluginManager = serverManager.app.pluginManager;
+			synchronized (pluginManager.botManagerServices) {
+				for (BotManagerService.Factory factory : pluginManager.botManagerServices) {
+					services.add(factory.createService(this));
+				}
+			}
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <T extends BotManagerService.Instance> T getService(Class<T> clazz) {
+	public <T extends BotManagerService> T getService(Class<T> clazz) {
 		synchronized (services) {
-			for (BotManagerService.Instance service : services) {
+			for (BotManagerService service : services) {
 				if (clazz.isInstance(service))
 					return (T)service;
 			}

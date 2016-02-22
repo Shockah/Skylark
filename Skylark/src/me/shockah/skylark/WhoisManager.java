@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import me.shockah.skylark.event.Whois2Event;
 import me.shockah.skylark.func.Action1;
 import me.shockah.skylark.util.Box;
@@ -53,21 +55,16 @@ public class WhoisManager extends SkylarkListenerAdapter {
 	}
 	
 	public Whois2Event syncRequestForUser(String nick, long timeout, long retryTime) {
-		long current = System.currentTimeMillis();
-		
+		CountDownLatch latch = new CountDownLatch(1);
 		Box<Whois2Event> box = new Box<>();
 		asyncRequestForUser(nick, e -> {
 			box.value = e;
+			latch.countDown();
 		});
-		do {
-			long ncurrent = System.currentTimeMillis();
-			if (ncurrent - current >= timeout)
-				return null;
-			try {
-				Thread.sleep(retryTime);
-			} catch (Exception e) {
-			}
-		} while (box.value == null);
+		try {
+			latch.await(timeout, TimeUnit.MILLISECONDS);
+		} catch (Exception e) {
+		}
 		return box.value;
 	}
 	

@@ -2,14 +2,14 @@ package me.shockah.skylark.plugin;
 
 import me.shockah.skylark.Bot;
 
-public interface BotService {
-	public Instance createService(Bot bot);
+public class BotService {
+	public final Bot bot;
 	
-	public static class Instance {
-		public final Bot bot;
-		
-		public Instance(Bot bot) {
-			this.bot = bot;
-		}
+	public BotService(Bot bot) {
+		this.bot = bot;
+	}
+	
+	public static interface Factory {
+		public BotService createService(Bot bot);
 	}
 }

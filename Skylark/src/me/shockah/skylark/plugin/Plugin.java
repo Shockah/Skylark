@@ -57,7 +57,19 @@ public class Plugin {
 		}
 		
 		public boolean enabledByDefault() {
-			return json.getBool("enabledByDefault");
+			return json.getBool("enabledByDefault", true);
+		}
+		
+		public String name() {
+			return json.containsKey("name") ? json.getString("name") : packageName();
+		}
+		
+		public String author() {
+			return json.getString("author", null);
+		}
+		
+		public String description() {
+			return json.getString("description", null);
 		}
 
 		@Override

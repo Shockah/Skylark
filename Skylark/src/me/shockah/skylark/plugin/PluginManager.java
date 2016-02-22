@@ -28,8 +28,8 @@ public class PluginManager {
 	public ClassLoader pluginClassLoader = null;
 	public List<Plugin.Info> pluginInfos = Collections.synchronizedList(new ArrayList<>());
 	public List<Plugin> plugins = Collections.synchronizedList(new ArrayList<>());
-	public List<BotManagerService> botManagerServices = Collections.synchronizedList(new ArrayList<>());
-	public List<BotService> botServices = Collections.synchronizedList(new ArrayList<>());
+	public List<BotManagerService.Factory> botManagerServices = Collections.synchronizedList(new ArrayList<>());
+	public List<BotService.Factory> botServices = Collections.synchronizedList(new ArrayList<>());
 	
 	public PluginManager(App app) {
 		this.app = app;
@@ -135,27 +135,27 @@ public class PluginManager {
 	}
 	
 	protected void setupServices(Plugin plugin) {
-		if (plugin instanceof BotManagerService) {
-			BotManagerService service = (BotManagerService)plugin;
-			botManagerServices.add(service);
+		if (plugin instanceof BotManagerService.Factory) {
+			BotManagerService.Factory factory = (BotManagerService.Factory)plugin;
+			botManagerServices.add(factory);
 			
 			ServerManager serverManager = app.serverManager;
 			synchronized (serverManager.botManagers) {
 				for (BotManager botManager : serverManager.botManagers) {
-					botManager.services.add(service.createService(botManager));
+					botManager.services.add(factory.createService(botManager));
 				}
 			}
 		}
-		if (plugin instanceof BotService) {
-			BotService service = (BotService)plugin;
-			botServices.add(service);
+		if (plugin instanceof BotService.Factory) {
+			BotService.Factory factory = (BotService.Factory)plugin;
+			botServices.add(factory);
 			
 			ServerManager serverManager = app.serverManager;
 			synchronized (serverManager.botManagers) {
 				for (BotManager botManager : serverManager.botManagers) {
 					synchronized (botManager.bots) {
 						for (Bot bot : botManager.bots) {
-							bot.services.add(service.createService(bot));
+							bot.services.add(factory.createService(bot));
 						}
 					}
 				}

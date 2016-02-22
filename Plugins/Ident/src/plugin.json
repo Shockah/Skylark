@@ -1,0 +1,9 @@
+{
+	"packageName": "me.shockah.skylark.ident",
+	"baseClass": "me.shockah.skylark.ident.IdentPlugin",
+	"enabledByDefault": true,
+
+	"name": "Ident",
+	"author": "Shockah",
+	"description": ""
+}

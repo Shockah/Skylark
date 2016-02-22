@@ -3,24 +3,37 @@ package me.shockah.skylark;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import me.shockah.skylark.plugin.BotService;
+import me.shockah.skylark.plugin.PluginManager;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
-import me.shockah.skylark.plugin.BotService;
 
 public class Bot extends PircBotX {
 	public final BotManager manager;
 	
-	public final List<BotService.Instance> services = Collections.synchronizedList(new ArrayList<>());
+	public final List<BotService> services = Collections.synchronizedList(new ArrayList<>());
 	
 	public Bot(Configuration configuration, BotManager manager) {
 		super(configuration);
 		this.manager = manager;
+		setupServices();
+	}
+	
+	public void setupServices() {
+		synchronized (services) {
+			PluginManager pluginManager = manager.serverManager.app.pluginManager;
+			synchronized (pluginManager.botServices) {
+				for (BotService.Factory factory : pluginManager.botServices) {
+					services.add(factory.createService(this));
+				}
+			}
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <T extends BotService.Instance> T getService(Class<T> clazz) {
+	public <T extends BotService> T getService(Class<T> clazz) {
 		synchronized (services) {
-			for (BotService.Instance service : services) {
+			for (BotService service : services) {
 				if (clazz.isInstance(service))
 					return (T)service;
 			}
