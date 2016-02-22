@@ -1,8 +1,0 @@
-{
-	"name": "Skylark: YouTube",
-	"version": "r1",
-	"author": "Shockah",
-	
-	"packageName": "Skylark.YouTube",
-	"baseClass": "skylark.youtube.Plugin"
-}

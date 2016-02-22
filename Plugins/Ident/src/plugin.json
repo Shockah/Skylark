@@ -1,8 +1,0 @@
-{
-	"name": "Skylark: Ident",
-	"version": "r1",
-	"author": "Shockah",
-	
-	"packageName": "Skylark.Ident",
-	"baseClass": "skylark.ident.Plugin"
-}
