@@ -33,4 +33,19 @@ public final class IdentService extends BotManagerService {
 		}
 		return results;
 	}
+	
+	public IdentMethod getMethod(String prefix) {
+		return methods.get(prefix);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T extends IdentMethod> T getMethod(Class<T> clazz) {
+		synchronized (methods) {
+			for (IdentMethod method : methods.values()) {
+				if (clazz.isInstance(method))
+					return (T)method;
+			}
+		}
+		return null;
+	}
 }

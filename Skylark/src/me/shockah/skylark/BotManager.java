@@ -134,6 +134,8 @@ public class BotManager {
 		} catch (InterruptedException e) {
 		}
 		
+		if (newBotBox.value != null)
+			bots.add(newBotBox.value);
 		return newBotBox.value;
 	}
 	
