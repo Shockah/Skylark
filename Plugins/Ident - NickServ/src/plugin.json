@@ -1,0 +1,12 @@
+{
+	"packageName": "me.shockah.skylark.ident.nickserv",
+	"baseClass": "me.shockah.skylark.ident.nickserv.NickServIdentPlugin",
+	"enabledByDefault": true,
+	"dependsOn": [
+		"me.shockah.skylark.ident"
+	],
+
+	"name": "Ident - NickServ",
+	"author": "Shockah",
+	"description": ""
+}

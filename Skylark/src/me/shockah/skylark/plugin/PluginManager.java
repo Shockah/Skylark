@@ -28,8 +28,10 @@ public class PluginManager {
 	public ClassLoader pluginClassLoader = null;
 	public List<Plugin.Info> pluginInfos = Collections.synchronizedList(new ArrayList<>());
 	public List<Plugin> plugins = Collections.synchronizedList(new ArrayList<>());
-	public List<BotManagerService.Factory> botManagerServices = Collections.synchronizedList(new ArrayList<>());
-	public List<BotService.Factory> botServices = Collections.synchronizedList(new ArrayList<>());
+	public List<BotManagerService.Factory> botManagerServiceFactories = Collections.synchronizedList(new ArrayList<>());
+	public List<BotManagerService> botManagerServices = Collections.synchronizedList(new ArrayList<>());
+	public List<BotService.Factory> botServiceFactories = Collections.synchronizedList(new ArrayList<>());
+	public List<BotService> botServices = Collections.synchronizedList(new ArrayList<>());
 	
 	public PluginManager(App app) {
 		this.app = app;
@@ -137,25 +139,29 @@ public class PluginManager {
 	protected void setupServices(Plugin plugin) {
 		if (plugin instanceof BotManagerService.Factory) {
 			BotManagerService.Factory factory = (BotManagerService.Factory)plugin;
-			botManagerServices.add(factory);
+			botManagerServiceFactories.add(factory);
 			
 			ServerManager serverManager = app.serverManager;
 			synchronized (serverManager.botManagers) {
 				for (BotManager botManager : serverManager.botManagers) {
-					botManager.services.add(factory.createService(botManager));
+					BotManagerService service = factory.createService(botManager);
+					botManager.services.add(service);
+					botManagerServices.add(service);
 				}
 			}
 		}
 		if (plugin instanceof BotService.Factory) {
 			BotService.Factory factory = (BotService.Factory)plugin;
-			botServices.add(factory);
+			botServiceFactories.add(factory);
 			
 			ServerManager serverManager = app.serverManager;
 			synchronized (serverManager.botManagers) {
 				for (BotManager botManager : serverManager.botManagers) {
 					synchronized (botManager.bots) {
 						for (Bot bot : botManager.bots) {
-							bot.services.add(factory.createService(bot));
+							BotService service = factory.createService(bot);
+							bot.services.add(service);
+							botServices.add(service);
 						}
 					}
 				}
@@ -176,7 +182,9 @@ public class PluginManager {
 			}
 		}
 		
+		botManagerServiceFactories.clear();
 		botManagerServices.clear();
+		botServiceFactories.clear();
 		botServices.clear();
 	}
 	

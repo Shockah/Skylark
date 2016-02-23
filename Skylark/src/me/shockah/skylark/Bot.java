@@ -10,6 +10,7 @@ import org.pircbotx.PircBotX;
 
 public class Bot extends PircBotX {
 	public final BotManager manager;
+	public final WhoisManager whoisManager;
 	
 	public final List<BotService> services = Collections.synchronizedList(new ArrayList<>());
 	
@@ -17,14 +18,18 @@ public class Bot extends PircBotX {
 		super(configuration);
 		this.manager = manager;
 		setupServices();
+		
+		whoisManager = new WhoisManager(this);
 	}
 	
 	public void setupServices() {
 		synchronized (services) {
 			PluginManager pluginManager = manager.serverManager.app.pluginManager;
-			synchronized (pluginManager.botServices) {
-				for (BotService.Factory factory : pluginManager.botServices) {
-					services.add(factory.createService(this));
+			synchronized (pluginManager.botServiceFactories) {
+				for (BotService.Factory factory : pluginManager.botServiceFactories) {
+					BotService service = factory.createService(this);
+					services.add(service);
+					pluginManager.botServices.add(service);
 				}
 			}
 		}

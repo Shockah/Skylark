@@ -6,6 +6,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.regex.Pattern;
+import me.shockah.skylark.plugin.BotManagerService;
+import me.shockah.skylark.plugin.ListenerPlugin;
+import me.shockah.skylark.plugin.Plugin;
+import me.shockah.skylark.plugin.PluginManager;
+import me.shockah.skylark.util.Box;
 import org.pircbotx.Configuration;
 import org.pircbotx.Configuration.BotFactory;
 import org.pircbotx.InputParser;
@@ -13,11 +18,6 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ConnectEvent;
-import me.shockah.skylark.plugin.BotManagerService;
-import me.shockah.skylark.plugin.ListenerPlugin;
-import me.shockah.skylark.plugin.Plugin;
-import me.shockah.skylark.plugin.PluginManager;
-import me.shockah.skylark.util.Box;
 
 public class BotManager {
 	public static final String CHANNELS_PER_CONNECTION_CAPABILITY = "CHANLIMIT";
@@ -53,9 +53,11 @@ public class BotManager {
 	public void setupServices() {
 		synchronized (services) {
 			PluginManager pluginManager = serverManager.app.pluginManager;
-			synchronized (pluginManager.botManagerServices) {
-				for (BotManagerService.Factory factory : pluginManager.botManagerServices) {
-					services.add(factory.createService(this));
+			synchronized (pluginManager.botManagerServiceFactories) {
+				for (BotManagerService.Factory factory : pluginManager.botManagerServiceFactories) {
+					BotManagerService service = factory.createService(this);
+					services.add(service);
+					pluginManager.botManagerServices.add(service);
 				}
 			}
 		}

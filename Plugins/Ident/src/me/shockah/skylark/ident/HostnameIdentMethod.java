@@ -3,8 +3,11 @@ package me.shockah.skylark.ident;
 import org.pircbotx.User;
 
 public class HostnameIdentMethod extends IdentMethod {
+	public static final String METHOD_NAME = "Hostname";
+	public static final String METHOD_PREFIX = "h";
+	
 	public HostnameIdentMethod(IdentService service) {
-		super(service, "Hostname", "h");
+		super(service, METHOD_NAME, METHOD_PREFIX);
 	}
 
 	@Override
@@ -15,5 +18,16 @@ public class HostnameIdentMethod extends IdentMethod {
 	@Override
 	public String getForUser(User user) {
 		return user.getHostname();
+	}
+	
+	public static class Factory extends IdentMethodFactory {
+		public Factory() {
+			super(METHOD_NAME, METHOD_PREFIX);
+		}
+
+		@Override
+		public IdentMethod create(IdentService service) {
+			return new HostnameIdentMethod(service);
+		}
 	}
 }
