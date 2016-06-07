@@ -40,11 +40,11 @@ public class NickServIdentMethod extends IdentMethod {
 	}
 	
 	protected Bot getAnyBot() {
-		synchronized (service.manager.bots) {
+		return service.manager.bots.readOperation(bots -> {
 			if (service.manager.bots.isEmpty())
 				return service.manager.connectNewBot();
 			return service.manager.bots.get(0);
-		}
+		});
 	}
 
 	@Override

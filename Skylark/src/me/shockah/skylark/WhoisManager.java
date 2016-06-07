@@ -1,14 +1,12 @@
 package me.shockah.skylark;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import me.shockah.skylark.event.Whois2Event;
 import me.shockah.skylark.func.Action1;
 import me.shockah.skylark.util.Box;
+import me.shockah.skylark.util.ReadWriteList;
 import org.pircbotx.User;
 
 public class WhoisManager extends SkylarkListenerAdapter {
@@ -18,7 +16,7 @@ public class WhoisManager extends SkylarkListenerAdapter {
 	public final Bot bot;
 	public final BotManager manager;
 	
-	protected final List<Request> userRequests = Collections.synchronizedList(new ArrayList<>());
+	protected final ReadWriteList<Request> userRequests = new ReadWriteList<>(new ArrayList<>());
 	
 	public WhoisManager(Bot bot) {
 		this.bot = bot;
@@ -69,17 +67,13 @@ public class WhoisManager extends SkylarkListenerAdapter {
 	}
 	
 	public void onWhois2(Whois2Event e) {
-		synchronized (userRequests) {
-			Iterator<Request> it = userRequests.iterator();
-			while (it.hasNext()) {
-				Request request = it.next();
-				if (e.getNick().equalsIgnoreCase(request.nick)) {
-					request.func.call(e);
-					it.remove();
-					break;
-				}
+		userRequests.iterateAndWrite((request, it) -> {
+			if (e.getNick().equalsIgnoreCase(request.nick)) {
+				request.func.call(e);
+				it.remove();
+				it.stop();
 			}
-		}
+		});
 	}
 	
 	public static class Request {

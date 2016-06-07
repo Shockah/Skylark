@@ -1,17 +1,16 @@
 package me.shockah.skylark;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import com.mongodb.DBCollection;
 import io.shockah.json.JSONObject;
+import java.util.ArrayList;
 import me.shockah.skylark.util.JSON;
+import me.shockah.skylark.util.ReadWriteList;
+import com.mongodb.DBCollection;
 
 public class ServerManager {
 	public static final String COLLECTION_NAME = "servers";
 	
 	public final App app;
-	public final List<BotManager> botManagers = Collections.synchronizedList(new ArrayList<>());
+	public final ReadWriteList<BotManager> botManagers = new ReadWriteList<>(new ArrayList<>());
 	
 	public ServerManager(App app) {
 		this.app = app;

@@ -2,15 +2,13 @@ package me.shockah.skylark;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.regex.Pattern;
 import me.shockah.skylark.plugin.BotManagerService;
 import me.shockah.skylark.plugin.ListenerPlugin;
-import me.shockah.skylark.plugin.Plugin;
 import me.shockah.skylark.plugin.PluginManager;
 import me.shockah.skylark.util.Box;
+import me.shockah.skylark.util.ReadWriteList;
 import org.pircbotx.Configuration;
 import org.pircbotx.Configuration.BotFactory;
 import org.pircbotx.InputParser;
@@ -35,8 +33,8 @@ public class BotManager {
 	public long messageDelay = DEFAULT_MESSAGE_DELAY;
 	public String botName = DEFAULT_BOT_NAME;
 	
-	public final List<Bot> bots = Collections.synchronizedList(new ArrayList<>());
-	public final List<BotManagerService> services = Collections.synchronizedList(new ArrayList<>());
+	public final ReadWriteList<Bot> bots = new ReadWriteList<>(new ArrayList<>());
+	public final ReadWriteList<BotManagerService> services = new ReadWriteList<>(new ArrayList<>());
 	
 	public BotManager(ServerManager serverManager, String name, String host) {
 		this(serverManager, name, host, null);
@@ -51,32 +49,24 @@ public class BotManager {
 	}
 	
 	public void setupServices() {
-		synchronized (services) {
+		services.writeOperation(services -> {
 			PluginManager pluginManager = serverManager.app.pluginManager;
-			synchronized (pluginManager.botManagerServiceFactories) {
-				for (BotManagerService.Factory factory : pluginManager.botManagerServiceFactories) {
-					BotManagerService service = factory.createService(this);
-					services.add(service);
-					pluginManager.botManagerServices.add(service);
-				}
-			}
-		}
+			pluginManager.botManagerServiceFactories.iterate(factory -> {
+				BotManagerService service = factory.createService(this);
+				services.add(service);
+				pluginManager.botManagerServices.add(service);
+			});
+		});
 	}
 	
 	@SuppressWarnings("unchecked")
 	public <T extends BotManagerService> T getService(Class<T> clazz) {
-		synchronized (services) {
-			for (BotManagerService service : services) {
-				if (clazz.isInstance(service))
-					return (T)service;
-			}
-		}
-		return null;
+		return (T)services.findOne(service -> clazz.isInstance(service));
 	}
 	
 	public int getChannelsPerConnection() {
 		if (channelsPerConnection == null) {
-			synchronized (bots) {
+			return bots.readOperation(bots -> {
 				if (bots.isEmpty()) {
 					//placeholder until we actually connect
 					return 1;
@@ -90,14 +80,14 @@ public class BotManager {
 					}*/
 					return Integer.MAX_VALUE;
 				}
-			}
+			});
 		} else {
 			return channelsPerConnection;
 		}
 	}
 	
 	public Bot joinChannel(String channelName) {
-		synchronized (bots) {
+		return bots.writeOperation(bots -> {
 			int channelsPerConnection = getChannelsPerConnection();
 			for (Bot bot : bots) {
 				if (bot.getUserBot().getChannels().size() < channelsPerConnection) {
@@ -109,7 +99,7 @@ public class BotManager {
 			Bot bot = connectNewBot();
 			bot.sendIRC().joinChannel(channelName);
 			return bot;
-		}
+		});
 	}
 	
 	public Bot connectNewBot() {
@@ -168,12 +158,10 @@ public class BotManager {
 			cfgb.addServer(host, port);
 		
 		PluginManager pluginManager = serverManager.app.pluginManager;
-		synchronized (pluginManager.plugins) {
-			for (Plugin plugin : pluginManager.plugins) {
-				if (plugin instanceof ListenerPlugin)
-					cfgb.addListener(((ListenerPlugin)plugin).listener);
-			}
-		}
+		pluginManager.plugins.iterate(plugin -> {
+			if (plugin instanceof ListenerPlugin)
+				cfgb.addListener(((ListenerPlugin)plugin).listener);
+		});
 		
 		return new Bot(cfgb.buildConfiguration(), this);
 	}

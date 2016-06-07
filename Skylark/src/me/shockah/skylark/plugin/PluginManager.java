@@ -1,5 +1,7 @@
 package me.shockah.skylark.plugin;
 
+import io.shockah.json.JSONObject;
+import io.shockah.json.JSONParser;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.nio.file.FileSystem;
@@ -8,17 +10,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import io.shockah.json.JSONObject;
-import io.shockah.json.JSONParser;
 import me.shockah.skylark.App;
-import me.shockah.skylark.Bot;
-import me.shockah.skylark.BotManager;
 import me.shockah.skylark.ServerManager;
 import me.shockah.skylark.util.FileUtils;
 import me.shockah.skylark.util.PathClassLoader;
-import me.shockah.skylark.util.Sync;
+import me.shockah.skylark.util.ReadWriteList;
 
 public class PluginManager {
 	public static final Path PLUGIN_PATH = Paths.get("plugins");
@@ -26,12 +23,12 @@ public class PluginManager {
 	public final App app;
 	
 	public ClassLoader pluginClassLoader = null;
-	public List<Plugin.Info> pluginInfos = Collections.synchronizedList(new ArrayList<>());
-	public List<Plugin> plugins = Collections.synchronizedList(new ArrayList<>());
-	public List<BotManagerService.Factory> botManagerServiceFactories = Collections.synchronizedList(new ArrayList<>());
-	public List<BotManagerService> botManagerServices = Collections.synchronizedList(new ArrayList<>());
-	public List<BotService.Factory> botServiceFactories = Collections.synchronizedList(new ArrayList<>());
-	public List<BotService> botServices = Collections.synchronizedList(new ArrayList<>());
+	public ReadWriteList<Plugin.Info> pluginInfos = new ReadWriteList<>(new ArrayList<>());
+	public ReadWriteList<Plugin> plugins = new ReadWriteList<>(new ArrayList<>());
+	public ReadWriteList<BotManagerService.Factory> botManagerServiceFactories = new ReadWriteList<>(new ArrayList<>());
+	public ReadWriteList<BotManagerService> botManagerServices = new ReadWriteList<>(new ArrayList<>());
+	public ReadWriteList<BotService.Factory> botServiceFactories = new ReadWriteList<>(new ArrayList<>());
+	public ReadWriteList<BotService> botServices = new ReadWriteList<>(new ArrayList<>());
 	
 	public PluginManager(App app) {
 		this.app = app;
@@ -42,57 +39,51 @@ public class PluginManager {
 	}
 	
 	public void reload() {
-		Sync.on(pluginInfos, plugins, () -> {
-			unload();
-			load();
-		});
+		unload();
+		load();
 	}
 	
 	protected void unload() {
-		Sync.on(pluginInfos, plugins, () -> {
-			for (Plugin plugin : plugins) {
-				plugin.onUnload();
-			}
-			clearServices();
-			plugins.clear();
-			
-			for (Plugin.Info info : pluginInfos) {
-				try {
-					info.close();
-				} catch (Exception e) {
-				}
-			}
-			pluginInfos.clear();
-			
-			pluginClassLoader = null;
+		plugins.iterate(plugin -> {
+			plugin.onUnload();
 		});
+		clearServices();
+		plugins.clear();
+		
+		pluginInfos.iterate(pluginInfo -> {
+			try {
+				pluginInfo.close();
+			} catch (Exception e) {
+			}
+		});
+		pluginInfos.clear();
+		
+		pluginClassLoader = null;
 	}
 	
 	protected void load() {
-		Sync.on(pluginInfos, plugins, () -> {
-			List<Plugin.Info> infos = findPlugins();
-			infos = dependencySort(infos);
-			pluginInfos.addAll(infos);
-			pluginClassLoader = createClassLoader(pluginInfos);
-			
-			for (Plugin.Info info : pluginInfos) {
-				if (shouldEnable(info)) {
-					Plugin plugin = loadPlugin(pluginClassLoader, info);
-					if (plugin != null) {
-						plugins.add(plugin);
-						plugin.onLoad();
-						setupServices(plugin);
-					}
+		List<Plugin.Info> infos = findPlugins();
+		infos = dependencySort(infos);
+		pluginInfos.addAll(infos);
+		pluginClassLoader = createClassLoader(pluginInfos);
+		
+		pluginInfos.iterate(pluginInfo -> {
+			if (shouldEnable(pluginInfo)) {
+				Plugin plugin = loadPlugin(pluginClassLoader, pluginInfo);
+				if (plugin != null) {
+					plugins.add(plugin);
+					plugin.onLoad();
+					setupServices(plugin);
 				}
 			}
-			
-			for (Plugin plugin : plugins) {
-				setupDependencyFields(plugin);
-			}
-			
-			for (Plugin plugin : plugins) {
-				plugin.onAllPluginsLoaded();
-			}
+		});
+		
+		plugins.iterate(plugin -> {
+			setupDependencyFields(plugin);
+		});
+		
+		plugins.iterate(plugin -> {
+			plugin.onAllPluginsLoaded();
 		});
 	}
 	
@@ -142,45 +133,35 @@ public class PluginManager {
 			botManagerServiceFactories.add(factory);
 			
 			ServerManager serverManager = app.serverManager;
-			synchronized (serverManager.botManagers) {
-				for (BotManager botManager : serverManager.botManagers) {
-					BotManagerService service = factory.createService(botManager);
-					botManager.services.add(service);
-					botManagerServices.add(service);
-				}
-			}
+			serverManager.botManagers.iterate(botManager -> {
+				BotManagerService service = factory.createService(botManager);
+				botManager.services.add(service);
+				botManagerServices.add(service);
+			});
 		}
 		if (plugin instanceof BotService.Factory) {
 			BotService.Factory factory = (BotService.Factory)plugin;
 			botServiceFactories.add(factory);
 			
 			ServerManager serverManager = app.serverManager;
-			synchronized (serverManager.botManagers) {
-				for (BotManager botManager : serverManager.botManagers) {
-					synchronized (botManager.bots) {
-						for (Bot bot : botManager.bots) {
-							BotService service = factory.createService(bot);
-							bot.services.add(service);
-							botServices.add(service);
-						}
-					}
-				}
-			}
+			serverManager.botManagers.iterate(botManager -> {
+				botManager.bots.iterate(bot -> {
+					BotService service = factory.createService(bot);
+					bot.services.add(service);
+					botServices.add(service);
+				});
+			});
 		}
 	}
 	
 	protected void clearServices() {
 		ServerManager serverManager = app.serverManager;
-		synchronized (serverManager.botManagers) {
-			for (BotManager botManager : serverManager.botManagers) {
-				botManager.services.clear();
-				synchronized (botManager.bots) {
-					for (Bot bot : botManager.bots) {
-						bot.services.clear();
-					}
-				}
-			}
-		}
+		serverManager.botManagers.iterate(botManager -> {
+			botManager.services.clear();
+			botManager.bots.iterate(bot -> {
+				bot.services.clear();
+			});
+		});
 		
 		botManagerServiceFactories.clear();
 		botManagerServices.clear();
@@ -190,24 +171,12 @@ public class PluginManager {
 	
 	@SuppressWarnings("unchecked")
 	public <T extends Plugin> T getPluginWithClass(Class<T> clazz) {
-		synchronized (plugins) {
-			for (Plugin plugin : plugins) {
-				if (clazz.isInstance(plugin))
-					return (T)plugin;
-			}
-		}
-		return null;
+		return (T)plugins.findOne(plugin -> clazz.isInstance(plugin));
 	}
 	
 	@SuppressWarnings("unchecked")
 	public <T extends Plugin> T getPluginWithPackageName(String name) {
-		synchronized (plugins) {
-			for (Plugin plugin : plugins) {
-				if (plugin.info.packageName().equals(name))
-					return (T)plugin;
-			}
-		}
-		return null;
+		return (T)plugins.findOne(plugin -> plugin.info.packageName().equals(name));
 	}
 	
 	protected List<Plugin.Info> findPlugins() {
