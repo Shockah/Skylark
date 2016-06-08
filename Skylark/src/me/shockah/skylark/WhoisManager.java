@@ -11,7 +11,6 @@ import org.pircbotx.User;
 
 public class WhoisManager extends SkylarkListenerAdapter {
 	public static final long DEFAULT_SYNC_REQUEST_TIMEOUT = 5000l;
-	public static final long DEFAULT_SYNC_REQUEST_RETRY_TIME = 20l;
 	
 	public final Bot bot;
 	public final BotManager manager;
@@ -33,26 +32,18 @@ public class WhoisManager extends SkylarkListenerAdapter {
 	}
 	
 	public Whois2Event syncRequest(User user) {
-		return syncRequest(user.getNick(), DEFAULT_SYNC_REQUEST_TIMEOUT, DEFAULT_SYNC_REQUEST_RETRY_TIME);
+		return syncRequest(user.getNick(), DEFAULT_SYNC_REQUEST_TIMEOUT);
 	}
 	
 	public Whois2Event syncRequest(User user, long timeout) {
-		return syncRequest(user.getNick(), timeout, DEFAULT_SYNC_REQUEST_RETRY_TIME);
-	}
-	
-	public Whois2Event syncRequest(User user, long timeout, long retryTime) {
-		return syncRequest(user.getNick(), timeout, retryTime);
+		return syncRequest(user.getNick(), timeout);
 	}
 	
 	public Whois2Event syncRequest(String nick) {
-		return syncRequest(nick, DEFAULT_SYNC_REQUEST_TIMEOUT, DEFAULT_SYNC_REQUEST_RETRY_TIME);
+		return syncRequest(nick, DEFAULT_SYNC_REQUEST_TIMEOUT);
 	}
 	
 	public Whois2Event syncRequest(String nick, long timeout) {
-		return syncRequest(nick, timeout, DEFAULT_SYNC_REQUEST_RETRY_TIME);
-	}
-	
-	public Whois2Event syncRequest(String nick, long timeout, long retryTime) {
 		CountDownLatch latch = new CountDownLatch(1);
 		Box<Whois2Event> box = new Box<>();
 		asyncRequest(nick, e -> {

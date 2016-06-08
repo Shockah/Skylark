@@ -23,7 +23,6 @@ public class NickServIdentMethod extends IdentMethod {
 	public static final String METHOD_PREFIX = "ns";
 	
 	public static final long DEFAULT_SYNC_REQUEST_TIMEOUT = 5000l;
-	public static final long DEFAULT_SYNC_REQUEST_RETRY_TIME = 20l;
 	public static final long DEFAULT_EXPIRATION_TIME = 1000l * 60l * 5l;
 	public static final String OPERATOR_STATUS_NETWORK_SERVICE = "Network Service";
 	
@@ -99,26 +98,18 @@ public class NickServIdentMethod extends IdentMethod {
 	}
 	
 	public String syncRequest(User user) {
-		return syncRequest(user.getNick(), DEFAULT_SYNC_REQUEST_TIMEOUT, DEFAULT_SYNC_REQUEST_RETRY_TIME);
+		return syncRequest(user.getNick(), DEFAULT_SYNC_REQUEST_TIMEOUT);
 	}
 	
 	public String syncRequest(User user, long timeout) {
-		return syncRequest(user.getNick(), timeout, DEFAULT_SYNC_REQUEST_RETRY_TIME);
-	}
-	
-	public String syncRequest(User user, long timeout, long retryTime) {
-		return syncRequest(user.getNick(), timeout, retryTime);
+		return syncRequest(user.getNick(), timeout);
 	}
 	
 	public String syncRequest(String nick) {
-		return syncRequest(nick, DEFAULT_SYNC_REQUEST_TIMEOUT, DEFAULT_SYNC_REQUEST_RETRY_TIME);
+		return syncRequest(nick, DEFAULT_SYNC_REQUEST_TIMEOUT);
 	}
 	
 	public String syncRequest(String nick, long timeout) {
-		return syncRequest(nick, timeout, DEFAULT_SYNC_REQUEST_RETRY_TIME);
-	}
-	
-	public String syncRequest(String nick, long timeout, long retryTime) {
 		CountDownLatch latch = new CountDownLatch(1);
 		Box<String> box = new Box<>();
 		asyncRequest(nick, (responseNick, account) -> {
