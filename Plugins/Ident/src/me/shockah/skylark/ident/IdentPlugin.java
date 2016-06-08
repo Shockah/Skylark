@@ -6,12 +6,12 @@ import me.shockah.skylark.Bot;
 import me.shockah.skylark.BotManager;
 import me.shockah.skylark.ServerManager;
 import me.shockah.skylark.plugin.BotManagerService;
-import me.shockah.skylark.plugin.ListenerPlugin;
+import me.shockah.skylark.plugin.Plugin;
 import me.shockah.skylark.plugin.PluginManager;
 import me.shockah.skylark.util.ReadWriteList;
 import org.pircbotx.User;
 
-public class IdentPlugin extends ListenerPlugin implements BotManagerService.Factory {
+public class IdentPlugin extends Plugin implements BotManagerService.Factory {
 	protected final ReadWriteList<IdentMethodFactory> methodFactories = new ReadWriteList<>(new ArrayList<>());
 	
 	public IdentPlugin(PluginManager manager, Info info) {

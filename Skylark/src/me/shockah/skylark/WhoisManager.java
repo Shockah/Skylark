@@ -10,8 +10,8 @@ import me.shockah.skylark.util.ReadWriteList;
 import org.pircbotx.User;
 
 public class WhoisManager extends SkylarkListenerAdapter {
-	public static final long DEFAULT_SYNC_REQUEST_TIMEOUT = 5000;
-	public static final long DEFAULT_SYNC_REQUEST_RETRY_TIME = 20;
+	public static final long DEFAULT_SYNC_REQUEST_TIMEOUT = 5000l;
+	public static final long DEFAULT_SYNC_REQUEST_RETRY_TIME = 20l;
 	
 	public final Bot bot;
 	public final BotManager manager;
@@ -23,39 +23,39 @@ public class WhoisManager extends SkylarkListenerAdapter {
 		manager = bot.manager;
 	}
 	
-	public void asyncRequestForUser(User user, Action1<Whois2Event> f) {
-		asyncRequestForUser(user.getNick(), f);
+	public void asyncRequest(User user, Action1<Whois2Event> f) {
+		asyncRequest(user.getNick(), f);
 	}
 	
-	public void asyncRequestForUser(String nick, Action1<Whois2Event> f) {
+	public void asyncRequest(String nick, Action1<Whois2Event> f) {
 		userRequests.add(new Request(nick, f));
 		bot.sendRaw().rawLine(String.format("WHOIS %s", nick));
 	}
 	
-	public Whois2Event syncRequestForUser(User user) {
-		return syncRequestForUser(user.getNick(), DEFAULT_SYNC_REQUEST_TIMEOUT, DEFAULT_SYNC_REQUEST_RETRY_TIME);
+	public Whois2Event syncRequest(User user) {
+		return syncRequest(user.getNick(), DEFAULT_SYNC_REQUEST_TIMEOUT, DEFAULT_SYNC_REQUEST_RETRY_TIME);
 	}
 	
-	public Whois2Event syncRequestForUser(User user, long timeout) {
-		return syncRequestForUser(user.getNick(), timeout, DEFAULT_SYNC_REQUEST_RETRY_TIME);
+	public Whois2Event syncRequest(User user, long timeout) {
+		return syncRequest(user.getNick(), timeout, DEFAULT_SYNC_REQUEST_RETRY_TIME);
 	}
 	
-	public Whois2Event syncRequestForUser(User user, long timeout, long retryTime) {
-		return syncRequestForUser(user.getNick(), timeout, retryTime);
+	public Whois2Event syncRequest(User user, long timeout, long retryTime) {
+		return syncRequest(user.getNick(), timeout, retryTime);
 	}
 	
-	public Whois2Event syncRequestForUser(String nick) {
-		return syncRequestForUser(nick, DEFAULT_SYNC_REQUEST_TIMEOUT, DEFAULT_SYNC_REQUEST_RETRY_TIME);
+	public Whois2Event syncRequest(String nick) {
+		return syncRequest(nick, DEFAULT_SYNC_REQUEST_TIMEOUT, DEFAULT_SYNC_REQUEST_RETRY_TIME);
 	}
 	
-	public Whois2Event syncRequestForUser(String nick, long timeout) {
-		return syncRequestForUser(nick, timeout, DEFAULT_SYNC_REQUEST_RETRY_TIME);
+	public Whois2Event syncRequest(String nick, long timeout) {
+		return syncRequest(nick, timeout, DEFAULT_SYNC_REQUEST_RETRY_TIME);
 	}
 	
-	public Whois2Event syncRequestForUser(String nick, long timeout, long retryTime) {
+	public Whois2Event syncRequest(String nick, long timeout, long retryTime) {
 		CountDownLatch latch = new CountDownLatch(1);
 		Box<Whois2Event> box = new Box<>();
-		asyncRequestForUser(nick, e -> {
+		asyncRequest(nick, e -> {
 			box.value = e;
 			latch.countDown();
 		});
@@ -76,7 +76,7 @@ public class WhoisManager extends SkylarkListenerAdapter {
 		});
 	}
 	
-	public static class Request {
+	private static class Request {
 		public final String nick;
 		public final Action1<Whois2Event> func;
 		
