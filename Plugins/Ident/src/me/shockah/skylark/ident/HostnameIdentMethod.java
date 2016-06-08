@@ -6,8 +6,8 @@ public class HostnameIdentMethod extends IdentMethod {
 	public static final String METHOD_NAME = "Hostname";
 	public static final String METHOD_PREFIX = "h";
 	
-	public HostnameIdentMethod(IdentService service) {
-		super(service, METHOD_NAME, METHOD_PREFIX);
+	public HostnameIdentMethod(IdentService service, IdentMethodFactory factory) {
+		super(service, factory, METHOD_NAME, METHOD_PREFIX);
 	}
 
 	@Override
@@ -27,7 +27,7 @@ public class HostnameIdentMethod extends IdentMethod {
 
 		@Override
 		public IdentMethod create(IdentService service) {
-			return new HostnameIdentMethod(service);
+			return new HostnameIdentMethod(service, this);
 		}
 	}
 }

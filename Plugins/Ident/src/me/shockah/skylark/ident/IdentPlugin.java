@@ -1,6 +1,6 @@
 package me.shockah.skylark.ident;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Map;
 import me.shockah.skylark.Bot;
 import me.shockah.skylark.BotManager;
@@ -8,26 +8,34 @@ import me.shockah.skylark.ServerManager;
 import me.shockah.skylark.plugin.BotManagerService;
 import me.shockah.skylark.plugin.ListenerPlugin;
 import me.shockah.skylark.plugin.PluginManager;
-import me.shockah.skylark.util.ReadWriteMap;
+import me.shockah.skylark.util.ReadWriteList;
 import org.pircbotx.User;
 
 public class IdentPlugin extends ListenerPlugin implements BotManagerService.Factory {
-	protected final ReadWriteMap<String, IdentMethodFactory> methods = new ReadWriteMap<>(new HashMap<>());
+	protected final ReadWriteList<IdentMethodFactory> methodFactories = new ReadWriteList<>(new ArrayList<>());
 	
 	public IdentPlugin(PluginManager manager, Info info) {
 		super(manager, info);
 	}
 	
+	@Override
+	protected void onLoad() {
+		register(
+			new NameIdentMethod.Factory(),
+			new HostnameIdentMethod.Factory(),
+			new ServerIdentMethod.Factory()
+		);
+	}
+	
 	public void register(IdentMethodFactory... factories) {
-		methods.writeOperation(methods -> {
+		methodFactories.writeOperation(methodFactories -> {
 			for (IdentMethodFactory factory : factories) {
-				methods.put(factory.prefix, factory);
+				methodFactories.add(factory);
 				ServerManager serverManager = manager.app.serverManager;
 				serverManager.botManagers.iterate(botManager -> {
 					IdentService service = botManager.getService(IdentService.class);
 					if (service != null) {
-						IdentMethod method = factory.create(service);
-						service.methods.put(method.prefix, method);
+						service.methods.add(factory.create(service));
 					}
 				});
 			}
@@ -35,14 +43,14 @@ public class IdentPlugin extends ListenerPlugin implements BotManagerService.Fac
 	}
 	
 	public void unregister(IdentMethodFactory... factories) {
-		methods.writeOperation(methods -> {
+		methodFactories.writeOperation(methodFactories -> {
 			for (IdentMethodFactory factory : factories) {
-				methods.remove(factory.prefix);
+				methodFactories.remove(factory);
 				ServerManager serverManager = manager.app.serverManager;
 				serverManager.botManagers.iterate(botManager -> {
 					IdentService service = botManager.getService(IdentService.class);
 					if (service != null)
-						service.methods.remove(factory.prefix);
+						service.methods.remove(factory);
 				});
 			}
 		});

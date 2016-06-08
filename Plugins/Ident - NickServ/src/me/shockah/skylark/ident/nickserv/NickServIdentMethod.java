@@ -20,8 +20,8 @@ public class NickServIdentMethod extends IdentMethod {
 	protected boolean hasExtendedJoin = false;
 	protected boolean hasAccountNotify = false;
 	
-	public NickServIdentMethod(IdentService service) {
-		super(service, METHOD_NAME, METHOD_PREFIX);
+	public NickServIdentMethod(IdentService service, IdentMethodFactory factory) {
+		super(service, factory, METHOD_NAME, METHOD_PREFIX);
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class NickServIdentMethod extends IdentMethod {
 
 		@Override
 		public IdentMethod create(IdentService service) {
-			return new NickServIdentMethod(service);
+			return new NickServIdentMethod(service, this);
 		}
 	}
 }

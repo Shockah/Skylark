@@ -7,8 +7,8 @@ public class ServerIdentMethod extends IdentMethod {
 	public static final String METHOD_NAME = "Server";
 	public static final String METHOD_PREFIX = "srv";
 	
-	public ServerIdentMethod(IdentService service) {
-		super(service, METHOD_NAME, METHOD_PREFIX);
+	public ServerIdentMethod(IdentService service, IdentMethodFactory factory) {
+		super(service, factory, METHOD_NAME, METHOD_PREFIX);
 	}
 
 	@Override
@@ -29,7 +29,7 @@ public class ServerIdentMethod extends IdentMethod {
 
 		@Override
 		public IdentMethod create(IdentService service) {
-			return new ServerIdentMethod(service);
+			return new ServerIdentMethod(service, this);
 		}
 	}
 }
