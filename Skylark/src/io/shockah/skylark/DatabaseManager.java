@@ -1,37 +1,25 @@
 package io.shockah.skylark;
 
-import java.net.UnknownHostException;
-import io.shockah.json.JSONObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.MongoClient;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class DatabaseManager {
 	public final App app;
-	public final MongoClient client;
-	public final String databaseName;
+	protected final Connection connection;
+	protected final int queryTimeout;
 	
-	public DatabaseManager(App app) throws UnknownHostException {
+	public DatabaseManager(App app) throws SQLException {
 		this.app = app;
-		
-		JSONObject mongoConfig = app.config.getObjectOrEmpty("mongo");
-		
-		String host = mongoConfig.getString("host", "localhost");
-		int port = mongoConfig.getInt("port", 0);
-		
-		if (port == 0) {
-			client = new MongoClient(host);
-		} else {
-			client = new MongoClient(host, port);
-		}
-		databaseName = mongoConfig.getString("db", "skylark");
+		Config.DatabaseConfig config = app.config.getDatabaseConfig();
+		connection = DriverManager.getConnection("jdbc:sqlite:" + config.getDatabaseFilePath());
+		queryTimeout = config.getQueryTimeout();
 	}
 	
-	public DB db() {
-		return client.getDB(databaseName);
-	}
-	
-	public DBCollection collection(String name) {
-		return db().getCollection(name);
+	protected Statement createStatement() throws SQLException {
+		Statement statement = connection.createStatement();
+		statement.setQueryTimeout(queryTimeout);
+		return statement;
 	}
 }

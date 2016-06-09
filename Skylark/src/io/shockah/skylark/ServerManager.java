@@ -1,10 +1,8 @@
 package io.shockah.skylark;
 
 import io.shockah.json.JSONObject;
-import io.shockah.skylark.util.JSON;
 import io.shockah.skylark.util.ReadWriteList;
 import java.util.ArrayList;
-import com.mongodb.DBCollection;
 
 public class ServerManager {
 	public static final String COLLECTION_NAME = "servers";
