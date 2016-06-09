@@ -1,6 +1,6 @@
 {
-	"packageName": "me.shockah.skylark.ident",
-	"baseClass": "me.shockah.skylark.ident.IdentPlugin",
+	"packageName": "io.shockah.skylark.ident",
+	"baseClass": "io.shockah.skylark.ident.IdentPlugin",
 	"enabledByDefault": true,
 
 	"name": "Ident",
