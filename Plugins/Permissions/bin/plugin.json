@@ -1,0 +1,12 @@
+{
+	"packageName": "io.shockah.skylark.permissions",
+	"baseClass": "io.shockah.skylark.permissions.PermissionsPlugin",
+	"enabledByDefault": true,
+	"dependsOn": [
+		"io.shockah.skylark.ident"
+	],
+
+	"name": "Permissions",
+	"author": "Shockah",
+	"description": ""
+}
