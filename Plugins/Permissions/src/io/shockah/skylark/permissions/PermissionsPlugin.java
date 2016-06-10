@@ -1,12 +1,14 @@
 package io.shockah.skylark.permissions;
 
-import java.sql.SQLException;
 import io.shockah.skylark.ident.IdentPlugin;
 import io.shockah.skylark.permissions.db.Group;
 import io.shockah.skylark.plugin.Plugin;
 import io.shockah.skylark.plugin.PluginManager;
+import java.sql.SQLException;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 
 public class PermissionsPlugin extends Plugin {
 	@Dependency
@@ -21,7 +23,10 @@ public class PermissionsPlugin extends Plugin {
 	@Override
 	protected void onLoad() {
 		try {
-			groupsDao = DaoManager.createDao(manager.app.databaseManager.connection, Group.class);
+			ConnectionSource connection = manager.app.databaseManager.connection;
+			
+			groupsDao = DaoManager.createDao(connection, Group.class);
+			TableUtils.createTableIfNotExists(connection, Group.class);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

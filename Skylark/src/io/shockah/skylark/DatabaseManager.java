@@ -22,7 +22,6 @@ public class DatabaseManager {
 		queryTimeout = config.getQueryTimeout();
 		
 		serversDao = DaoManager.createDao(connection, Server.class);
-		
 		TableUtils.createTableIfNotExists(connection, Server.class);
 	}
 }
