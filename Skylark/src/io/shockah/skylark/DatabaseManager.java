@@ -1,25 +1,28 @@
 package io.shockah.skylark;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
+import io.shockah.skylark.db.Server;
 import java.sql.SQLException;
-import java.sql.Statement;
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 
 public class DatabaseManager {
 	public final App app;
-	protected final Connection connection;
+	public final ConnectionSource connection;
 	protected final int queryTimeout;
+	
+	public final Dao<Server, String> serversDao;
 	
 	public DatabaseManager(App app) throws SQLException {
 		this.app = app;
 		Config.DatabaseConfig config = app.config.getDatabaseConfig();
-		connection = DriverManager.getConnection("jdbc:sqlite:" + config.getDatabaseFilePath());
+		connection = new JdbcConnectionSource("jdbc:sqlite:" + config.getDatabaseFilePath());
 		queryTimeout = config.getQueryTimeout();
-	}
-	
-	protected Statement createStatement() throws SQLException {
-		Statement statement = connection.createStatement();
-		statement.setQueryTimeout(queryTimeout);
-		return statement;
+		
+		serversDao = DaoManager.createDao(connection, Server.class);
+		
+		TableUtils.createTableIfNotExists(connection, Server.class);
 	}
 }

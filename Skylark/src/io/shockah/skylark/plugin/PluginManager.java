@@ -71,9 +71,13 @@ public class PluginManager {
 			if (shouldEnable(pluginInfo)) {
 				Plugin plugin = loadPlugin(pluginClassLoader, pluginInfo);
 				if (plugin != null) {
-					plugins.add(plugin);
-					plugin.onLoad();
-					setupServices(plugin);
+					try {
+						plugin.onLoad();
+						plugins.add(plugin);
+						setupServices(plugin);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		});

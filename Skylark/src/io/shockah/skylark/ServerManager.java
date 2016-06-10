@@ -1,12 +1,11 @@
 package io.shockah.skylark;
 
-import io.shockah.json.JSONObject;
+import io.shockah.skylark.db.Server;
 import io.shockah.skylark.util.ReadWriteList;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class ServerManager {
-	public static final String COLLECTION_NAME = "servers";
-	
 	public final App app;
 	public final ReadWriteList<BotManager> botManagers = new ReadWriteList<>(new ArrayList<>());
 	
@@ -14,20 +13,17 @@ public class ServerManager {
 		this.app = app;
 	}
 	
-	public void readFromDatabase() {
-		DBCollection col = app.databaseManager.collection(COLLECTION_NAME);
-		for (JSONObject j : JSON.collectJSON(col.find())) {
-			String name = j.getString("name");
-			String host = j.getString("host");
-			
-			BotManager manager = new BotManager(this, name, host);
-			manager.channelsPerConnection = j.getOptionalInt("channelsPerConnection");
-			manager.messageDelay = j.getLong("messageDelay", BotManager.DEFAULT_MESSAGE_DELAY);
-			manager.botName = j.getString("botName", BotManager.DEFAULT_BOT_NAME);
+	public void readFromDatabase() throws SQLException {
+		for (Server server : app.databaseManager.serversDao.queryForAll()) {
+			BotManager manager = new BotManager(this, server.getName(), server.getHost());
+			manager.channelsPerConnection = server.getChannelsPerConnection();
+			manager.messageDelay = server.getMessageDelay();
+			manager.botName = server.getBotName();
 			botManagers.add(manager);
 			
-			for (String channelName : j.getListOrEmpty("channels").ofStrings())
+			for (String channelName : server.getChannelNames()) {
 				manager.joinChannel(channelName);
+			}
 		}
 	}
 }
