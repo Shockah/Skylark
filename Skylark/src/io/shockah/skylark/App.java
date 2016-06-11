@@ -34,6 +34,12 @@ public class App {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		try {
+			databaseManager.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	protected void loadConfig(Path path) throws IOException {

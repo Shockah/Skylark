@@ -1,78 +1,49 @@
 package io.shockah.skylark.db;
 
-import io.shockah.skylark.BotManager;
 import java.util.List;
+import java.util.Objects;
+import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.misc.BaseDaoEnabled;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "servers")
-public class Server {
+public class Server extends BaseDaoEnabled<Server, String> {
 	@DatabaseField(id = true)
 	private String name;
 	
 	@DatabaseField
-	private String host;
+	public String host;
 	
 	@DatabaseField(canBeNull = true)
-	private Integer channelsPerConnection;
+	public Integer channelsPerConnection;
 	
 	@DatabaseField(canBeNull = true)
-	private Long messageDelay;
+	public Long messageDelay;
 	
 	@DatabaseField(canBeNull = true)
-	private String botName;
+	public String botName;
 	
 	@DatabaseField(persisterClass = StringListToSpaceDelimitedStringPersister.class)
-	private List<String> channelNames;
+	public List<String> channelNames;
 	
-	public Server() {
+	@Deprecated //ORMLite-only
+	Server() {
+	}
+	
+	public Server(Dao<Server, String> dao, String name) {
+		setDao(dao);
+		this.name = name;
+	}
+	
+	public boolean equals(Object other) {
+		if (!(other instanceof Server))
+			return false;
+		Server server = (Server)other;
+		return Objects.equals(name, server.name);
 	}
 	
 	public String getName() {
 		return name;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public String getHost() {
-		return host;
-	}
-	
-	public void setHost(String host) {
-		this.host = host;
-	}
-	
-	public Integer getChannelsPerConnection() {
-		return channelsPerConnection;
-	}
-	
-	public void setChannelsPerConnection(Integer channelsPerConnection) {
-		this.channelsPerConnection = channelsPerConnection;
-	}
-	
-	public Long getMessageDelay() {
-		return messageDelay == null ? BotManager.DEFAULT_MESSAGE_DELAY : messageDelay;
-	}
-	
-	public void setMessageDelay(Long messageDelay) {
-		this.messageDelay = messageDelay;
-	}
-	
-	public String getBotName() {
-		return botName == null ? BotManager.DEFAULT_BOT_NAME : botName;
-	}
-	
-	public void setBotName(String botName) {
-		this.botName = botName;
-	}
-	
-	public List<String> getChannelNames() {
-		return channelNames;
-	}
-	
-	public void setChannelNames(List<String> channelNames) {
-		this.channelNames = channelNames;
 	}
 }

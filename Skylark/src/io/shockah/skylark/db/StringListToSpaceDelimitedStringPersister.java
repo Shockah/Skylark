@@ -11,7 +11,7 @@ import com.j256.ormlite.field.types.BaseDataType;
 import com.j256.ormlite.support.DatabaseResults;
 
 public class StringListToSpaceDelimitedStringPersister extends BaseDataType {
-	public StringListToSpaceDelimitedStringPersister(SqlType sqlType, Class<?>[] classes) {
+	public StringListToSpaceDelimitedStringPersister() {
 		super(SqlType.STRING, new Class<?>[] { List.class });
 	}
 

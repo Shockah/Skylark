@@ -1,9 +1,5 @@
 {
-	"mongo": {
-		"host": "localhost",
-		"port": 27017,
-		"user": "",
-		"pass": "",
-		"db": "skylark"
+	"database": {
+		"path": "jdbc:h2:database.h2"
 	}
 }

@@ -13,6 +13,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/pircbotx-2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/ormlite-core-4.49-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="libs/ormlite-jdbc-4.49-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="libs/sqlite-jdbc-3.8.11.2.jar"/>
+	<classpathentry kind="lib" path="libs/h2-1.4.192.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

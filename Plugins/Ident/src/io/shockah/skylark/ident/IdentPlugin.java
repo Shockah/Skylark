@@ -34,9 +34,8 @@ public class IdentPlugin extends Plugin implements BotManagerService.Factory {
 				ServerManager serverManager = manager.app.serverManager;
 				serverManager.botManagers.iterate(botManager -> {
 					IdentService service = botManager.getService(IdentService.class);
-					if (service != null) {
+					if (service != null)
 						service.methods.add(factory.create(service));
-					}
 				});
 			}
 		});
@@ -62,7 +61,6 @@ public class IdentPlugin extends Plugin implements BotManagerService.Factory {
 	}
 	
 	public Map<IdentMethod, String> getIdentsForUser(User user) {
-		Bot bot = user.getBot();
-		return bot.manager.getService(IdentService.class).getIdentsForUser(user);
+		return user.<Bot>getBot().manager.getService(IdentService.class).getIdentsForUser(user);
 	}
 }

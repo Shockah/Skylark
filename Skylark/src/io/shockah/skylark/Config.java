@@ -1,11 +1,10 @@
 package io.shockah.skylark;
 
-import io.shockah.json.JSONObject;
-import io.shockah.json.JSONParser;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import io.shockah.json.JSONObject;
+import io.shockah.json.JSONParser;
 
 public final class Config {
 	private static final String DATABASE = "database";
@@ -25,8 +24,7 @@ public final class Config {
 	}
 	
 	public static final class DatabaseConfig {
-		private static final String DATABASE_FILE_PATH = "databaseFilePath";
-		private static final String QUERY_TIMEOUT = "queryTimeout";
+		private static final String PATH = "path";
 		
 		private final JSONObject json;
 		
@@ -34,12 +32,8 @@ public final class Config {
 			this.json = json;
 		}
 		
-		public Path getDatabaseFilePath() {
-			return Paths.get(json.getString(DATABASE_FILE_PATH));
-		}
-		
-		public int getQueryTimeout() {
-			return json.getInt(QUERY_TIMEOUT);
+		public String getDatabasePath() {
+			return json.getString(PATH);
 		}
 	}
 }
