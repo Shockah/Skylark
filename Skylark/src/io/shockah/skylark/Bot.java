@@ -34,7 +34,7 @@ public class Bot extends PircBotX {
 	
 	@SuppressWarnings("unchecked")
 	public <T extends BotService> T getService(Class<T> clazz) {
-		return (T)services.findOne(service -> clazz.isInstance(service));
+		return (T)services.filterFirst(service -> clazz.isInstance(service));
 	}
 	
 	/*public boolean hasEnabledCapability(String capability) {

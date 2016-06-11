@@ -175,12 +175,12 @@ public class PluginManager {
 	
 	@SuppressWarnings("unchecked")
 	public <T extends Plugin> T getPluginWithClass(Class<T> clazz) {
-		return (T)plugins.findOne(plugin -> clazz.isInstance(plugin));
+		return (T)plugins.filterFirst(plugin -> clazz.isInstance(plugin));
 	}
 	
 	@SuppressWarnings("unchecked")
 	public <T extends Plugin> T getPluginWithPackageName(String name) {
-		return (T)plugins.findOne(plugin -> plugin.info.packageName().equals(name));
+		return (T)plugins.filterFirst(plugin -> plugin.info.packageName().equals(name));
 	}
 	
 	protected List<Plugin.Info> findPlugins() {

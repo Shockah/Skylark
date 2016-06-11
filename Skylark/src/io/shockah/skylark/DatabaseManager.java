@@ -17,8 +17,7 @@ public class DatabaseManager implements Closeable {
 	
 	public DatabaseManager(App app) throws SQLException {
 		this.app = app;
-		Config.DatabaseConfig config = app.config.getDatabaseConfig();
-		connection = new JdbcConnectionSource("jdbc:" + config.getDatabasePath());
+		connection = new JdbcConnectionSource("jdbc:" + app.config.getObject("database").getString("databasePath"));
 		DataPersisterManager.registerDataPersisters(new PatternPersister());
 	}
 	

@@ -1,7 +1,10 @@
 package io.shockah.skylark;
 
+import io.shockah.json.JSONObject;
+import io.shockah.json.JSONParser;
 import io.shockah.skylark.plugin.PluginManager;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -12,7 +15,7 @@ public class App {
 		new App().run();
 	}
 	
-	public Config config;
+	public JSONObject config;
 	public DatabaseManager databaseManager;
 	public PluginManager pluginManager;
 	public ServerManager serverManager;
@@ -43,6 +46,6 @@ public class App {
 	}
 	
 	protected void loadConfig(Path path) throws IOException {
-		config = Config.fromFile(path);
+		config = new JSONParser().parseObject(new String(Files.readAllBytes(path), "UTF-8"));
 	}
 }

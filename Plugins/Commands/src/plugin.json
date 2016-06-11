@@ -1,0 +1,12 @@
+{
+	"packageName": "io.shockah.skylark.commands",
+	"baseClass": "io.shockah.skylark.commands.CommandsPlugin",
+	"enabledByDefault": true,
+	"dependsOn": [
+		"io.shockah.skylark.permissions"
+	],
+
+	"name": "Commands",
+	"author": "Shockah",
+	"description": ""
+}

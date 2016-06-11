@@ -31,15 +31,15 @@ public final class IdentService extends BotManagerService {
 	}
 	
 	public IdentMethod getMethod(String prefix) {
-		return methods.findOne(method -> method.prefix.equals(prefix));
+		return methods.filterFirst(method -> method.prefix.equals(prefix));
 	}
 	
 	public IdentMethod getMethod(IdentMethodFactory factory) {
-		return methods.findOne(method -> method.factory == factory);
+		return methods.filterFirst(method -> method.factory == factory);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public <T extends IdentMethod> T getMethod(Class<T> clazz) {
-		return (T)methods.findOne(method -> clazz.isInstance(method));
+		return (T)methods.filterFirst(method -> clazz.isInstance(method));
 	}
 }

@@ -105,12 +105,26 @@ public class ReadWriteList<T> implements List<T> {
 		}
 	}
 	
-	public T findOne(Func1<T, Boolean> f) {
+	public T filterFirst(Func1<T, Boolean> f) {
 		lock.readLock().lock();
 		try {
 			for (T t : list) {
 				if (f.call(t))
 					return t;
+			}
+		} finally {
+			lock.readLock().unlock();
+		}
+		return null;
+	}
+	
+	public <R> R firstResult(Func1<T, R> f) {
+		lock.readLock().lock();
+		try {
+			for (T t : list) {
+				R result = f.call(t);
+				if (result != null)
+					return result;
 			}
 		} finally {
 			lock.readLock().unlock();

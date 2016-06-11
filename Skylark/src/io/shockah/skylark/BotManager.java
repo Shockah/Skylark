@@ -61,7 +61,7 @@ public class BotManager {
 	
 	@SuppressWarnings("unchecked")
 	public <T extends BotManagerService> T getService(Class<T> clazz) {
-		return (T)services.findOne(service -> clazz.isInstance(service));
+		return (T)services.filterFirst(service -> clazz.isInstance(service));
 	}
 	
 	public int getChannelsPerConnection() {

@@ -46,8 +46,7 @@ public class NickServIdentPlugin extends ListenerPlugin {
 		if (!e.getUser().getNick().equals("NickServ"))
 			return;
 		
-		Bot bot = e.getBot();
-		IdentService service = bot.manager.getService(IdentService.class);
+		IdentService service = e.<Bot>getBot().manager.getService(IdentService.class);
 		NickServIdentMethod method = service.getMethod(NickServIdentMethod.class);
 		if (method == null || !method.isAvailable())
 			return;
@@ -61,8 +60,7 @@ public class NickServIdentPlugin extends ListenerPlugin {
 	
 	@Override
 	protected void onAccountNotify(AccountNotifyEvent e) {
-		Bot bot = e.getBot();
-		IdentService service = bot.manager.getService(IdentService.class);
+		IdentService service = e.<Bot>getBot().manager.getService(IdentService.class);
 		NickServIdentMethod method = service.getMethod(NickServIdentMethod.class);
 		if (method != null && method.isAvailable()) {
 			method.onAccountNotify(e.getUser().getNick(), e.getAccount());
@@ -71,8 +69,7 @@ public class NickServIdentPlugin extends ListenerPlugin {
 	
 	@Override
 	protected void onExtendedJoin(ExtendedJoinEvent e) {
-		Bot bot = e.getBot();
-		IdentService service = bot.manager.getService(IdentService.class);
+		IdentService service = e.<Bot>getBot().manager.getService(IdentService.class);
 		NickServIdentMethod method = service.getMethod(NickServIdentMethod.class);
 		if (method != null && method.isAvailable())
 			method.onExtendedJoin(e.getUser().getNick(), e.getAccount());
@@ -80,8 +77,7 @@ public class NickServIdentPlugin extends ListenerPlugin {
 	
 	@Override
 	protected void onJoin(JoinEvent e) {
-		Bot bot = e.getBot();
-		IdentService service = bot.manager.getService(IdentService.class);
+		IdentService service = e.<Bot>getBot().manager.getService(IdentService.class);
 		NickServIdentMethod method = service.getMethod(NickServIdentMethod.class);
 		if (method == null || !method.isAvailable())
 			return;
@@ -92,8 +88,7 @@ public class NickServIdentPlugin extends ListenerPlugin {
 	
 	@Override
 	protected void onNickChange(NickChangeEvent e) {
-		Bot bot = e.getBot();
-		IdentService service = bot.manager.getService(IdentService.class);
+		IdentService service = e.<Bot>getBot().manager.getService(IdentService.class);
 		NickServIdentMethod method = service.getMethod(NickServIdentMethod.class);
 		if (method != null && method.isAvailable())
 			method.onNickChange(e.getOldNick(), e.getNewNick());
@@ -101,8 +96,7 @@ public class NickServIdentPlugin extends ListenerPlugin {
 	
 	@Override
 	protected void onQuit(QuitEvent e) {
-		Bot bot = e.getBot();
-		IdentService service = bot.manager.getService(IdentService.class);
+		IdentService service = e.<Bot>getBot().manager.getService(IdentService.class);
 		NickServIdentMethod method = service.getMethod(NickServIdentMethod.class);
 		if (method != null && method.isAvailable())
 			method.onQuit(e.getUser().getNick());
@@ -117,7 +111,7 @@ public class NickServIdentPlugin extends ListenerPlugin {
 			return;
 		
 		String nick = e.getUser().getNick();
-		Bot foundBot = bot.manager.bots.findOne(bot2 -> {
+		Bot foundBot = bot.manager.bots.filterFirst(bot2 -> {
 			for (Channel channel : bot2.getUserBot().getChannels()) {
 				if (channel.getUsersNicks().contains(nick))
 					return true;
@@ -133,8 +127,7 @@ public class NickServIdentPlugin extends ListenerPlugin {
 		if (e.getCode() != 354)
 			return;
 		
-		Bot bot = e.getBot();
-		IdentService service = bot.manager.getService(IdentService.class);
+		IdentService service = e.<Bot>getBot().manager.getService(IdentService.class);
 		NickServIdentMethod method = service.getMethod(NickServIdentMethod.class);
 		if (method == null || !method.isAvailable())
 			return;
