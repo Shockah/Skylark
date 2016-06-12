@@ -24,6 +24,12 @@ public class Server extends BaseDaoEnabled<Server, String> {
 	@DatabaseField(canBeNull = true)
 	public String botName;
 	
+	@DatabaseField(canBeNull = true)
+	public Integer linebreakLength;
+	
+	@DatabaseField(canBeNull = true)
+	public String ellipsis;
+	
 	@DatabaseField(persisterClass = StringListToSpaceDelimitedStringPersister.class)
 	public List<String> channelNames;
 	

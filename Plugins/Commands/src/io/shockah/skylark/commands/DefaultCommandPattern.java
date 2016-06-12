@@ -12,15 +12,31 @@ public class DefaultCommandPattern extends CommandPattern {
 		this.prefixes = prefixes;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	public Command provide(GenericUserMessageEvent e) {
+	public CommandPreparedCall<String, ?> provide(GenericUserMessageEvent e) {
 		String message = e.getMessage();
 		for (String prefix : prefixes) {
 			if (message.startsWith(prefix) && message.length() > prefix.length()) {
 				String[] spl = message.split("\\s");
-				String commandName = spl[0].substring(prefix.length());
-				String input = message.substring(prefix.length() + commandName.length() + 1);
-				return providers.firstResult(provider -> provider.provide(e, commandName, input));
+				String commandList = spl[0].substring(prefix.length());
+				String input = message.substring(prefix.length() + commandList.length() + 1);
+				
+				String[] commandNames = commandList.split(">");
+				if (commandNames.length == 1) {
+					Command<String, Object> command = (Command<String, Object>)providers.firstResult(provider -> provider.provide(commandNames[0]));
+					return new CommandPreparedCall<String, Object>(command, input);
+				} else {
+					Command<?, ?>[] commands = new Command[commandNames.length];
+					for (int i = 0; i < commandNames.length; i++) {
+						String commandName = commandNames[i];
+						Command<?, ?> command = providers.firstResult(provider -> provider.provide(commandName));
+						if (command == null)
+							return null;
+						commands[i] = command;
+					}
+					return new CommandPreparedCall<String, Object>(new ChainCommand<String, Object>(commands), input);
+				}
 			}
 		}
 		return null;
@@ -32,5 +48,9 @@ public class DefaultCommandPattern extends CommandPattern {
 	
 	public void removeProvider(CommandProvider provider) {
 		providers.remove(provider);
+	}
+	
+	public NamedCommand<?, ?> findCommand(String name) {
+		return providers.firstResult(provider -> provider.provide(name));
 	}
 }

@@ -44,7 +44,7 @@ public class NickServIdentMethod extends IdentMethod {
 	}
 	
 	protected boolean checkAvailability() {
-		Bot bot = getAnyBot();
+		Bot bot = service.manager.getAnyBot();
 		hasWhoX = bot.getServerInfo().isWhoX();
 		hasExtendedJoin = bot.getEnabledCapabilities().contains("extended-join");
 		hasAccountNotify = bot.getEnabledCapabilities().contains("account-notify");
@@ -67,14 +67,6 @@ public class NickServIdentMethod extends IdentMethod {
 		available.get();
 		return hasAccountNotify;
 	}
-	
-	protected Bot getAnyBot() {
-		return service.manager.bots.readOperation(bots -> {
-			if (service.manager.bots.isEmpty())
-				return service.manager.connectNewBot();
-			return service.manager.bots.get(0);
-		});
-	}
 
 	@Override
 	public String getForUser(User user) {
@@ -94,7 +86,7 @@ public class NickServIdentMethod extends IdentMethod {
 	
 	public void asyncRequest(String nick, Action2<String, String> f) {
 		userRequests.add(new Request(nick, f));
-		getAnyBot().sendIRC().message("NickServ", String.format("acc %s *", nick));
+		service.manager.getAnyBot().sendIRC().message("NickServ", String.format("acc %s *", nick));
 	}
 	
 	public String syncRequest(User user) {

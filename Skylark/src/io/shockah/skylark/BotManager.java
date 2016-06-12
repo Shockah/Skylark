@@ -1,14 +1,11 @@
 package io.shockah.skylark;
 
-import io.shockah.skylark.plugin.BotManagerService;
-import io.shockah.skylark.plugin.ListenerPlugin;
-import io.shockah.skylark.plugin.PluginManager;
-import io.shockah.skylark.util.Box;
-import io.shockah.skylark.util.ReadWriteList;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.regex.Pattern;
+import org.pircbotx.Colors;
 import org.pircbotx.Configuration;
 import org.pircbotx.Configuration.BotFactory;
 import org.pircbotx.InputParser;
@@ -16,13 +13,23 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ConnectEvent;
+import io.shockah.skylark.db.Server;
+import io.shockah.skylark.plugin.BotManagerService;
+import io.shockah.skylark.plugin.ListenerPlugin;
+import io.shockah.skylark.plugin.PluginManager;
+import io.shockah.skylark.util.Box;
+import io.shockah.skylark.util.ReadWriteList;
+import io.shockah.skylark.util.StringUtils;
 
 public class BotManager {
+	public static final Charset CHARSET = Charset.forName("UTF-8");
 	public static final String CHANNELS_PER_CONNECTION_CAPABILITY = "CHANLIMIT";
 	public static final Pattern CHANNELS_PER_CONNECTION_CAPABILITY_VALUE_PATTERN = Pattern.compile("\\#\\:([0-9]+)");
 	
+	public static final String DEFAULT_ELLIPSIS = "…";
 	public static final String DEFAULT_BOT_NAME = "Skylark";
 	public static final long DEFAULT_MESSAGE_DELAY = 500;
+	public static final int DEFAULT_LINEBREAK_LENGTH = 400;
 	
 	public final ServerManager serverManager;
 	public final String name;
@@ -32,6 +39,8 @@ public class BotManager {
 	public Integer channelsPerConnection;
 	public long messageDelay = DEFAULT_MESSAGE_DELAY;
 	public String botName = DEFAULT_BOT_NAME;
+	public Integer linebreakLength;
+	public String ellipsis;
 	
 	public final ReadWriteList<Bot> bots = new ReadWriteList<>(new ArrayList<>());
 	public final ReadWriteList<BotManagerService> services = new ReadWriteList<>(new ArrayList<>());
@@ -45,7 +54,20 @@ public class BotManager {
 		this.name = name;
 		this.host = host;
 		this.port = port;
+		linebreakLength = serverManager.app.config.getObjectOrEmpty("messages").getOptionalInt("linebreakLength");
+		ellipsis = serverManager.app.config.getObjectOrEmpty("messages").getString("ellipsis", null);
 		setupServices();
+	}
+	
+	public BotManager(ServerManager serverManager, Server server) {
+		this(serverManager, server.getName(), server.host);
+		channelsPerConnection = server.channelsPerConnection;
+		messageDelay = server.messageDelay == null ? BotManager.DEFAULT_MESSAGE_DELAY : server.messageDelay;
+		botName = server.botName == null ? BotManager.DEFAULT_BOT_NAME : server.botName;
+		if (server.linebreakLength != null)
+			linebreakLength = server.linebreakLength;
+		if (server.ellipsis != null)
+			ellipsis = server.ellipsis;
 	}
 	
 	public void setupServices() {
@@ -84,6 +106,22 @@ public class BotManager {
 		} else {
 			return channelsPerConnection;
 		}
+	}
+	
+	public int getLinebreakLength() {
+		return linebreakLength == null ? DEFAULT_LINEBREAK_LENGTH : linebreakLength;
+	}
+	
+	public String getEllipsis() {
+		return ellipsis == null ? DEFAULT_ELLIPSIS : ellipsis;
+	}
+	
+	public Bot getAnyBot() {
+		return bots.readOperation(bots -> {
+			if (bots.isEmpty())
+				return connectNewBot();
+			return bots.get(0);
+		});
 	}
 	
 	public Bot joinChannel(String channelName) {
@@ -137,7 +175,7 @@ public class BotManager {
 					return new SkylarkInputParser(bot);
 				}
 			})
-			.setEncoding(Charset.forName("UTF-8"))
+			.setEncoding(CHARSET)
 			.setName(name)
 			.setAutoNickChange(true)
 			.setMessageDelay(messageDelay)
@@ -164,5 +202,58 @@ public class BotManager {
 		});
 		
 		return new Bot(cfgb.buildConfiguration(), this);
+	}
+	
+	public List<String> linebreakIfNeeded(List<String> lines) {
+		return linebreakIfNeeded(lines, null, getEllipsis());
+	}
+	
+	public List<String> linebreakIfNeeded(List<String> lines, Integer maxLines) {
+		return linebreakIfNeeded(lines, maxLines, getEllipsis());
+	}
+	
+	public List<String> linebreakIfNeeded(List<String> lines, Integer maxLines, String ellipsis) {
+		if (maxLines != null && maxLines < 1)
+			throw new IllegalArgumentException();
+		
+		List<String> newLines = new ArrayList<>();
+		for (String line : lines) {
+			newLines.addAll(linebreakIfNeeded(line));
+		}
+		
+		if (maxLines != null && newLines.size() > maxLines) {
+			newLines = newLines.subList(0, maxLines);
+			if (ellipsis != null && !ellipsis.isEmpty()) {
+				String lastLine = newLines.get(newLines.size() - 1);
+				String replacement = ellipsis;
+				if (Colors.removeFormattingAndColors(lastLine).equals(lastLine))
+					replacement = "\u000F" + replacement;
+				
+				if (replacement.length() >= lastLine.length())
+					lastLine = replacement;
+				else
+					lastLine = lastLine.substring(0, lastLine.length() - replacement.length()) + replacement;
+				newLines.set(newLines.size() - 1, lastLine);
+			}
+		}
+		
+		return newLines;
+	}
+	
+	public List<String> linebreakIfNeeded(String line) {
+		List<String> list = new ArrayList<>();
+		
+		while (true) {
+			String trimmedMessage = StringUtils.trimToByteLength(line, getLinebreakLength(), CHARSET);
+			list.add(trimmedMessage);
+			
+			if (trimmedMessage.equals(line)) {
+				break;
+			} else {
+				line = line.substring(trimmedMessage.length());
+			}
+		}
+		
+		return list;
 	}
 }

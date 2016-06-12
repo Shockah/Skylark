@@ -12,31 +12,40 @@ import org.pircbotx.hooks.types.GenericChannelUserEvent;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 
 public class GenericUserMessageEvent extends Event implements GenericMessageEvent, GenericChannelUserEvent {
+	protected final Event event;
 	protected final GenericMessageEvent eMessage;
 	protected final GenericChannelUserEvent eChannelUser;
 	
 	public GenericUserMessageEvent(MessageEvent e) {
 		super(e.getBot());
+		event = e;
 		eMessage = e;
 		eChannelUser = e;
 	}
 	
 	public GenericUserMessageEvent(ActionEvent e) {
 		super(e.getBot());
+		event = e;
 		eMessage = e;
 		eChannelUser = e;
 	}
 	
 	public GenericUserMessageEvent(PrivateMessageEvent e) {
 		super(e.getBot());
+		event = e;
 		eMessage = e;
 		eChannelUser = null;
 	}
 	
 	public GenericUserMessageEvent(NoticeEvent e) {
 		super(e.getBot());
+		event = e;
 		eMessage = e;
 		eChannelUser = null;
+	}
+	
+	public Event getEvent() {
+		return event;
 	}
 
 	public Channel getChannel() {

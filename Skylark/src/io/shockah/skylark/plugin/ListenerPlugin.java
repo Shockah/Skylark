@@ -1,14 +1,5 @@
 package io.shockah.skylark.plugin;
 
-import io.shockah.skylark.SkylarkListenerAdapter;
-import io.shockah.skylark.event.AccountNotifyEvent;
-import io.shockah.skylark.event.ExtendedJoinEvent;
-import io.shockah.skylark.event.OutActionEvent;
-import io.shockah.skylark.event.OutMessageEvent;
-import io.shockah.skylark.event.OutNoticeEvent;
-import io.shockah.skylark.event.OutPrivateMessageEvent;
-import io.shockah.skylark.event.ServerNoticeEvent;
-import io.shockah.skylark.event.Whois2Event;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.events.ActionEvent;
@@ -72,6 +63,16 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 import org.pircbotx.hooks.types.GenericUserEvent;
 import org.pircbotx.hooks.types.GenericUserModeEvent;
+import io.shockah.skylark.SkylarkListenerAdapter;
+import io.shockah.skylark.event.AccountNotifyEvent;
+import io.shockah.skylark.event.ExtendedJoinEvent;
+import io.shockah.skylark.event.GenericUserMessageEvent;
+import io.shockah.skylark.event.OutActionEvent;
+import io.shockah.skylark.event.OutMessageEvent;
+import io.shockah.skylark.event.OutNoticeEvent;
+import io.shockah.skylark.event.OutPrivateMessageEvent;
+import io.shockah.skylark.event.ServerNoticeEvent;
+import io.shockah.skylark.event.Whois2Event;
 
 public abstract class ListenerPlugin extends Plugin {
 	public final Listener listener;
@@ -152,6 +153,7 @@ public abstract class ListenerPlugin extends Plugin {
 	protected void onOutPrivateMessage(OutPrivateMessageEvent e) { }
 	protected void onWhois2(Whois2Event e) { }
 	protected void onServerNotice(ServerNoticeEvent e) { }
+	protected void onGenericUserMessage(GenericUserMessageEvent e) { }
 	
 	protected class MyListener extends SkylarkListenerAdapter {
 		public final ListenerPlugin plugin;
@@ -238,5 +240,6 @@ public abstract class ListenerPlugin extends Plugin {
 		public void onOutPrivateMessage(OutPrivateMessageEvent e) { plugin.onOutPrivateMessage(e); }
 		public void onWhois2(Whois2Event e) { plugin.onWhois2(e); }
 		public void onServerNotice(ServerNoticeEvent e) { plugin.onServerNotice(e); }
+		public void onGenericUserMessage(GenericUserMessageEvent e) { plugin.onGenericUserMessage(e); }
 	}
 }
