@@ -27,4 +27,18 @@ public class CommandValue<T> {
 			return result.containsKey(OUTPUT) ? result.get(OUTPUT).toString() : null;
 		}
 	}
+	
+	public static class Simple<T> extends CommandValue<T> {
+		public final String ircOutput;
+		
+		public Simple(T result, String ircOutput) {
+			super(result);
+			this.ircOutput = ircOutput;
+		}
+		
+		@Override
+		public String toIRCOutput() {
+			return ircOutput;
+		}
+	}
 }

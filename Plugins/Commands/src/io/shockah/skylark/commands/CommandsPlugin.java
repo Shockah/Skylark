@@ -61,7 +61,7 @@ public class CommandsPlugin extends ListenerPlugin {
 		defaultProvider.removeNamedCommand(command);
 	}
 	
-	public CommandPreparedCall<String, ?> findCommandToCall(GenericUserMessageEvent e) {
+	public CommandPreparedCall<?, ?> findCommandToCall(GenericUserMessageEvent e) {
 		return patterns.firstResult(pattern -> pattern.provide(e));
 	}
 	
@@ -74,7 +74,7 @@ public class CommandsPlugin extends ListenerPlugin {
 		if (e.getEvent() instanceof ActionEvent)
 			return;
 		
-		CommandPreparedCall<String, ?> preparedCall = findCommandToCall(e);
+		CommandPreparedCall<?, ?> preparedCall = findCommandToCall(e);
 		if (preparedCall == null)
 			return;
 		
