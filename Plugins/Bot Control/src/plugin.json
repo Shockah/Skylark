@@ -1,0 +1,13 @@
+{
+	"packageName": "io.shockah.skylark.botcontrol",
+	"baseClass": "io.shockah.skylark.commands.BotControlPlugin",
+	"enabledByDefault": true,
+	"dependsOn": [
+		"io.shockah.skylark.commands",
+		"io.shockah.skylark.permissions"
+	],
+
+	"name": "Bot Control",
+	"author": "Shockah",
+	"description": ""
+}
