@@ -20,7 +20,7 @@ public class BotControlPlugin extends Plugin {
 	
 	@Override
 	protected void onLoad() {
-		commandsPlugin.addNamedCommand(joinCommand = new JoinCommand());
+		commandsPlugin.addNamedCommand(joinCommand = new JoinCommand(this));
 	}
 	
 	@Override

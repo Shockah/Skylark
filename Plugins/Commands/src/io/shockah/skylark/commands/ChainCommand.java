@@ -22,7 +22,7 @@ public class ChainCommand<T, R> extends Command<T, R> {
 		for (Command<?, ?> genericCommand : commands) {
 			Command<Object, ?> objectCommand = (Command<Object, ?>)genericCommand;
 			value = objectCommand.call(call, value.result);
-			if (value.exception != null)
+			if (value.error != null)
 				break;
 		}
 		return (CommandValue<R>)value;
