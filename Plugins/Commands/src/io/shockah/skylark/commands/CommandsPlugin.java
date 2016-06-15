@@ -74,17 +74,21 @@ public class CommandsPlugin extends ListenerPlugin {
 		if (e.getEvent() instanceof ActionEvent)
 			return;
 		
-		CommandPreparedCall<?, ?> preparedCall = findCommandToCall(e);
-		if (preparedCall == null)
-			return;
-		
 		CommandCall call = new CommandCall(e);
-		CommandValue<?> value = preparedCall.call(call);
-		String output = value.toIRCOutput();
-		
-		if (output != null) {
-			List<String> lines = Arrays.asList(output.split("\\r?\\n|\\r"));
-			call.respond(e.<Bot>getBot().manager.linebreakIfNeeded(lines, preparedCall.getLineLimit(call)));
+		try {
+			CommandPreparedCall<?, ?> preparedCall = findCommandToCall(e);
+			if (preparedCall == null)
+				return;
+			
+			CommandValue<?> value = preparedCall.call(call);
+			String output = value.toIRCOutput();
+			
+			if (output != null) {
+				List<String> lines = Arrays.asList(output.split("\\r?\\n|\\r"));
+				call.respond(e.<Bot>getBot().manager.linebreakIfNeeded(lines, preparedCall.getLineLimit(call)));
+			}
+		} catch (Exception ex) {
+			call.respond(Arrays.asList(new String[] { ex.getMessage() }));
 		}
 	}
 }

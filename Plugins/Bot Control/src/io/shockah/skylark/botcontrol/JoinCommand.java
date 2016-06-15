@@ -23,7 +23,7 @@ public class JoinCommand extends NamedCommand<List<String>, Map<String, Bot>> {
 
 	@Override
 	public List<String> prepareInput(GenericUserMessageEvent e, String input) {
-		return Arrays.asList(input.split("\\s"));
+		return Arrays.asList(input.trim().split("\\s"));
 	}
 
 	@Override
@@ -34,7 +34,6 @@ public class JoinCommand extends NamedCommand<List<String>, Map<String, Bot>> {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return CommandValue.error(e.getMessage());
-			
 		}
 		
 		Map<String, Bot> result = new HashMap<>();
@@ -45,6 +44,6 @@ public class JoinCommand extends NamedCommand<List<String>, Map<String, Bot>> {
 		}
 		
 		String ircOutput = String.format("Joined channels: %s", Joiner.on(", ").join(result.keySet()));
-		return new CommandValue.Simple<Map<String,Bot>>(result, ircOutput);
+		return new CommandValue.Simple<Map<String, Bot>>(result, ircOutput);
 	}
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.regex.Pattern;
+import org.pircbotx.Channel;
 import org.pircbotx.Colors;
 import org.pircbotx.Configuration;
 import org.pircbotx.Configuration.BotFactory;
@@ -26,7 +27,7 @@ public class BotManager {
 	public static final String CHANNELS_PER_CONNECTION_CAPABILITY = "CHANLIMIT";
 	public static final Pattern CHANNELS_PER_CONNECTION_CAPABILITY_VALUE_PATTERN = Pattern.compile("\\#\\:([0-9]+)");
 	
-	public static final String DEFAULT_ELLIPSIS = "…";
+	public static final String DEFAULT_ELLIPSIS = "ï¿½";
 	public static final String DEFAULT_BOT_NAME = "Skylark";
 	public static final long DEFAULT_MESSAGE_DELAY = 500;
 	public static final int DEFAULT_LINEBREAK_LENGTH = 400;
@@ -137,6 +138,16 @@ public class BotManager {
 			Bot bot = connectNewBot();
 			bot.sendIRC().joinChannel(channelName);
 			return bot;
+		});
+	}
+	
+	public Channel getChannel(String channelName) {
+		return bots.firstResult(bot -> {
+			for (Channel channel : bot.getUserBot().getChannels()) {
+				if (channel.getName().equals(channelName))
+					return channel;
+			}
+			return null;
 		});
 	}
 	
