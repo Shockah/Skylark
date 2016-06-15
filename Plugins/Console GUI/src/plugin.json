@@ -1,0 +1,9 @@
+{
+	"packageName": "io.shockah.skylark.consolegui",
+	"baseClass": "io.shockah.skylark.consolegui.ConsoleGUIPlugin",
+	"enabledByDefault": true,
+
+	"name": "Console GUI",
+	"author": "Shockah",
+	"description": ""
+}
