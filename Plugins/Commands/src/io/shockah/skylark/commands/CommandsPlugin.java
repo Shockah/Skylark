@@ -57,8 +57,20 @@ public class CommandsPlugin extends ListenerPlugin {
 		defaultProvider.addNamedCommand(command);
 	}
 	
+	public void addNamedCommands(NamedCommand<?, ?>... commands) {
+		for (NamedCommand<?, ?> command : commands) {
+			addNamedCommand(command);
+		}
+	}
+	
 	public void removeNamedCommand(NamedCommand<?, ?> command) {
 		defaultProvider.removeNamedCommand(command);
+	}
+	
+	public void removeNamedCommands(NamedCommand<?, ?>... commands) {
+		for (NamedCommand<?, ?> command : commands) {
+			removeNamedCommand(command);
+		}
 	}
 	
 	public CommandPreparedCall<?, ?> findCommandToCall(GenericUserMessageEvent e) {

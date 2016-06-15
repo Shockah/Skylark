@@ -17,6 +17,7 @@ public class BotControlPlugin extends ListenerPlugin {
 	protected PermissionsPlugin permissionsPlugin;
 	
 	private JoinCommand joinCommand;
+	private PartCommand partCommand;
 	
 	public BotControlPlugin(PluginManager manager, Info info) {
 		super(manager, info);
@@ -24,16 +25,26 @@ public class BotControlPlugin extends ListenerPlugin {
 	
 	@Override
 	protected void onLoad() {
-		commandsPlugin.addNamedCommand(joinCommand = new JoinCommand(this));
+		commandsPlugin.addNamedCommands(
+			joinCommand = new JoinCommand(this),
+			partCommand = new PartCommand(this)
+		);
 	}
 	
 	@Override
 	protected void onUnload() {
-		commandsPlugin.removeNamedCommand(joinCommand);
+		commandsPlugin.removeNamedCommands(
+			joinCommand,
+			partCommand
+		);
 	}
 	
 	public JoinCommand getJoinCommand() {
 		return joinCommand;
+	}
+	
+	public PartCommand getPartCommand() {
+		return partCommand;
 	}
 	
 	@Override
