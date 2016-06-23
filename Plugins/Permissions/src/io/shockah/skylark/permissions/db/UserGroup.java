@@ -9,6 +9,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.misc.BaseDaoEnabled;
 import com.j256.ormlite.table.DatabaseTable;
+import io.shockah.skylark.UnexpectedException;
 import io.shockah.skylark.ident.IdentMethod;
 
 @DatabaseTable(tableName = "io_shockah_skylark_permissions_usergroups")
@@ -71,7 +72,7 @@ public class UserGroup extends BaseDaoEnabled<UserGroup, Integer> {
 					return true;
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new UnexpectedException(e);
 		}
 		return false;
 	}

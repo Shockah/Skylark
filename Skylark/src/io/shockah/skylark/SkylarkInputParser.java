@@ -30,6 +30,7 @@ public class SkylarkInputParser extends InputParser {
 		super(bot);
 	}
 	
+	@Override
 	public void processCommand(String target, UserHostmask sourceh, String command, String line, List<String> parsedLine, ImmutableMap<String, String> map) throws IOException {
 		Channel channel = (target.length() != 0 && configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0 && bot.getUserChannelDao().containsChannel(target)) ? bot.getUserChannelDao().getChannel(target) : null;
 		
@@ -62,6 +63,7 @@ public class SkylarkInputParser extends InputParser {
 		super.processCommand(target, sourceh, command, line, parsedLine, map);
 	}
 	
+	@Override
 	public void processServerResponse(int code, String rawResponse, List<String> parsedResponseOrig) {
 		ImmutableList<String> parsedResponse = ImmutableList.copyOf(parsedResponseOrig);
 		

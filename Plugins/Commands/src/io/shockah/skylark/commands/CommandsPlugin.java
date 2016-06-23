@@ -77,8 +77,8 @@ public class CommandsPlugin extends ListenerPlugin {
 		return patterns.firstResult(pattern -> pattern.provide(e));
 	}
 	
-	public NamedCommand<?, ?> findCommand(String name) {
-		return defaultPattern.findCommand(name);
+	public NamedCommand<?, ?> findCommand(GenericUserMessageEvent e, String name) {
+		return defaultPattern.findCommand(e, name);
 	}
 	
 	@Override

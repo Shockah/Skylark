@@ -1,5 +1,6 @@
 package io.shockah.skylark.util;
 
+import io.shockah.skylark.UnexpectedException;
 import io.shockah.skylark.func.Func0;
 import org.apache.commons.lang3.concurrent.ConcurrentException;
 import org.apache.commons.lang3.concurrent.LazyInitializer;
@@ -24,7 +25,7 @@ public class Lazy<T> extends LazyInitializer<T> {
 		try {
 			obj = super.get();
 		} catch (Exception e) {
-			return null;
+			throw new UnexpectedException(e);
 		}
 		return obj;
 	}

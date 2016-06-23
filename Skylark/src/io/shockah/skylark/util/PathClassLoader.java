@@ -41,6 +41,7 @@ public class PathClassLoader extends ClassLoader {
 				byte[] bytes = Files.readAllBytes(current);
 				return defineClass(name, bytes, 0, bytes.length);
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 		

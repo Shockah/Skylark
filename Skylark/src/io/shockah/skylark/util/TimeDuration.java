@@ -45,5 +45,7 @@ public final class TimeDuration {
 		return formatSeconds((int)(ms / 1000l));
 	}
 	
-	private TimeDuration() { }
+	private TimeDuration() {
+		throw new UnsupportedOperationException();
+	}
 }

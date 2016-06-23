@@ -1,13 +1,14 @@
 package io.shockah.skylark.commands;
 
 import java.util.HashMap;
+import io.shockah.skylark.event.GenericUserMessageEvent;
 import io.shockah.skylark.util.ReadWriteMap;
 
 public class DefaultCommandProvider extends CommandProvider {
 	private final ReadWriteMap<String, NamedCommand<?, ?>> commands = new ReadWriteMap<>(new HashMap<>());
 	
 	@Override
-	public NamedCommand<?, ?> provide(String commandName) {
+	public NamedCommand<?, ?> provide(GenericUserMessageEvent e, String commandName) {
 		return commands.get(commandName);
 	}
 	

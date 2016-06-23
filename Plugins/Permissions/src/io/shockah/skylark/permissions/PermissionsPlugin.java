@@ -8,6 +8,7 @@ import org.pircbotx.User;
 import com.j256.ormlite.field.SqlType;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.SelectArg;
+import io.shockah.skylark.UnexpectedException;
 import io.shockah.skylark.ident.IdentMethod;
 import io.shockah.skylark.ident.IdentPlugin;
 import io.shockah.skylark.permissions.db.UserGroup;
@@ -23,7 +24,7 @@ public class PermissionsPlugin extends Plugin {
 		super(manager, info);
 	}
 	
-	public List<UserGroup> getUserGroups(User user) throws SQLException {
+	public List<UserGroup> getUserGroups(User user) {
 		Map<IdentMethod, String> idents = identPlugin.getIdentsForUser(user);
 		List<UserGroup> groups = new ArrayList<>();
 		for (Map.Entry<IdentMethod, String> entry : idents.entrySet()) {
@@ -36,17 +37,21 @@ public class PermissionsPlugin extends Plugin {
 		return groups;
 	}
 	
-	public List<UserGroup> getGroupsForIdent(IdentMethod method, String identString) throws SQLException {
-		QueryBuilder<UserGroupIdent, Integer> qbIdent = manager.app.databaseManager.getDao(UserGroupIdent.class, Integer.class).queryBuilder();
-		qbIdent.where().eq(UserGroupIdent.METHOD_COLUMN, method.prefix)
-			.and().raw(String.format("? REGEXP %s", UserGroupIdent.IDENT_PATTERN_COLUMN), new SelectArg(SqlType.STRING, identString));
-		
-		QueryBuilder<UserGroup, Integer> qbGroup = manager.app.databaseManager.getDao(UserGroup.class, Integer.class).queryBuilder();
-		
-		return qbGroup.join(qbIdent).query();
+	public List<UserGroup> getGroupsForIdent(IdentMethod method, String identString) {
+		try {
+			QueryBuilder<UserGroupIdent, Integer> qbIdent = manager.app.databaseManager.getDao(UserGroupIdent.class, Integer.class).queryBuilder();
+			qbIdent.where().eq(UserGroupIdent.METHOD_COLUMN, method.prefix)
+				.and().raw(String.format("? REGEXP %s", UserGroupIdent.IDENT_PATTERN_COLUMN), new SelectArg(SqlType.STRING, identString));
+			
+			QueryBuilder<UserGroup, Integer> qbGroup = manager.app.databaseManager.getDao(UserGroup.class, Integer.class).queryBuilder();
+			
+			return qbGroup.join(qbIdent).query();
+		} catch (SQLException e) {
+			throw new UnexpectedException(e);
+		}
 	}
 	
-	public boolean permissionGranted(User user, String permission) throws SQLException {
+	public boolean permissionGranted(User user, String permission) {
 		for (UserGroup group : getUserGroups(user)) {
 			if (group.permissionGranted(permission))
 				return true;
@@ -54,7 +59,7 @@ public class PermissionsPlugin extends Plugin {
 		return false;
 	}
 	
-	public boolean permissionGranted(IdentMethod method, String identString, String permission) throws SQLException {
+	public boolean permissionGranted(IdentMethod method, String identString, String permission) {
 		for (UserGroup group : getGroupsForIdent(method, identString)) {
 			if (group.permissionGranted(permission))
 				return true;

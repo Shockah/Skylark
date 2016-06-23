@@ -4,6 +4,7 @@ import io.shockah.json.JSONObject;
 import io.shockah.json.JSONParser;
 import io.shockah.skylark.App;
 import io.shockah.skylark.ServerManager;
+import io.shockah.skylark.UnexpectedException;
 import io.shockah.skylark.util.FileUtils;
 import io.shockah.skylark.util.PathClassLoader;
 import io.shockah.skylark.util.ReadWriteList;
@@ -54,6 +55,7 @@ public class PluginManager {
 			try {
 				pluginInfo.close();
 			} catch (Exception e) {
+				throw new UnexpectedException(e);
 			}
 		});
 		pluginInfos.clear();
@@ -76,7 +78,7 @@ public class PluginManager {
 						plugins.add(plugin);
 						setupServices(plugin);
 					} catch (Exception e) {
-						e.printStackTrace();
+						throw new UnexpectedException(e);
 					}
 				}
 			}
@@ -97,6 +99,7 @@ public class PluginManager {
 			Constructor<?> ctor = clazz.getConstructor(PluginManager.class, Plugin.Info.class);
 			return (Plugin)ctor.newInstance(this, info);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -127,6 +130,7 @@ public class PluginManager {
 					}
 				}
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -198,6 +202,7 @@ public class PluginManager {
 				}
 			}
 		} catch (Exception e) {
+			throw new UnexpectedException(e);
 		}
 		
 		return infos;

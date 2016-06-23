@@ -24,13 +24,13 @@ public class DefaultCommandPattern extends CommandPattern {
 				
 				String[] commandNames = commandList.split(">");
 				if (commandNames.length == 1) {
-					Command<Object, Object> command = (Command<Object, Object>)providers.firstResult(provider -> provider.provide(commandNames[0]));
+					Command<Object, Object> command = (Command<Object, Object>)providers.firstResult(provider -> provider.provide(e, commandNames[0]));
 					return new CommandPreparedCall<Object, Object>(command, command.prepareInput(e, textInput));
 				} else {
 					Command<?, ?>[] commands = new Command[commandNames.length];
 					for (int i = 0; i < commandNames.length; i++) {
 						String commandName = commandNames[i];
-						Command<?, ?> command = providers.firstResult(provider -> provider.provide(commandName));
+						Command<?, ?> command = providers.firstResult(provider -> provider.provide(e, commandName));
 						if (command == null)
 							return null;
 						commands[i] = command;
@@ -51,7 +51,7 @@ public class DefaultCommandPattern extends CommandPattern {
 		providers.remove(provider);
 	}
 	
-	public NamedCommand<?, ?> findCommand(String name) {
-		return providers.firstResult(provider -> provider.provide(name));
+	public NamedCommand<?, ?> findCommand(GenericUserMessageEvent e, String name) {
+		return providers.firstResult(provider -> provider.provide(e, name));
 	}
 }

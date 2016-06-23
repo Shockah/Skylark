@@ -35,13 +35,15 @@ public class App {
 			pluginManager.reload();
 			serverManager.readFromDatabase();
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new UnexpectedException("Failed to initialize.", e);
 		}
 		
 		try {
-			databaseManager.close();
+			if (databaseManager != null) {
+				databaseManager.close();
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new UnexpectedException("Failed to deinitialize.", e);
 		}
 	}
 	

@@ -7,6 +7,7 @@ import io.shockah.skylark.permissions.PermissionsPlugin;
 import io.shockah.skylark.plugin.ListenerPlugin;
 import io.shockah.skylark.plugin.PluginManager;
 import org.pircbotx.Channel;
+import org.pircbotx.User;
 import org.pircbotx.hooks.events.InviteEvent;
 
 public class BotControlPlugin extends ListenerPlugin {
@@ -62,5 +63,9 @@ public class BotControlPlugin extends ListenerPlugin {
 			return;
 		
 		manager.joinChannel(e.getChannel());
+	}
+	
+	protected boolean permissionGranted(User user, String subpermission) {
+		return permissionsPlugin.permissionGranted(user, String.format("%s.%s", info.packageName(), subpermission));
 	}
 }

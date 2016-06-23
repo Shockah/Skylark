@@ -15,28 +15,40 @@ public class DatabaseManager implements Closeable {
 	public final App app;
 	protected final ConnectionSource connection;
 	
-	public DatabaseManager(App app) throws SQLException {
+	public DatabaseManager(App app) {
 		this.app = app;
-		connection = new JdbcConnectionSource("jdbc:" + app.config.getObject("database").getString("databasePath"));
-		DataPersisterManager.registerDataPersisters(new PatternPersister());
+		try {
+			connection = new JdbcConnectionSource("jdbc:" + app.config.getObject("database").getString("databasePath"));
+			DataPersisterManager.registerDataPersisters(new PatternPersister());
+		} catch (SQLException e) {
+			throw new UnexpectedException(e);
+		}
 	}
 	
-	public <T> Dao<T, ?> getDao(Class<T> clazz) throws SQLException {
-		Dao<T, ?> dao = DaoManager.lookupDao(connection, clazz);
-		if (dao == null) {
-			dao = DaoManager.createDao(connection, clazz);
-			TableUtils.createTableIfNotExists(connection, clazz);
+	public <T> Dao<T, ?> getDao(Class<T> clazz) {
+		try {
+			Dao<T, ?> dao = DaoManager.lookupDao(connection, clazz);
+			if (dao == null) {
+				dao = DaoManager.createDao(connection, clazz);
+				TableUtils.createTableIfNotExists(connection, clazz);
+			}
+			return dao;
+		} catch (SQLException e) {
+			throw new UnexpectedException(e);
 		}
-		return dao;
 	}
 	
-	public <T, ID> Dao<T, ID> getDao(Class<T> clazz, Class<ID> clazzId) throws SQLException {
-		Dao<T, ID> dao = DaoManager.lookupDao(connection, clazz);
-		if (dao == null) {
-			dao = DaoManager.createDao(connection, clazz);
-			TableUtils.createTableIfNotExists(connection, clazz);
+	public <T, ID> Dao<T, ID> getDao(Class<T> clazz, Class<ID> clazzId) {
+		try {
+			Dao<T, ID> dao = DaoManager.lookupDao(connection, clazz);
+			if (dao == null) {
+				dao = DaoManager.createDao(connection, clazz);
+				TableUtils.createTableIfNotExists(connection, clazz);
+			}
+			return dao;
+		} catch (SQLException e) {
+			throw new UnexpectedException(e);
 		}
-		return dao;
 	}
 
 	@Override

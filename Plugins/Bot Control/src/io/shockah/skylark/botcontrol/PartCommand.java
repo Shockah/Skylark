@@ -6,7 +6,6 @@ import io.shockah.skylark.commands.CommandCall;
 import io.shockah.skylark.commands.CommandValue;
 import io.shockah.skylark.commands.NamedCommand;
 import io.shockah.skylark.event.GenericUserMessageEvent;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,13 +37,8 @@ public class PartCommand extends NamedCommand<List<String>, List<String>> {
 
 	@Override
 	public CommandValue<List<String>> call(CommandCall call, List<String> input) {
-		try {
-			if (!plugin.permissionsPlugin.permissionGranted(call.event.getUser(), plugin.info.packageName() + ".part"))
-				return CommandValue.error("Permission required.");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return CommandValue.error(e.getMessage());
-		}
+		if (!plugin.permissionGranted(call.event.getUser(), "part"))
+			return CommandValue.error("Permission required.");
 		
 		List<String> result = new ArrayList<>();
 		BotManager manager = call.event.<Bot>getBot().manager;
