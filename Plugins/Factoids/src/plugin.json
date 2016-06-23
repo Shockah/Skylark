@@ -1,0 +1,14 @@
+{
+	"packageName": "io.shockah.skylark.factoids",
+	"baseClass": "io.shockah.skylark.factoids.FactoidsPlugin",
+	"enabledByDefault": true,
+	"dependsOn": [
+		"io.shockah.skylark.commands",
+		"io.shockah.skylark.ident",
+		"io.shockah.skylark.permissions"
+	],
+
+	"name": "Factoids",
+	"author": "Shockah",
+	"description": ""
+}
