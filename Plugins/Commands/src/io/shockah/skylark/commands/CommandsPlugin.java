@@ -1,15 +1,16 @@
 package io.shockah.skylark.commands;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import org.pircbotx.hooks.events.ActionEvent;
-import io.shockah.json.JSONObject;
+import io.shockah.json.JSONList;
 import io.shockah.skylark.Bot;
+import io.shockah.skylark.DelegatePassthroughException;
 import io.shockah.skylark.event.GenericUserMessageEvent;
 import io.shockah.skylark.plugin.ListenerPlugin;
 import io.shockah.skylark.plugin.PluginManager;
 import io.shockah.skylark.util.ReadWriteList;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import org.pircbotx.hooks.events.ActionEvent;
 
 public class CommandsPlugin extends ListenerPlugin {
 	protected ReadWriteList<CommandPattern> patterns = new ReadWriteList<>(new ArrayList<>());
@@ -23,8 +24,8 @@ public class CommandsPlugin extends ListenerPlugin {
 	
 	@Override
 	protected void onLoad() {
-		JSONObject config = manager.app.config.getObjectOrEmpty(info.packageName());
-		defaultPattern = new DefaultCommandPattern(config.getList("prefixes").ofStrings().toArray(new String[0]));
+		getConfig().putDefault("prefixes", JSONList.of(".", "`"));
+		defaultPattern = new DefaultCommandPattern(getConfig().getList("prefixes").ofStrings().toArray(new String[0]));
 		defaultProvider = new DefaultCommandProvider();
 		defaultPattern.addProvider(defaultProvider);
 	}
@@ -73,8 +74,20 @@ public class CommandsPlugin extends ListenerPlugin {
 		}
 	}
 	
-	public CommandPreparedCall<?, ?> findCommandToCall(GenericUserMessageEvent e) {
-		return patterns.firstResult(pattern -> pattern.provide(e));
+	public CommandPreparedCall<?, ?> findCommandToCall(GenericUserMessageEvent e) throws CommandParseException {
+		try {
+			return patterns.firstResult(pattern -> {
+				try {
+					return pattern.provide(e);
+				} catch (Exception ex) {
+					throw new DelegatePassthroughException(ex);
+				}
+			});
+		} catch (DelegatePassthroughException ex) {
+			if (ex.getCause() instanceof CommandParseException)
+				throw new CommandParseException(ex.getCause());
+			return null;
+		}
 	}
 	
 	public NamedCommand<?, ?> findCommand(GenericUserMessageEvent e, String name) {
@@ -99,7 +112,7 @@ public class CommandsPlugin extends ListenerPlugin {
 				List<String> lines = Arrays.asList(output.split("\\r?\\n|\\r"));
 				call.respond(e.<Bot>getBot().manager.linebreakIfNeeded(lines, preparedCall.getLineLimit(call)));
 			}
-		} catch (Exception ex) {
+		} catch (CommandParseException ex) {
 			call.respond(Arrays.asList(new String[] { ex.getMessage() }));
 		}
 	}

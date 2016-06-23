@@ -21,7 +21,7 @@ public class PartCommand extends NamedCommand<List<String>, List<String>> {
 	}
 
 	@Override
-	public List<String> prepareInput(GenericUserMessageEvent e, String input) {
+	public List<String> parseInput(GenericUserMessageEvent e, String input) {
 		input = input.trim();
 		
 		if (input.isEmpty()) {

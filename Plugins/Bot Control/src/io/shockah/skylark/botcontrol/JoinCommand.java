@@ -21,7 +21,7 @@ public class JoinCommand extends NamedCommand<List<String>, Map<String, Bot>> {
 	}
 
 	@Override
-	public List<String> prepareInput(GenericUserMessageEvent e, String input) {
+	public List<String> parseInput(GenericUserMessageEvent e, String input) {
 		return Arrays.asList(input.trim().split("\\s"));
 	}
 

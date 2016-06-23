@@ -35,6 +35,10 @@ public class Plugin {
 	protected void onAllPluginsLoaded() {
 	}
 	
+	public final JSONObject getConfig() {
+		return manager.app.config.getObjectOrEmpty(info.packageName());
+	}
+	
 	public static final class Info implements Closeable {
 		public final JSONObject json;
 		public final FileSystem fileSystem;

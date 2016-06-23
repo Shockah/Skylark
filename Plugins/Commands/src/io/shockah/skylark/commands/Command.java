@@ -11,7 +11,7 @@ public abstract class Command<T, R> {
 			maxLines = 4;*/
 	}
 	
-	public abstract T prepareInput(GenericUserMessageEvent e, String input);
+	public abstract T parseInput(GenericUserMessageEvent e, String input) throws CommandParseException;
 	
 	public abstract CommandValue<R> call(CommandCall call, T input);
 }
