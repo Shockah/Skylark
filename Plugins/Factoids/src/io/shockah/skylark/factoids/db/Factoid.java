@@ -14,9 +14,6 @@ public class Factoid extends DbObject<Factoid, Integer> {
 		Channel, Server, Global;
 	}
 	
-	@DatabaseField(generatedId = true)
-	private int id;
-	
 	@DatabaseField(canBeNull = false)
 	public String name;
 	
@@ -32,10 +29,10 @@ public class Factoid extends DbObject<Factoid, Integer> {
 	@DatabaseField(canBeNull = false)
 	public Date date;
 	
-	@DatabaseField
+	@DatabaseField(canBeNull = true)
 	public String raw;
 	
-	@DatabaseField
+	@DatabaseField(canBeNull = false)
 	public boolean forgotten = false;
 	
 	@ForeignCollectionField(foreignFieldName = "factoid")
@@ -48,17 +45,6 @@ public class Factoid extends DbObject<Factoid, Integer> {
 	public Factoid(Dao<Factoid, Integer> dao) {
 		super(dao);
 		date = new Date();
-	}
-	
-	public boolean equals(Object other) {
-		if (!(other instanceof Factoid))
-			return false;
-		Factoid factoid = (Factoid)other;
-		return id == factoid.id;
-	}
-	
-	public int getId() {
-		return id;
 	}
 	
 	public ForeignCollection<FactoidIdent> getIdents() {

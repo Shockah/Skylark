@@ -11,10 +11,7 @@ import com.j256.ormlite.table.DatabaseTable;
 public class UserGroupPermission extends DbObject<UserGroupPermission, Integer> {
 	public static final String USERGROUP_COLUMN = "usergroup_id";
 	
-	@DatabaseField(generatedId = true)
-	private int id;
-	
-	@DatabaseField
+	@DatabaseField(canBeNull = false)
 	public String permission;
 	
 	@DatabaseField(foreign = true, canBeNull = false, columnName = USERGROUP_COLUMN)
@@ -27,17 +24,6 @@ public class UserGroupPermission extends DbObject<UserGroupPermission, Integer> 
 	public UserGroupPermission(Dao<UserGroupPermission, Integer> dao, UserGroup userGroup) {
 		super(dao);
 		this.userGroup = userGroup;
-	}
-	
-	public boolean equals(Object other) {
-		if (!(other instanceof UserGroupPermission))
-			return false;
-		UserGroupPermission permission = (UserGroupPermission)other;
-		return id == permission.id;
-	}
-	
-	public int getId() {
-		return id;
 	}
 	
 	public UserGroup getUserGroup() throws SQLException {

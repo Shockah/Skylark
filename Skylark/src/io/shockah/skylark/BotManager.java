@@ -61,7 +61,7 @@ public class BotManager {
 	}
 	
 	public BotManager(ServerManager serverManager, Server server) {
-		this(serverManager, server.getName(), server.host);
+		this(serverManager, server.name, server.host);
 		channelsPerConnection = server.channelsPerConnection;
 		messageDelay = server.messageDelay == null ? BotManager.DEFAULT_MESSAGE_DELAY : server.messageDelay;
 		botName = server.botName == null ? BotManager.DEFAULT_BOT_NAME : server.botName;

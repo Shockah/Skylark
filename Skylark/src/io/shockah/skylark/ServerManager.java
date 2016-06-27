@@ -16,7 +16,7 @@ public class ServerManager {
 	public void readFromDatabase() {
 		try {
 			for (Server server : app.databaseManager.getDao(Server.class).queryForAll()) {
-				BotManager manager = new BotManager(this, server.getName(), server.host);
+				BotManager manager = new BotManager(this, server.name, server.host);
 				manager.channelsPerConnection = server.channelsPerConnection;
 				manager.messageDelay = server.messageDelay == null ? BotManager.DEFAULT_MESSAGE_DELAY : server.messageDelay;
 				manager.botName = server.botName == null ? BotManager.DEFAULT_BOT_NAME : server.botName;

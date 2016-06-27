@@ -15,13 +15,10 @@ public class UserGroupIdent extends DbObject<UserGroupIdent, Integer> {
 	public static final String IDENT_PATTERN_COLUMN = "ident_pattern";
 	public static final String USERGROUP_COLUMN = "usergroup_id";
 	
-	@DatabaseField(generatedId = true)
-	private int id;
-	
-	@DatabaseField(columnName = METHOD_COLUMN)
+	@DatabaseField(canBeNull = false, columnName = METHOD_COLUMN)
 	public String method;
 	
-	@DatabaseField(columnName = IDENT_PATTERN_COLUMN)
+	@DatabaseField(canBeNull = false, columnName = IDENT_PATTERN_COLUMN)
 	public Pattern identPattern;
 	
 	@DatabaseField(foreign = true, canBeNull = false, columnName = USERGROUP_COLUMN)
@@ -35,17 +32,6 @@ public class UserGroupIdent extends DbObject<UserGroupIdent, Integer> {
 	public UserGroupIdent(Dao<UserGroupIdent, Integer> dao, UserGroup userGroup) {
 		super(dao);
 		this.userGroup = userGroup;
-	}
-	
-	public boolean equals(Object other) {
-		if (!(other instanceof UserGroupIdent))
-			return false;
-		UserGroupIdent ident = (UserGroupIdent)other;
-		return id == ident.id;
-	}
-	
-	public int getId() {
-		return id;
 	}
 	
 	public UserGroup getUserGroup() throws SQLException {

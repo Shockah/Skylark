@@ -1,17 +1,16 @@
 package io.shockah.skylark.db;
 
 import java.util.List;
-import java.util.Objects;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "servers")
 public class Server extends DbObject<Server, String> {
-	@DatabaseField(id = true)
-	private String name;
+	@DatabaseField(canBeNull = false)
+	public String name;
 	
-	@DatabaseField
+	@DatabaseField(canBeNull = false)
 	public String host;
 	
 	@DatabaseField(canBeNull = true)
@@ -37,19 +36,7 @@ public class Server extends DbObject<Server, String> {
 		super();
 	}
 	
-	public Server(Dao<Server, String> dao, String name) {
+	public Server(Dao<Server, String> dao) {
 		super(dao);
-		this.name = name;
-	}
-	
-	public boolean equals(Object other) {
-		if (!(other instanceof Server))
-			return false;
-		Server server = (Server)other;
-		return Objects.equals(name, server.name);
-	}
-	
-	public String getName() {
-		return name;
 	}
 }

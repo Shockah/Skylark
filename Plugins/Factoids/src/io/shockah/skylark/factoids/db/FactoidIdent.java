@@ -11,9 +11,6 @@ import com.j256.ormlite.table.DatabaseTable;
 public class FactoidIdent extends DbObject<FactoidIdent, Integer> {
 	public static final String FACTOID_COLUMN = "factoid_id";
 	
-	@DatabaseField(generatedId = true)
-	private int id;
-	
 	@DatabaseField(canBeNull = false)
 	public String prefix;
 	
@@ -29,17 +26,6 @@ public class FactoidIdent extends DbObject<FactoidIdent, Integer> {
 	
 	public FactoidIdent(Dao<FactoidIdent, Integer> dao) {
 		super(dao);
-	}
-	
-	public boolean equals(Object other) {
-		if (!(other instanceof FactoidIdent))
-			return false;
-		FactoidIdent factoidIdent = (FactoidIdent)other;
-		return id == factoidIdent.id;
-	}
-	
-	public int getId() {
-		return id;
 	}
 	
 	public Factoid getFactoid() {
