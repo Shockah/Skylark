@@ -1,13 +1,14 @@
 package io.shockah.skylark.permissions.db;
 
+import io.shockah.skylark.UnexpectedException;
+import io.shockah.skylark.db.DbObject;
 import java.sql.SQLException;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.misc.BaseDaoEnabled;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "io_shockah_skylark_permissions_usergrouppermissions")
-public class UserGroupPermission extends BaseDaoEnabled<UserGroupPermission, Integer> {
+public class UserGroupPermission extends DbObject<UserGroupPermission, Integer> {
 	public static final String USERGROUP_COLUMN = "usergroup_id";
 	
 	@DatabaseField(generatedId = true)
@@ -20,11 +21,11 @@ public class UserGroupPermission extends BaseDaoEnabled<UserGroupPermission, Int
 	private UserGroup userGroup;
 	
 	@Deprecated //ORMLite-only
-	UserGroupPermission() {
+	protected UserGroupPermission() {
 	}
 	
 	public UserGroupPermission(Dao<UserGroupPermission, Integer> dao, UserGroup userGroup) {
-		setDao(dao);
+		super(dao);
 		this.userGroup = userGroup;
 	}
 	
@@ -40,9 +41,13 @@ public class UserGroupPermission extends BaseDaoEnabled<UserGroupPermission, Int
 	}
 	
 	public UserGroup getUserGroup() throws SQLException {
-		if (userGroup != null)
-			userGroup.refresh();
-		return userGroup;
+		try {
+			if (userGroup != null)
+				userGroup.refresh();
+			return userGroup;
+		} catch (SQLException e) {
+			throw new UnexpectedException(e);
+		}
 	}
 	
 	public void setUserGroup(UserGroup userGroup) {

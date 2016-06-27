@@ -4,11 +4,10 @@ import java.util.List;
 import java.util.Objects;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.misc.BaseDaoEnabled;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "servers")
-public class Server extends BaseDaoEnabled<Server, String> {
+public class Server extends DbObject<Server, String> {
 	@DatabaseField(id = true)
 	private String name;
 	
@@ -34,11 +33,12 @@ public class Server extends BaseDaoEnabled<Server, String> {
 	public List<String> channelNames;
 	
 	@Deprecated //ORMLite-only
-	Server() {
+	protected Server() {
+		super();
 	}
 	
 	public Server(Dao<Server, String> dao, String name) {
-		setDao(dao);
+		super(dao);
 		this.name = name;
 	}
 	

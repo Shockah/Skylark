@@ -1,13 +1,15 @@
 package io.shockah.skylark.factoids.db;
 
+import io.shockah.skylark.db.DbObject;
 import java.util.Date;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.misc.BaseDaoEnabled;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "io_shockah_skylark_factoids_factoid")
-public class Factoid extends BaseDaoEnabled<Factoid, Integer> {
+public class Factoid extends DbObject<Factoid, Integer> {
 	public static enum Context {
 		Channel, Server, Global;
 	}
@@ -36,12 +38,15 @@ public class Factoid extends BaseDaoEnabled<Factoid, Integer> {
 	@DatabaseField
 	public boolean forgotten = false;
 	
+	@ForeignCollectionField(foreignFieldName = "factoid")
+	private ForeignCollection<FactoidIdent> idents;
+	
 	@Deprecated //ORMLite-only
-	Factoid() {
+	protected Factoid() {
 	}
 	
 	public Factoid(Dao<Factoid, Integer> dao) {
-		setDao(dao);
+		super(dao);
 		date = new Date();
 	}
 	
@@ -54,5 +59,9 @@ public class Factoid extends BaseDaoEnabled<Factoid, Integer> {
 	
 	public int getId() {
 		return id;
+	}
+	
+	public ForeignCollection<FactoidIdent> getIdents() {
+		return idents;
 	}
 }

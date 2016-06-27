@@ -1,15 +1,16 @@
 package io.shockah.skylark.permissions.db;
 
+import io.shockah.skylark.UnexpectedException;
+import io.shockah.skylark.db.DbObject;
+import io.shockah.skylark.ident.IdentMethod;
 import java.sql.SQLException;
 import java.util.regex.Pattern;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.misc.BaseDaoEnabled;
 import com.j256.ormlite.table.DatabaseTable;
-import io.shockah.skylark.ident.IdentMethod;
 
 @DatabaseTable(tableName = "io_shockah_skylark_permissions_usergroupidents")
-public class UserGroupIdent extends BaseDaoEnabled<UserGroupIdent, Integer> {
+public class UserGroupIdent extends DbObject<UserGroupIdent, Integer> {
 	public static final String METHOD_COLUMN = "method";
 	public static final String IDENT_PATTERN_COLUMN = "ident_pattern";
 	public static final String USERGROUP_COLUMN = "usergroup_id";
@@ -27,11 +28,12 @@ public class UserGroupIdent extends BaseDaoEnabled<UserGroupIdent, Integer> {
 	private UserGroup userGroup;
 	
 	@Deprecated //ORMLite-only
-	UserGroupIdent() {
+	protected UserGroupIdent() {
+		super();
 	}
 	
 	public UserGroupIdent(Dao<UserGroupIdent, Integer> dao, UserGroup userGroup) {
-		setDao(dao);
+		super(dao);
 		this.userGroup = userGroup;
 	}
 	
@@ -47,9 +49,13 @@ public class UserGroupIdent extends BaseDaoEnabled<UserGroupIdent, Integer> {
 	}
 	
 	public UserGroup getUserGroup() throws SQLException {
-		if (userGroup != null)
-			userGroup.refresh();
-		return userGroup;
+		try {
+			if (userGroup != null)
+				userGroup.refresh();
+			return userGroup;
+		} catch (SQLException e) {
+			throw new UnexpectedException(e);
+		}
 	}
 	
 	public void setUserGroup(UserGroup userGroup) {

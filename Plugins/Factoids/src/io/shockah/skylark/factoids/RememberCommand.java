@@ -1,7 +1,6 @@
 package io.shockah.skylark.factoids;
 
 import io.shockah.skylark.Bot;
-import io.shockah.skylark.UnexpectedException;
 import io.shockah.skylark.commands.CommandCall;
 import io.shockah.skylark.commands.CommandParseException;
 import io.shockah.skylark.commands.CommandValue;
@@ -9,7 +8,6 @@ import io.shockah.skylark.commands.NamedCommand;
 import io.shockah.skylark.event.GenericUserMessageEvent;
 import io.shockah.skylark.factoids.RememberCommand.Input;
 import io.shockah.skylark.factoids.db.Factoid;
-import java.sql.SQLException;
 import java.util.Date;
 
 public class RememberCommand extends NamedCommand<Input, Factoid> {
@@ -48,19 +46,14 @@ public class RememberCommand extends NamedCommand<Input, Factoid> {
 
 	@Override
 	public CommandValue<Factoid> call(CommandCall call, Input input) {
-		try {
-			Factoid factoid = new Factoid(plugin.manager.app.databaseManager.getDao(Factoid.class, Integer.class));
+		return new CommandValue<>(plugin.manager.app.databaseManager.create(Factoid.class, Integer.class, factoid -> {
 			factoid.server = call.event.<Bot>getBot().manager.name;
 			factoid.channel = call.event.getChannel().getName();
 			factoid.context = input.context;
 			factoid.name = input.name;
 			factoid.raw = input.raw;
 			factoid.date = new Date();
-			factoid.create();
-			return new CommandValue<>(factoid);
-		} catch (SQLException e) {
-			throw new UnexpectedException(e);
-		}
+		}));
 	}
 	
 	public static final class Input {

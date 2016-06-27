@@ -1,5 +1,8 @@
 package io.shockah.skylark.permissions.db;
 
+import io.shockah.skylark.UnexpectedException;
+import io.shockah.skylark.db.DbObject;
+import io.shockah.skylark.ident.IdentMethod;
 import java.io.IOException;
 import java.util.Objects;
 import com.j256.ormlite.dao.CloseableWrappedIterable;
@@ -7,13 +10,10 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
-import com.j256.ormlite.misc.BaseDaoEnabled;
 import com.j256.ormlite.table.DatabaseTable;
-import io.shockah.skylark.UnexpectedException;
-import io.shockah.skylark.ident.IdentMethod;
 
 @DatabaseTable(tableName = "io_shockah_skylark_permissions_usergroups")
-public class UserGroup extends BaseDaoEnabled<UserGroup, Integer> {
+public class UserGroup extends DbObject<UserGroup, Integer> {
 	@DatabaseField(generatedId = true)
 	private int id;
 	
@@ -27,11 +27,12 @@ public class UserGroup extends BaseDaoEnabled<UserGroup, Integer> {
 	private ForeignCollection<UserGroupPermission> permissions;
 	
 	@Deprecated //ORMLite-only
-	UserGroup() {
+	protected UserGroup() {
+		super();
 	}
 	
 	public UserGroup(Dao<UserGroup, Integer> dao) {
-		setDao(dao);
+		super(dao);
 	}
 	
 	public boolean equals(Object other) {
