@@ -12,7 +12,7 @@ import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "io_shockah_skylark_permissions_usergroups")
-public class UserGroup extends DbObject<UserGroup, Integer> {
+public class UserGroup extends DbObject<UserGroup> {
 	@DatabaseField(canBeNull = false)
 	public String name;
 	

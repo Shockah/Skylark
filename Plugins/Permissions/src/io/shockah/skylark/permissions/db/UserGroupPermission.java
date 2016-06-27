@@ -8,7 +8,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "io_shockah_skylark_permissions_usergrouppermissions")
-public class UserGroupPermission extends DbObject<UserGroupPermission, Integer> {
+public class UserGroupPermission extends DbObject<UserGroupPermission> {
 	public static final String USERGROUP_COLUMN = "usergroup_id";
 	
 	@DatabaseField(canBeNull = false)

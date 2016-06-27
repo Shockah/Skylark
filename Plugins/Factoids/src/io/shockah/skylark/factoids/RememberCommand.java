@@ -1,6 +1,7 @@
 package io.shockah.skylark.factoids;
 
 import io.shockah.skylark.Bot;
+import io.shockah.skylark.DatabaseManager;
 import io.shockah.skylark.commands.CommandCall;
 import io.shockah.skylark.commands.CommandParseException;
 import io.shockah.skylark.commands.CommandValue;
@@ -8,7 +9,10 @@ import io.shockah.skylark.commands.NamedCommand;
 import io.shockah.skylark.event.GenericUserMessageEvent;
 import io.shockah.skylark.factoids.RememberCommand.Input;
 import io.shockah.skylark.factoids.db.Factoid;
+import io.shockah.skylark.factoids.db.FactoidIdent;
+import io.shockah.skylark.ident.IdentMethod;
 import java.util.Date;
+import java.util.Map;
 
 public class RememberCommand extends NamedCommand<Input, Factoid> {
 	private final FactoidsPlugin plugin;
@@ -46,14 +50,24 @@ public class RememberCommand extends NamedCommand<Input, Factoid> {
 
 	@Override
 	public CommandValue<Factoid> call(CommandCall call, Input input) {
-		return new CommandValue<>(plugin.manager.app.databaseManager.create(Factoid.class, Integer.class, factoid -> {
-			factoid.server = call.event.<Bot>getBot().manager.name;
-			factoid.channel = call.event.getChannel().getName();
-			factoid.context = input.context;
-			factoid.name = input.name;
-			factoid.raw = input.raw;
-			factoid.date = new Date();
-		}));
+		DatabaseManager databaseManager = plugin.manager.app.databaseManager;
+		
+		Factoid factoid = databaseManager.create(Factoid.class, obj -> {
+			obj.server = call.event.<Bot>getBot().manager.name;
+			obj.channel = call.event.getChannel().getName();
+			obj.context = input.context;
+			obj.name = input.name;
+			obj.raw = input.raw;
+			obj.date = new Date();
+		});
+		
+		Map<IdentMethod, String> idents = plugin.identPlugin.getIdentsForUser(call.event.getUser());
+		for (Map.Entry<IdentMethod, String> entry : idents.entrySet()) {
+			if (entry.getValue() != null)
+				FactoidIdent.createOf(databaseManager, factoid, entry.getKey(), entry.getValue());
+		}
+		
+		return new CommandValue<>(factoid);
 	}
 	
 	public static final class Input {

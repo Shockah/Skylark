@@ -59,25 +59,17 @@ public class DatabaseManager implements Closeable {
 		}
 	}
 	
-	protected <T extends DbObject<T, ID>, ID> T make(Class<T> clazz) {
+	public <T extends DbObject<T>> T make(Class<T> clazz) {
 		try {
-			return clazz.getConstructor(Dao.class).newInstance(getDao(clazz));
+			return clazz.getConstructor(Dao.class).newInstance(getDao(clazz, Integer.class));
 		} catch (Exception e) {
 			return null;
 		}
 	}
 	
-	public <T extends DbObject<T, ID>, ID> T make(Class<T> clazz, Class<ID> clazzId) {
+	public <T extends DbObject<T>> T create(Class<T> clazz, Action1<T> f) {
 		try {
-			return clazz.getConstructor(Dao.class).newInstance(getDao(clazz, clazzId));
-		} catch (Exception e) {
-			return null;
-		}
-	}
-	
-	public <T extends DbObject<T, ID>, ID> T create(Class<T> clazz, Class<ID> clazzId, Action1<T> f) {
-		try {
-			T obj = make(clazz, clazzId);
+			T obj = make(clazz);
 			f.call(obj);
 			obj.create();
 			return obj;

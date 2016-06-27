@@ -9,7 +9,7 @@ import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "io_shockah_skylark_factoids_factoid")
-public class Factoid extends DbObject<Factoid, Integer> {
+public class Factoid extends DbObject<Factoid> {
 	public static enum Context {
 		Channel, Server, Global;
 	}

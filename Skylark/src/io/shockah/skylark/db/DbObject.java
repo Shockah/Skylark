@@ -4,7 +4,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.misc.BaseDaoEnabled;
 
-public class DbObject<T, ID> extends BaseDaoEnabled<T, ID> {
+public class DbObject<T> extends BaseDaoEnabled<T, Integer> {
 	@DatabaseField(generatedId = true)
 	private int id;
 	
@@ -12,7 +12,7 @@ public class DbObject<T, ID> extends BaseDaoEnabled<T, ID> {
 	protected DbObject() {
 	}
 	
-	public DbObject(Dao<T, ID> dao) {
+	public DbObject(Dao<T, Integer> dao) {
 		setDao(dao);
 	}
 	
@@ -22,7 +22,7 @@ public class DbObject<T, ID> extends BaseDaoEnabled<T, ID> {
 			return false;
 		if (getClass() != other.getClass())
 			return false;
-		DbObject<T, ID> obj = (DbObject<T, ID>)other;
+		DbObject<T> obj = (DbObject<T>)other;
 		return id == obj.id;
 	}
 	

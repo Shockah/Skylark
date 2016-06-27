@@ -10,7 +10,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "io_shockah_skylark_permissions_usergroupidents")
-public class UserGroupIdent extends DbObject<UserGroupIdent, Integer> {
+public class UserGroupIdent extends DbObject<UserGroupIdent> {
 	public static final String METHOD_COLUMN = "method";
 	public static final String IDENT_PATTERN_COLUMN = "ident_pattern";
 	public static final String USERGROUP_COLUMN = "usergroup_id";

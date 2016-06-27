@@ -6,7 +6,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "servers")
-public class Server extends DbObject<Server, String> {
+public class Server extends DbObject<Server> {
 	@DatabaseField(canBeNull = false)
 	public String name;
 	
@@ -36,7 +36,7 @@ public class Server extends DbObject<Server, String> {
 		super();
 	}
 	
-	public Server(Dao<Server, String> dao) {
+	public Server(Dao<Server, Integer> dao) {
 		super(dao);
 	}
 }
