@@ -52,6 +52,11 @@ public class RememberCommand extends NamedCommand<Input, Factoid> {
 	public CommandValue<Factoid> call(CommandCall call, Input input) {
 		DatabaseManager databaseManager = plugin.manager.app.databaseManager;
 		
+		databaseManager.delete(Factoid.class, builder -> {
+			builder.where().eq(Factoid.NAME_COLUMN, input.name)
+				.and().eq(Factoid.ACTIVE_COLUMN, false);
+		});
+		
 		Factoid factoid = databaseManager.create(Factoid.class, obj -> {
 			obj.server = call.event.<Bot>getBot().manager.name;
 			obj.channel = call.event.getChannel().getName();

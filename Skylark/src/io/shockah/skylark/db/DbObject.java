@@ -5,7 +5,9 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.misc.BaseDaoEnabled;
 
 public class DbObject<T> extends BaseDaoEnabled<T, Integer> {
-	@DatabaseField(generatedId = true)
+	public static final String ID_COLUMN = "id";
+	
+	@DatabaseField(generatedId = true, columnName = ID_COLUMN)
 	private int id;
 	
 	@Deprecated //ORMLite-only

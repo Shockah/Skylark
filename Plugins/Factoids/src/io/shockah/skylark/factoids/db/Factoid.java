@@ -10,30 +10,37 @@ import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "io_shockah_skylark_factoids_factoid")
 public class Factoid extends DbObject<Factoid> {
+	public static final String NAME_COLUMN = "name";
+	public static final String SERVER_COLUMN = "server";
+	public static final String CHANNEL_COLUMN = "channel";
+	public static final String CONTEXT_COLUMN = "context";
+	public static final String DATE_COLUMN = "date";
+	public static final String ACTIVE_COLUMN = "active";
+	
 	public static enum Context {
 		Channel, Server, Global;
 	}
 	
-	@DatabaseField(canBeNull = false)
+	@DatabaseField(canBeNull = false, columnName = NAME_COLUMN)
 	public String name;
 	
-	@DatabaseField(canBeNull = false)
+	@DatabaseField(canBeNull = false, columnName = SERVER_COLUMN)
 	public String server;
 	
-	@DatabaseField(canBeNull = false)
+	@DatabaseField(canBeNull = false, columnName = CHANNEL_COLUMN)
 	public String channel;
 	
-	@DatabaseField(canBeNull = false)
+	@DatabaseField(canBeNull = false, columnName = CONTEXT_COLUMN)
 	public Context context;
 	
-	@DatabaseField(canBeNull = false)
+	@DatabaseField(canBeNull = false, columnName = DATE_COLUMN)
 	public Date date;
 	
 	@DatabaseField(canBeNull = true)
 	public String raw;
 	
-	@DatabaseField(canBeNull = false)
-	public boolean forgotten = false;
+	@DatabaseField(canBeNull = false, columnName = ACTIVE_COLUMN)
+	public boolean active = true;
 	
 	@ForeignCollectionField(foreignFieldName = "factoid")
 	private ForeignCollection<FactoidIdent> idents;

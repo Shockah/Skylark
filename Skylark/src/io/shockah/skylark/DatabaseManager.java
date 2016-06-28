@@ -2,14 +2,18 @@ package io.shockah.skylark;
 
 import io.shockah.skylark.db.DbObject;
 import io.shockah.skylark.db.PatternPersister;
+import io.shockah.skylark.db.SQLExceptionWrappedAction1;
 import io.shockah.skylark.func.Action1;
 import java.io.Closeable;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.field.DataPersisterManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.stmt.DeleteBuilder;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
@@ -29,10 +33,10 @@ public class DatabaseManager implements Closeable {
 		}
 	}
 	
-	protected <T> Dao<T, ?> getDao(Class<T> clazz) {
+	public <T> Dao<T, Integer> getDao(Class<T> clazz) {
 		try {
 			synchronized (lock) {
-				Dao<T, ?> dao = DaoManager.lookupDao(connection, clazz);
+				Dao<T, Integer> dao = DaoManager.lookupDao(connection, clazz);
 				if (dao == null) {
 					dao = DaoManager.createDao(connection, clazz);
 					TableUtils.createTableIfNotExists(connection, clazz);
@@ -73,6 +77,36 @@ public class DatabaseManager implements Closeable {
 			f.call(obj);
 			obj.create();
 			return obj;
+		} catch (SQLException e) {
+			throw new UnexpectedException(e);
+		}
+	}
+	
+	public <T extends DbObject<T>> List<T> query(Class<T> clazz, SQLExceptionWrappedAction1<QueryBuilder<T, Integer>> f) {
+		try {
+			QueryBuilder<T, Integer> builder = getDao(clazz).queryBuilder();
+			f.call(builder);
+			return builder.query();
+		} catch (SQLException e) {
+			throw new UnexpectedException(e);
+		}
+	}
+	
+	public <T extends DbObject<T>> T queryFirst(Class<T> clazz, SQLExceptionWrappedAction1<QueryBuilder<T, Integer>> f) {
+		try {
+			QueryBuilder<T, Integer> builder = getDao(clazz).queryBuilder();
+			f.call(builder);
+			return builder.queryForFirst();
+		} catch (SQLException e) {
+			throw new UnexpectedException(e);
+		}
+	}
+	
+	public <T extends DbObject<T>> int delete(Class<T> clazz, SQLExceptionWrappedAction1<DeleteBuilder<T, Integer>> f) {
+		try {
+			DeleteBuilder<T, Integer> builder = getDao(clazz).deleteBuilder();
+			f.call(builder);
+			return builder.delete();
 		} catch (SQLException e) {
 			throw new UnexpectedException(e);
 		}

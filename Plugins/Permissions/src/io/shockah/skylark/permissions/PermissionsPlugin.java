@@ -1,5 +1,13 @@
 package io.shockah.skylark.permissions;
 
+import io.shockah.skylark.DatabaseManager;
+import io.shockah.skylark.UnexpectedException;
+import io.shockah.skylark.ident.IdentMethod;
+import io.shockah.skylark.ident.IdentPlugin;
+import io.shockah.skylark.permissions.db.UserGroup;
+import io.shockah.skylark.permissions.db.UserGroupIdent;
+import io.shockah.skylark.plugin.Plugin;
+import io.shockah.skylark.plugin.PluginManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,13 +16,6 @@ import org.pircbotx.User;
 import com.j256.ormlite.field.SqlType;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.SelectArg;
-import io.shockah.skylark.UnexpectedException;
-import io.shockah.skylark.ident.IdentMethod;
-import io.shockah.skylark.ident.IdentPlugin;
-import io.shockah.skylark.permissions.db.UserGroup;
-import io.shockah.skylark.permissions.db.UserGroupIdent;
-import io.shockah.skylark.plugin.Plugin;
-import io.shockah.skylark.plugin.PluginManager;
 
 public class PermissionsPlugin extends Plugin {
 	@Dependency
@@ -39,11 +40,13 @@ public class PermissionsPlugin extends Plugin {
 	
 	public List<UserGroup> getGroupsForIdent(IdentMethod method, String identString) {
 		try {
-			QueryBuilder<UserGroupIdent, Integer> qbIdent = manager.app.databaseManager.getDao(UserGroupIdent.class, Integer.class).queryBuilder();
+			DatabaseManager databaseManager = manager.app.databaseManager; 
+			
+			QueryBuilder<UserGroupIdent, Integer> qbIdent = databaseManager.getDao(UserGroupIdent.class, Integer.class).queryBuilder();
 			qbIdent.where().eq(UserGroupIdent.METHOD_COLUMN, method.prefix)
 				.and().raw(String.format("? REGEXP %s", UserGroupIdent.IDENT_PATTERN_COLUMN), new SelectArg(SqlType.STRING, identString));
 			
-			QueryBuilder<UserGroup, Integer> qbGroup = manager.app.databaseManager.getDao(UserGroup.class, Integer.class).queryBuilder();
+			QueryBuilder<UserGroup, Integer> qbGroup = databaseManager.getDao(UserGroup.class, Integer.class).queryBuilder();
 			
 			return qbGroup.join(qbIdent).query();
 		} catch (SQLException e) {
