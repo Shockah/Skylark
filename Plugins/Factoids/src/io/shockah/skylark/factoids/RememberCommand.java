@@ -1,8 +1,11 @@
 package io.shockah.skylark.factoids;
 
+import java.util.Date;
+import java.util.Map;
 import io.shockah.skylark.Bot;
 import io.shockah.skylark.DatabaseManager;
 import io.shockah.skylark.commands.CommandCall;
+import io.shockah.skylark.commands.CommandCall.Medium;
 import io.shockah.skylark.commands.CommandParseException;
 import io.shockah.skylark.commands.CommandValue;
 import io.shockah.skylark.commands.NamedCommand;
@@ -11,8 +14,6 @@ import io.shockah.skylark.factoids.RememberCommand.Input;
 import io.shockah.skylark.factoids.db.Factoid;
 import io.shockah.skylark.factoids.db.FactoidIdent;
 import io.shockah.skylark.ident.IdentMethod;
-import java.util.Date;
-import java.util.Map;
 
 public class RememberCommand extends NamedCommand<Input, Factoid> {
 	private final FactoidsPlugin plugin;
@@ -52,9 +53,17 @@ public class RememberCommand extends NamedCommand<Input, Factoid> {
 	public CommandValue<Factoid> call(CommandCall call, Input input) {
 		DatabaseManager databaseManager = plugin.manager.app.databaseManager;
 		
-		databaseManager.delete(Factoid.class, builder -> {
-			builder.where().eq(Factoid.NAME_COLUMN, input.name)
-				.and().eq(Factoid.ACTIVE_COLUMN, false);
+		databaseManager.delete(Factoid.class, (builder, where) -> {
+			where
+				.equals(Factoid.NAME_COLUMN, input.name)
+				.equals(Factoid.ACTIVE_COLUMN, false)
+				.equals(Factoid.CONTEXT_COLUMN, input.context);
+			if (input.context == Factoid.Context.Channel)
+				where
+					.equals(Factoid.SERVER_COLUMN, call.event.<Bot>getBot().manager.name)
+					.equals(Factoid.CHANNEL_COLUMN, call.event.getChannel().getName());
+			else if (input.context == Factoid.Context.Server)
+				where.equals(Factoid.SERVER_COLUMN, call.event.<Bot>getBot().manager.name);
 		});
 		
 		Factoid factoid = databaseManager.create(Factoid.class, obj -> {
@@ -72,7 +81,9 @@ public class RememberCommand extends NamedCommand<Input, Factoid> {
 				FactoidIdent.createOf(databaseManager, factoid, entry.getKey(), entry.getValue());
 		}
 		
-		return new CommandValue<>(factoid);
+		if (call.outputMedium == null)
+			call.outputMedium = Medium.Notice;
+		return new CommandValue.Simple<>(factoid, "Done.");
 	}
 	
 	public static final class Input {

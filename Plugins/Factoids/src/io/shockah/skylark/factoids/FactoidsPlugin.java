@@ -9,7 +9,6 @@ import io.shockah.skylark.ident.IdentPlugin;
 import io.shockah.skylark.permissions.PermissionsPlugin;
 import io.shockah.skylark.plugin.Plugin;
 import io.shockah.skylark.plugin.PluginManager;
-import com.j256.ormlite.stmt.Where;
 
 public class FactoidsPlugin extends Plugin {
 	@Dependency
@@ -57,18 +56,17 @@ public class FactoidsPlugin extends Plugin {
 	}
 	
 	public Factoid findActiveFactoid(GenericUserMessageEvent e, String name, Factoid.Context context) {
-		return manager.app.databaseManager.queryFirst(Factoid.class, builder -> {
-			Where<Factoid, Integer> whereFactoid = builder.where();
-			whereFactoid.eq(Factoid.ACTIVE_COLUMN, true);
+		return manager.app.databaseManager.queryFirst(Factoid.class, (builder, where) -> {
+			where.equals(Factoid.ACTIVE_COLUMN, true);
 			if (context != null)
-				whereFactoid.and().eq(Factoid.CONTEXT_COLUMN, context);
+				where.equals(Factoid.CONTEXT_COLUMN, context);
 			switch (context) {
 				case Channel:
-					whereFactoid.and().eq(Factoid.CHANNEL_COLUMN, e.getChannel().getName());
-					whereFactoid.and().eq(Factoid.SERVER_COLUMN, e.<Bot>getBot().manager.name);
+					where.equals(Factoid.CHANNEL_COLUMN, e.getChannel().getName());
+					where.equals(Factoid.SERVER_COLUMN, e.<Bot>getBot().manager.name);
 					break;
 				case Server:
-					whereFactoid.and().eq(Factoid.SERVER_COLUMN, e.<Bot>getBot().manager.name);
+					where.equals(Factoid.SERVER_COLUMN, e.<Bot>getBot().manager.name);
 					break;
 				default:
 					break;

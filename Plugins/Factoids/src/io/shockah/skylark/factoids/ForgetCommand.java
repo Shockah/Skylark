@@ -5,6 +5,7 @@ import io.shockah.skylark.commands.CommandCall;
 import io.shockah.skylark.commands.CommandParseException;
 import io.shockah.skylark.commands.CommandValue;
 import io.shockah.skylark.commands.NamedCommand;
+import io.shockah.skylark.commands.CommandCall.Medium;
 import io.shockah.skylark.event.GenericUserMessageEvent;
 import io.shockah.skylark.factoids.ForgetCommand.Input;
 import io.shockah.skylark.factoids.db.Factoid;
@@ -52,7 +53,9 @@ public class ForgetCommand extends NamedCommand<Input, Factoid> {
 			}
 		}
 		
-		return new CommandValue<>(factoid);
+		if (call.outputMedium == null)
+			call.outputMedium = Medium.Notice;
+		return new CommandValue.Simple<>(factoid, factoid == null ? "Factoid doesn't exist." : "Forgot: " + factoid.raw);
 	}
 	
 	public static final class Input {
