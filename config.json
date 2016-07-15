@@ -1,0 +1,9 @@
+{
+	"database": {
+		"databasePath": "h2:./db"
+	},
+	"messages": {
+		"linebreakLength": 400,
+		"ellipsis": "..."
+	}
+}
