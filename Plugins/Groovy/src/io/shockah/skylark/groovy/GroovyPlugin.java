@@ -3,7 +3,9 @@ package io.shockah.skylark.groovy;
 import java.util.Map;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer;
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import org.kohsuke.groovy.sandbox.SandboxTransformer;
+import com.github.kevinsawicki.http.HttpRequest;
 import com.google.common.collect.ImmutableMap;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -66,7 +68,8 @@ public class GroovyPlugin extends Plugin {
 		CompilerConfiguration cc = new CompilerConfiguration();
 		cc.addCompilationCustomizers(
 				new SandboxTransformer(),
-				new ASTTransformationCustomizer(ImmutableMap.of("value", 10), TimedInterrupt.class)
+				new ASTTransformationCustomizer(ImmutableMap.of("value", 10), TimedInterrupt.class),
+				new ImportCustomizer().addImports(HttpRequest.class.getName())
 		);
 		new GroovySandbox().register();
 		return new GroovyShell(binding, cc);

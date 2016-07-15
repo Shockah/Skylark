@@ -2,6 +2,7 @@ package io.shockah.skylark.groovy;
 
 import java.net.URL;
 import org.kohsuke.groovy.sandbox.GroovyInterceptor;
+import com.github.kevinsawicki.http.HttpRequest;
 import com.google.common.collect.ImmutableList;
 
 public class GroovySandbox extends GroovyInterceptor {
@@ -11,7 +12,8 @@ public class GroovySandbox extends GroovyInterceptor {
 	
 	private static final ImmutableList<Class<?>> CLASS_WHITELIST = ImmutableList.copyOf(new Class<?>[] {
 		Boolean.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Character.class, String.class,
-		Object.class, Number.class, StringBuilder.class, Math.class, URL.class
+		Object.class, Number.class, StringBuilder.class, Math.class, URL.class,
+		HttpRequest.class
 	});
 	
 	@SuppressWarnings("rawtypes")
