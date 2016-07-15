@@ -13,5 +13,5 @@ public abstract class Command<T, R> {
 	
 	public abstract T parseInput(GenericUserMessageEvent e, String input) throws CommandParseException;
 	
-	public abstract CommandValue<R> call(CommandCall call, T input);
+	public abstract CommandResult<R> call(CommandCall call, T input);
 }

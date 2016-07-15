@@ -1,16 +1,16 @@
 package io.shockah.skylark.botcontrol;
 
-import io.shockah.skylark.Bot;
-import io.shockah.skylark.BotManager;
-import io.shockah.skylark.commands.CommandCall;
-import io.shockah.skylark.commands.CommandValue;
-import io.shockah.skylark.commands.NamedCommand;
-import io.shockah.skylark.event.GenericUserMessageEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.pircbotx.Channel;
 import com.google.common.base.Joiner;
+import io.shockah.skylark.Bot;
+import io.shockah.skylark.BotManager;
+import io.shockah.skylark.commands.CommandCall;
+import io.shockah.skylark.commands.CommandResult;
+import io.shockah.skylark.commands.NamedCommand;
+import io.shockah.skylark.event.GenericUserMessageEvent;
 
 public class PartCommand extends NamedCommand<List<String>, List<String>> {
 	private final BotControlPlugin plugin;
@@ -36,9 +36,9 @@ public class PartCommand extends NamedCommand<List<String>, List<String>> {
 	}
 
 	@Override
-	public CommandValue<List<String>> call(CommandCall call, List<String> input) {
+	public CommandResult<List<String>> call(CommandCall call, List<String> input) {
 		if (!plugin.permissionGranted(call.event.getUser(), "part"))
-			return CommandValue.error("Permission required.");
+			return CommandResult.error("Permission required.");
 		
 		List<String> result = new ArrayList<>();
 		BotManager manager = call.event.<Bot>getBot().manager;
@@ -51,6 +51,6 @@ public class PartCommand extends NamedCommand<List<String>, List<String>> {
 		}
 		
 		String ircOutput = String.format("Left channels: %s", Joiner.on(", ").join(result));
-		return new CommandValue.Simple<List<String>>(result, ircOutput);
+		return CommandResult.of(result, ircOutput);
 	}
 }

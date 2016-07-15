@@ -14,7 +14,7 @@ public class DefaultCommandPattern extends CommandPattern {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public CommandPreparedCall<?, ?> provide(GenericUserMessageEvent e) throws CommandParseException {
+	public PreparedCommandCall<?, ?> provide(GenericUserMessageEvent e) throws CommandParseException {
 		String message = e.getMessage();
 		for (String prefix : prefixes) {
 			if (message.startsWith(prefix) && message.length() > prefix.length()) {
@@ -25,7 +25,7 @@ public class DefaultCommandPattern extends CommandPattern {
 				String[] commandNames = commandList.split(">");
 				if (commandNames.length == 1) {
 					Command<Object, Object> command = (Command<Object, Object>)providers.firstResult(provider -> provider.provide(e, commandNames[0]));
-					return new CommandPreparedCall<Object, Object>(command, command.parseInput(e, textInput));
+					return new PreparedCommandCall<>(command, command.parseInput(e, textInput));
 				} else {
 					Command<?, ?>[] commands = new Command[commandNames.length];
 					for (int i = 0; i < commandNames.length; i++) {
@@ -36,7 +36,7 @@ public class DefaultCommandPattern extends CommandPattern {
 						commands[i] = command;
 					}
 					Command<Object, Object> command = new ChainCommand<>(commands);
-					return new CommandPreparedCall<>(command, command.parseInput(e, textInput));
+					return new PreparedCommandCall<>(command, command.parseInput(e, textInput));
 				}
 			}
 		}

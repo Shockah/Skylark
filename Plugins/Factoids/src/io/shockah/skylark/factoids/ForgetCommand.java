@@ -2,10 +2,10 @@ package io.shockah.skylark.factoids;
 
 import io.shockah.skylark.UnexpectedException;
 import io.shockah.skylark.commands.CommandCall;
-import io.shockah.skylark.commands.CommandParseException;
-import io.shockah.skylark.commands.CommandValue;
-import io.shockah.skylark.commands.NamedCommand;
 import io.shockah.skylark.commands.CommandCall.Medium;
+import io.shockah.skylark.commands.CommandParseException;
+import io.shockah.skylark.commands.CommandResult;
+import io.shockah.skylark.commands.NamedCommand;
 import io.shockah.skylark.event.GenericUserMessageEvent;
 import io.shockah.skylark.factoids.ForgetCommand.Input;
 import io.shockah.skylark.factoids.db.Factoid;
@@ -42,7 +42,7 @@ public class ForgetCommand extends NamedCommand<Input, Factoid> {
 	}
 
 	@Override
-	public CommandValue<Factoid> call(CommandCall call, Input input) {
+	public CommandResult<Factoid> call(CommandCall call, Input input) {
 		Factoid factoid = plugin.findActiveFactoid(call.event, input.name, input.context);
 		if (factoid != null) {
 			try {
@@ -55,7 +55,7 @@ public class ForgetCommand extends NamedCommand<Input, Factoid> {
 		
 		if (call.outputMedium == null)
 			call.outputMedium = Medium.Notice;
-		return new CommandValue.Simple<>(factoid, factoid == null ? "Factoid doesn't exist." : "Forgot: " + factoid.raw);
+		return CommandResult.of(factoid, factoid == null ? "Factoid doesn't exist." : "Forgot: " + factoid.raw);
 	}
 	
 	public static final class Input {

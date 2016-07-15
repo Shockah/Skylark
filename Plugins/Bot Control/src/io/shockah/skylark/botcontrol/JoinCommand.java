@@ -1,16 +1,16 @@
 package io.shockah.skylark.botcontrol;
 
-import io.shockah.skylark.Bot;
-import io.shockah.skylark.BotManager;
-import io.shockah.skylark.commands.CommandCall;
-import io.shockah.skylark.commands.CommandValue;
-import io.shockah.skylark.commands.NamedCommand;
-import io.shockah.skylark.event.GenericUserMessageEvent;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.google.common.base.Joiner;
+import io.shockah.skylark.Bot;
+import io.shockah.skylark.BotManager;
+import io.shockah.skylark.commands.CommandCall;
+import io.shockah.skylark.commands.CommandResult;
+import io.shockah.skylark.commands.NamedCommand;
+import io.shockah.skylark.event.GenericUserMessageEvent;
 
 public class JoinCommand extends NamedCommand<List<String>, Map<String, Bot>> {
 	private final BotControlPlugin plugin;
@@ -26,9 +26,9 @@ public class JoinCommand extends NamedCommand<List<String>, Map<String, Bot>> {
 	}
 
 	@Override
-	public CommandValue<Map<String, Bot>> call(CommandCall call, List<String> input) {
+	public CommandResult<Map<String, Bot>> call(CommandCall call, List<String> input) {
 		if (!plugin.permissionGranted(call.event.getUser(), "join"))
-			return CommandValue.error("Permission required.");
+			return CommandResult.error("Permission required.");
 		
 		Map<String, Bot> result = new HashMap<>();
 		BotManager manager = call.event.<Bot>getBot().manager;
@@ -38,6 +38,6 @@ public class JoinCommand extends NamedCommand<List<String>, Map<String, Bot>> {
 		}
 		
 		String ircOutput = String.format("Joined channels: %s", Joiner.on(", ").join(result.keySet()));
-		return new CommandValue.Simple<Map<String, Bot>>(result, ircOutput);
+		return CommandResult.of(result, ircOutput);
 	}
 }

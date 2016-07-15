@@ -1,5 +1,9 @@
 package io.shockah.skylark.commands;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import org.pircbotx.hooks.events.ActionEvent;
 import io.shockah.json.JSONList;
 import io.shockah.skylark.Bot;
 import io.shockah.skylark.DelegatePassthroughException;
@@ -7,10 +11,6 @@ import io.shockah.skylark.event.GenericUserMessageEvent;
 import io.shockah.skylark.plugin.ListenerPlugin;
 import io.shockah.skylark.plugin.PluginManager;
 import io.shockah.skylark.util.ReadWriteList;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import org.pircbotx.hooks.events.ActionEvent;
 
 public class CommandsPlugin extends ListenerPlugin {
 	protected ReadWriteList<CommandPattern> patterns = new ReadWriteList<>(new ArrayList<>());
@@ -74,7 +74,7 @@ public class CommandsPlugin extends ListenerPlugin {
 		}
 	}
 	
-	public CommandPreparedCall<?, ?> findCommandToCall(GenericUserMessageEvent e) throws CommandParseException {
+	public PreparedCommandCall<?, ?> findCommandToCall(GenericUserMessageEvent e) throws CommandParseException {
 		try {
 			return patterns.firstResult(pattern -> {
 				try {
@@ -101,12 +101,12 @@ public class CommandsPlugin extends ListenerPlugin {
 		
 		CommandCall call = new CommandCall(e);
 		try {
-			CommandPreparedCall<?, ?> preparedCall = findCommandToCall(e);
+			PreparedCommandCall<?, ?> preparedCall = findCommandToCall(e);
 			if (preparedCall == null)
 				return;
 			
-			CommandValue<?> value = preparedCall.call(call);
-			String output = value.toIRCOutput();
+			CommandResult<?> value = preparedCall.call(call);
+			String output = value.getIRCOutput();
 			
 			if (output != null) {
 				List<String> lines = Arrays.asList(output.split("\\r?\\n|\\r"));

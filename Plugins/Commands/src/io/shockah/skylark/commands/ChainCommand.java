@@ -17,14 +17,14 @@ public class ChainCommand<T, R> extends Command<T, R> {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public CommandValue<R> call(CommandCall call, T input) {
-		CommandValue<?> value = new CommandValue<>(input);
+	public CommandResult<R> call(CommandCall call, T input) {
+		Object value = input;
 		for (Command<?, ?> genericCommand : commands) {
-			Command<Object, ?> objectCommand = (Command<Object, ?>)genericCommand;
-			value = objectCommand.call(call, value.result);
-			if (value.error != null)
-				break;
+			Command<Object, Object> objectCommand = (Command<Object, Object>)genericCommand;
+			CommandResult<?> result = objectCommand.call(call, value);
+			if (result.error != null)
+				CommandResult.error(result.error);
 		}
-		return (CommandValue<R>)value;
+		return CommandResult.of((R)value);
 	}
 }
