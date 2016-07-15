@@ -1,6 +1,6 @@
 {
 	"packageName": "io.shockah.skylark.botcontrol",
-	"baseClass": "io.shockah.skylark.commands.BotControlPlugin",
+	"baseClass": "io.shockah.skylark.botcontrol.BotControlPlugin",
 	"enabledByDefault": true,
 	"dependsOn": [
 		"io.shockah.skylark.commands",

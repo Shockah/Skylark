@@ -1,8 +1,13 @@
 package io.shockah.skylark.groovy;
 
 import java.util.Map;
+import org.codehaus.groovy.control.CompilerConfiguration;
+import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer;
+import org.kohsuke.groovy.sandbox.SandboxTransformer;
+import com.google.common.collect.ImmutableMap;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
+import groovy.transform.TimedInterrupt;
 import io.shockah.skylark.commands.CommandsPlugin;
 import io.shockah.skylark.factoids.FactoidType;
 import io.shockah.skylark.factoids.FactoidsPlugin;
@@ -27,7 +32,10 @@ public class GroovyPlugin extends Plugin {
 	@Override
 	protected void onLoad() {
 		commandsPlugin.addNamedCommand(command = new GroovyCommand(this));
-		
+	}
+	
+	@Override
+	protected void onAllPluginsLoaded() {
 		if (factoidsOptionalPlugin != null) {
 			FactoidsPlugin factoidsPlugin = (FactoidsPlugin)factoidsOptionalPlugin;
 			FactoidType factoidType = new GroovyFactoidType(this);
@@ -47,10 +55,20 @@ public class GroovyPlugin extends Plugin {
 	}
 	
 	public GroovyShell getShell() {
-		return new GroovyShell(new Binding());
+		return getShell(new Binding());
 	}
 	
 	public GroovyShell getShell(Map<String, Object> variables) {
-		return new GroovyShell(new Binding(variables));
+		return getShell(new Binding(variables));
+	}
+	
+	private GroovyShell getShell(Binding binding) {
+		CompilerConfiguration cc = new CompilerConfiguration();
+		cc.addCompilationCustomizers(
+				new SandboxTransformer(),
+				new ASTTransformationCustomizer(ImmutableMap.of("value", 10), TimedInterrupt.class)
+		);
+		new GroovySandbox().register();
+		return new GroovyShell(binding, cc);
 	}
 }

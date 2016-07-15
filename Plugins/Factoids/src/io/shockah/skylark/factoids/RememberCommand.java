@@ -48,7 +48,7 @@ public class RememberCommand extends NamedCommand<Input, Factoid> {
 					if (type == null)
 						throw new CommandParseException(String.format("Invalid factoid type: %s", typeName));
 				} else {
-					name = split[i];
+					name = arg;
 				}
 			} else {
 				int length = 0;

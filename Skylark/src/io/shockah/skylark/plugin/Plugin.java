@@ -1,15 +1,13 @@
 package io.shockah.skylark.plugin;
 
-import io.shockah.json.JSONObject;
-import java.io.Closeable;
-import java.io.IOException;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.nio.file.FileSystem;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import io.shockah.json.JSONObject;
 
 public class Plugin {
 	public final PluginManager manager;
@@ -36,16 +34,16 @@ public class Plugin {
 	}
 	
 	public final JSONObject getConfig() {
-		return manager.app.config.getObjectOrEmpty(info.packageName());
+		return manager.app.config.getObjectOrNew(info.packageName());
 	}
 	
-	public static final class Info implements Closeable {
+	public static final class Info {
 		public final JSONObject json;
-		public final FileSystem fileSystem;
+		public final URL url;
 		
-		public Info(JSONObject json, FileSystem fileSystem) {
+		public Info(JSONObject json, URL url) {
 			this.json = json;
-			this.fileSystem = fileSystem;
+			this.url = url;
 		}
 		
 		public String packageName() {
@@ -74,11 +72,6 @@ public class Plugin {
 		
 		public String description() {
 			return json.getString("description", null);
-		}
-
-		@Override
-		public void close() throws IOException {
-			fileSystem.close();
 		}
 	}
 	

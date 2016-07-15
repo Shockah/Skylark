@@ -20,7 +20,7 @@ public class DefaultCommandPattern extends CommandPattern {
 			if (message.startsWith(prefix) && message.length() > prefix.length()) {
 				String[] spl = message.split("\\s");
 				String commandList = spl[0].substring(prefix.length());
-				String textInput = message.substring(prefix.length() + commandList.length() + 1);
+				String textInput = message.substring(Math.min(prefix.length() + commandList.length() + 1, message.length()));
 				
 				String[] commandNames = commandList.split(">");
 				if (commandNames.length == 1) {

@@ -19,7 +19,6 @@ public final class FileUtils {
 				try {
 					Files.delete(tmp);
 				} catch (IOException e) {
-					e.printStackTrace();
 				}
 			}
 		});

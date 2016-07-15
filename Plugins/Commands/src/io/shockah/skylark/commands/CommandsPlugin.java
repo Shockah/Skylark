@@ -7,6 +7,7 @@ import org.pircbotx.hooks.events.ActionEvent;
 import io.shockah.json.JSONList;
 import io.shockah.skylark.Bot;
 import io.shockah.skylark.DelegatePassthroughException;
+import io.shockah.skylark.UnexpectedException;
 import io.shockah.skylark.event.GenericUserMessageEvent;
 import io.shockah.skylark.plugin.ListenerPlugin;
 import io.shockah.skylark.plugin.PluginManager;
@@ -25,9 +26,8 @@ public class CommandsPlugin extends ListenerPlugin {
 	@Override
 	protected void onLoad() {
 		getConfig().putDefault("prefixes", JSONList.of(".", "`"));
-		defaultPattern = new DefaultCommandPattern(getConfig().getList("prefixes").ofStrings().toArray(new String[0]));
-		defaultProvider = new DefaultCommandProvider();
-		addProvider(defaultProvider);
+		addPattern(defaultPattern = new DefaultCommandPattern(getConfig().getList("prefixes").ofStrings().toArray(new String[0])));
+		addProvider(defaultProvider = new DefaultCommandProvider());
 	}
 	
 	public DefaultCommandPattern getDefaultPattern() {
@@ -86,7 +86,7 @@ public class CommandsPlugin extends ListenerPlugin {
 		} catch (DelegatePassthroughException ex) {
 			if (ex.getCause() instanceof CommandParseException)
 				throw new CommandParseException(ex.getCause());
-			return null;
+			throw new UnexpectedException(ex);
 		}
 	}
 	

@@ -26,6 +26,9 @@ public class FactoidsPlugin extends Plugin {
 	
 	protected ReadWriteMap<String, FactoidType> types = new ReadWriteMap<>(new HashMap<>());
 	
+	private RememberCommand rememberCommand;
+	private ForgetCommand forgetCommand;
+	
 	public FactoidsPlugin(PluginManager manager, Info info) {
 		super(manager, info);
 	}
@@ -35,11 +38,19 @@ public class FactoidsPlugin extends Plugin {
 		getConfig().putDefault("defaultContext", Factoid.Context.Server.name());
 		commandsPlugin.addProvider(commandProvider = new FactoidCommandProvider(this));
 		addType(new SimpleFactoidType());
+		commandsPlugin.addNamedCommands(
+			rememberCommand = new RememberCommand(this),
+			forgetCommand = new ForgetCommand(this)
+		);
 	}
 	
 	@Override
 	protected void onUnload() {
 		commandsPlugin.removeProvider(commandProvider);
+		commandsPlugin.removeNamedCommands(
+			rememberCommand,
+			forgetCommand
+		);
 	}
 	
 	public void addType(FactoidType type) {
@@ -75,6 +86,7 @@ public class FactoidsPlugin extends Plugin {
 	public Factoid findActiveFactoid(GenericUserMessageEvent e, String name, Factoid.Context context) {
 		return manager.app.databaseManager.queryFirst(Factoid.class, (builder, where) -> {
 			where.equals(Factoid.ACTIVE_COLUMN, true);
+			where.equals(Factoid.NAME_COLUMN, name);
 			if (context != null)
 				where.equals(Factoid.CONTEXT_COLUMN, context);
 			switch (context) {

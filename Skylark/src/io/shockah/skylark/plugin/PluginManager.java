@@ -1,22 +1,26 @@
 package io.shockah.skylark.plugin;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import org.apache.commons.io.IOUtils;
+import org.pircbotx.hooks.Listener;
+import org.pircbotx.hooks.managers.ListenerManager;
 import io.shockah.json.JSONObject;
 import io.shockah.json.JSONParser;
 import io.shockah.skylark.App;
 import io.shockah.skylark.ServerManager;
 import io.shockah.skylark.UnexpectedException;
 import io.shockah.skylark.util.FileUtils;
-import io.shockah.skylark.util.PathClassLoader;
 import io.shockah.skylark.util.ReadWriteList;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PluginManager {
 	public static final Path LIBS_PATH = Paths.get("libs");
@@ -52,17 +56,11 @@ public class PluginManager {
 	protected void unload() {
 		plugins.iterate(plugin -> {
 			plugin.onUnload();
+			System.out.println(String.format("Unloaded plugin: %s", plugin.info.packageName()));
 		});
+		clearListenerPlugins();
 		clearServices();
 		plugins.clear();
-		
-		pluginInfos.iterate(pluginInfo -> {
-			try {
-				pluginInfo.close();
-			} catch (Exception e) {
-				throw new UnexpectedException(e);
-			}
-		});
 		pluginInfos.clear();
 		
 		pluginClassLoader = null;
@@ -79,9 +77,13 @@ public class PluginManager {
 				Plugin plugin = loadPlugin(pluginClassLoader, pluginInfo);
 				if (plugin != null) {
 					try {
+						setupRequiredDependencyFields(plugin);
 						plugin.onLoad();
 						plugins.add(plugin);
+						if (plugin instanceof ListenerPlugin)
+							setupListenerPlugin((ListenerPlugin)plugin);
 						setupServices(plugin);
+						System.out.println(String.format("Loaded plugin: %s", pluginInfo.packageName()));
 					} catch (Exception e) {
 						throw new UnexpectedException(e);
 					}
@@ -90,7 +92,7 @@ public class PluginManager {
 		});
 		
 		plugins.iterate(plugin -> {
-			setupDependencyFields(plugin);
+			setupOptionalDependencyFields(plugin);
 		});
 		
 		plugins.iterate(plugin -> {
@@ -110,7 +112,7 @@ public class PluginManager {
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected void setupDependencyFields(Plugin plugin) {
+	protected void setupRequiredDependencyFields(Plugin plugin) {
 		for (Field field : plugin.getClass().getDeclaredFields()) {
 			try {
 				Plugin.Dependency dependencyAnnotation = field.getAnnotation(Plugin.Dependency.class);
@@ -125,7 +127,20 @@ public class PluginManager {
 							field.set(plugin, dependency);
 							plugin.onDependencyLoaded(plugin);
 						}
-					} else {
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	protected void setupOptionalDependencyFields(Plugin plugin) {
+		for (Field field : plugin.getClass().getDeclaredFields()) {
+			try {
+				Plugin.Dependency dependencyAnnotation = field.getAnnotation(Plugin.Dependency.class);
+				if (dependencyAnnotation != null) {
+					if (!dependencyAnnotation.value().equals("")) {
 						Plugin dependency = getPluginWithPackageName(dependencyAnnotation.value());
 						if (dependency != null) {
 							field.setAccessible(true);
@@ -138,6 +153,26 @@ public class PluginManager {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	protected void setupListenerPlugin(ListenerPlugin plugin) {
+		app.serverManager.botManagers.iterate(botManager -> {
+			botManager.bots.iterate(bot -> {
+				bot.getConfiguration().getListenerManager().addListener(plugin.listener);
+			});
+		});
+	}
+	
+	protected void clearListenerPlugins() {
+		app.serverManager.botManagers.iterate(botManager -> {
+			botManager.bots.iterate(bot -> {
+				ListenerManager manager = bot.getConfiguration().getListenerManager();
+				for (Listener listener : manager.getListeners()) {
+					if (listener instanceof ListenerPlugin.MyListener)
+						manager.removeListener(listener);
+				}
+			});
+		});
 	}
 	
 	protected void setupServices(Plugin plugin) {
@@ -198,12 +233,16 @@ public class PluginManager {
 		try {
 			for (Path path : Files.newDirectoryStream(getPluginPath(), path -> path.getFileName().toString().endsWith(".jar"))) {
 				Path tmpPath = FileUtils.copyAsTrueTempFile(path);
-				FileSystem fs = FileSystems.newFileSystem(tmpPath, null);
 				
-				Path pluginJsonPath = fs.getPath("plugin.json");
-				if (Files.exists(pluginJsonPath)) {
-					JSONObject pluginJson = new JSONParser().parseObject(new String(Files.readAllBytes(pluginJsonPath), "UTF-8"));
-					infos.add(new Plugin.Info(pluginJson, fs));
+				try (ZipFile zf = new ZipFile(tmpPath.toFile())) {
+					ZipEntry ze = zf.getEntry("plugin.json");
+					if (ze == null)
+						continue;
+					
+					JSONObject pluginJson = new JSONParser().parseObject(new String(IOUtils.toByteArray(zf.getInputStream(ze)), "UTF-8"));
+					infos.add(new Plugin.Info(pluginJson, tmpPath.toUri().toURL()));
+				} catch (Exception e) {
+					throw new UnexpectedException(e);
 				}
 			}
 		} catch (Exception e) {
@@ -248,18 +287,17 @@ public class PluginManager {
 	}
 	
 	protected ClassLoader createClassLoader(ReadWriteList<Plugin.Info> infos) {
-		List<Path> paths = new ArrayList<>();
+		List<URL> urls = new ArrayList<>();
 		try {
 			for (Path path : Files.newDirectoryStream(getLibsPath(), path -> path.getFileName().toString().endsWith(".jar"))) {
 				Path tmpPath = FileUtils.copyAsTrueTempFile(path);
-				FileSystem fs = FileSystems.newFileSystem(tmpPath, null);
-				paths.add(fs.getPath("/"));
+				urls.add(tmpPath.toUri().toURL());
 			}
 		} catch (Exception e) {
 			throw new UnexpectedException(e);
 		}
-		infos.iterate(info -> paths.add(info.fileSystem.getPath("/")));
-		return new PathClassLoader(paths);
+		infos.iterate(info -> urls.add(info.url));
+		return new URLClassLoader(urls.toArray(new URL[0]));
 	}
 	
 	protected boolean shouldEnable(Plugin.Info info) {

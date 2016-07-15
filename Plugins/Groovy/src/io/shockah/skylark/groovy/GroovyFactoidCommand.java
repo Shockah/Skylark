@@ -1,6 +1,7 @@
 package io.shockah.skylark.groovy;
 
-import io.shockah.json.JSONObject;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import io.shockah.skylark.commands.CommandCall;
 import io.shockah.skylark.commands.CommandParseException;
 import io.shockah.skylark.commands.CommandResult;
@@ -27,11 +28,15 @@ public class GroovyFactoidCommand<T, R> extends NamedCommand<T, R> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public CommandResult<R> call(CommandCall call, T input) {
-		return (CommandResult<R>)CommandResult.of(plugin.getShell(JSONObject.of(
-			"call", call,
-			"user", call.event.getUser(),
-			"channel", call.event.getChannel(),
-			"input", input
-		)).evaluate(factoid.raw));
+		try {
+			Map<String, Object> variables = new LinkedHashMap<>();
+			variables.put("call", call);
+			variables.put("user", call.event.getUser());
+			variables.put("channel", call.event.getChannel());
+			variables.put("input", input);
+			return (CommandResult<R>)CommandResult.of(plugin.getShell(variables).evaluate(factoid.raw));
+		} catch (Exception e) {
+			return CommandResult.error(e.getMessage());
+		}
 	}
 }

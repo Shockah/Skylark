@@ -1,14 +1,9 @@
 package io.shockah.skylark;
 
-import io.shockah.skylark.db.DbObject;
-import io.shockah.skylark.db.PatternPersister;
-import io.shockah.skylark.db.SQLExceptionWrappedAction1;
-import io.shockah.skylark.db.SQLExceptionWrappedAction2;
-import io.shockah.skylark.db.WhereBuilder;
-import io.shockah.skylark.func.Action1;
 import java.io.Closeable;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -18,12 +13,19 @@ import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import io.shockah.skylark.db.DbObject;
+import io.shockah.skylark.db.PatternPersister;
+import io.shockah.skylark.db.SQLExceptionWrappedAction1;
+import io.shockah.skylark.db.SQLExceptionWrappedAction2;
+import io.shockah.skylark.db.WhereBuilder;
+import io.shockah.skylark.func.Action1;
 
 public class DatabaseManager implements Closeable {
 	public final App app;
 	protected final ConnectionSource connection;
 	
 	private final Object lock = new Object();
+	private final List<Class<?>> createdTables = new ArrayList<>();
 	
 	public DatabaseManager(App app) {
 		this.app = app;
@@ -43,14 +45,26 @@ public class DatabaseManager implements Closeable {
 		try {
 			synchronized (lock) {
 				Dao<T, ID> dao = DaoManager.lookupDao(connection, clazz);
-				if (dao == null) {
+				if (dao == null)
 					dao = DaoManager.createDao(connection, clazz);
-					TableUtils.createTableIfNotExists(connection, clazz);
-				}
+				createTableIfNeeded(clazz);
 				return dao;
 			}
 		} catch (SQLException e) {
 			throw new UnexpectedException(e);
+		}
+	}
+	
+	private void createTableIfNeeded(Class<?> clazz) {
+		synchronized (lock) {
+			if (createdTables.contains(clazz))
+				return;
+			try {
+				TableUtils.createTableIfNotExists(connection, clazz);
+			} catch (SQLException e) {
+				throw new UnexpectedException(e);
+			}
+			createdTables.add(clazz);
 		}
 	}
 	
