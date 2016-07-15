@@ -4,6 +4,7 @@ import io.shockah.skylark.db.DbObject;
 import java.util.Date;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.ForeignCollection;
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -39,7 +40,7 @@ public class Factoid extends DbObject<Factoid> {
 	@DatabaseField(canBeNull = false)
 	public String type;
 	
-	@DatabaseField(canBeNull = true)
+	@DatabaseField(dataType = DataType.LONG_STRING, canBeNull = true)
 	public String raw;
 	
 	@DatabaseField(canBeNull = false, columnName = ACTIVE_COLUMN)

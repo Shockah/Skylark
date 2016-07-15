@@ -19,7 +19,7 @@ public class StringListToSpaceDelimitedStringPersister extends BaseDataType {
 	}
 	
 	private StringListToSpaceDelimitedStringPersister() {
-		super(SqlType.STRING, new Class<?>[] { List.class });
+		super(SqlType.LONG_STRING, new Class<?>[] { List.class });
 	}
 
 	@Override
