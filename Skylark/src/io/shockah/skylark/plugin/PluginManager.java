@@ -110,7 +110,7 @@ public class PluginManager {
 			try {
 				Plugin.Dependency dependencyAnnotation = field.getAnnotation(Plugin.Dependency.class);
 				if (dependencyAnnotation != null) {
-					if (dependencyAnnotation.packageName().equals("")) {
+					if (dependencyAnnotation.value().equals("")) {
 						Class<? extends Plugin> clazz = (Class<? extends Plugin>)field.getType();
 						if (clazz == Plugin.class)
 							continue;
@@ -121,7 +121,7 @@ public class PluginManager {
 							plugin.onDependencyLoaded(plugin);
 						}
 					} else {
-						Plugin dependency = getPluginWithPackageName(dependencyAnnotation.packageName());
+						Plugin dependency = getPluginWithPackageName(dependencyAnnotation.value());
 						if (dependency != null) {
 							field.setAccessible(true);
 							field.set(plugin, dependency);

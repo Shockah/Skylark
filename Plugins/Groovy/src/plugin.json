@@ -1,0 +1,12 @@
+{
+	"packageName": "io.shockah.skylark.groovy",
+	"baseClass": "io.shockah.skylark.groovy.GroovyPlugin",
+	"enabledByDefault": true,
+	"dependsOn": [
+		"io.shockah.skylark.commands"
+	],
+
+	"name": "Groovy",
+	"author": "Shockah",
+	"description": ""
+}
