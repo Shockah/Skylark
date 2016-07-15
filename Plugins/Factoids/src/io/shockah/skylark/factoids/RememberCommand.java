@@ -26,27 +26,49 @@ public class RememberCommand extends NamedCommand<Input, Factoid> {
 	@Override
 	public Input parseInput(GenericUserMessageEvent e, String input) throws CommandParseException {
 		String[] split = input.split("\\s");
-		if (split.length == 1)
+		if (split.length < 2)
 			throw new CommandParseException("Not enough arguments.");
 		
-		Factoid.Context context = plugin.getDefaultContext();
+		Factoid.Context context = null;
+		String typeName = null;
 		String name = null;
 		String raw = null;
 		
-		if (split[0].charAt(0) == '@') {
-			String contextName = split[0].substring(1);
-			context = Factoid.Context.valueOf(contextName);
-			if (context == null)
-				throw new CommandParseException(String.format("Invalid factoid context: %s", contextName));
-			
-			name = split[1];
-			raw = input.substring(split[0].length() + split[1].length() + 2);
-		} else {
-			name = split[0];
-			raw = input.substring(split[0].length() + 1);
+		for (int i = 0; i < split.length; i++) {
+			String arg = split[i];
+			if (name == null) {
+				if (context == null && arg.charAt(0) == '@') {
+					String contextName = arg.substring(1);
+					context = Factoid.Context.valueOf(contextName);
+					if (context == null)
+						throw new CommandParseException(String.format("Invalid factoid context: %s", contextName));
+				} else if (typeName == null && arg.charAt(0) == '#') {
+					typeName = arg.substring(1);
+					FactoidType type = plugin.getType(typeName);
+					if (type == null)
+						throw new CommandParseException(String.format("Invalid factoid type: %s", typeName));
+				} else {
+					name = split[i];
+				}
+			} else {
+				int length = 0;
+				for (int j = 0; j < i; j++) {
+					length += split[j].length() + 1;
+				}
+				raw = input.substring(length);
+				break;
+			}
 		}
 		
-		return new Input(context, name, raw);
+		if (name == null || raw == null)
+			throw new CommandParseException("Not enough arguments.");
+		
+		if (context == null)
+			context = plugin.getDefaultContext();
+		if (typeName == null)
+			typeName = SimpleFactoidType.TYPE;
+		
+		return new Input(context, name, typeName, raw);
 	}
 
 	@Override
@@ -71,6 +93,7 @@ public class RememberCommand extends NamedCommand<Input, Factoid> {
 			obj.channel = call.event.getChannel().getName();
 			obj.context = input.context;
 			obj.name = input.name;
+			obj.type = input.typeName;
 			obj.raw = input.raw;
 			obj.date = new Date();
 		});
@@ -89,11 +112,13 @@ public class RememberCommand extends NamedCommand<Input, Factoid> {
 	public static final class Input {
 		public final Factoid.Context context;
 		public final String name;
+		public final String typeName;
 		public final String raw;
 		
-		public Input(Factoid.Context context, String name, String raw) {
+		public Input(Factoid.Context context, String name, String typeName, String raw) {
 			this.context = context;
 			this.name = name;
+			this.typeName = typeName;
 			this.raw = raw;
 		}
 	}

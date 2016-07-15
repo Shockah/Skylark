@@ -36,6 +36,9 @@ public class Factoid extends DbObject<Factoid> {
 	@DatabaseField(canBeNull = false, columnName = DATE_COLUMN)
 	public Date date;
 	
+	@DatabaseField(canBeNull = false)
+	public String type;
+	
 	@DatabaseField(canBeNull = true)
 	public String raw;
 	

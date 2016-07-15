@@ -1,5 +1,6 @@
 package io.shockah.skylark.factoids;
 
+import java.util.HashMap;
 import io.shockah.skylark.Bot;
 import io.shockah.skylark.commands.CommandsPlugin;
 import io.shockah.skylark.db.DbObject;
@@ -9,6 +10,7 @@ import io.shockah.skylark.ident.IdentPlugin;
 import io.shockah.skylark.permissions.PermissionsPlugin;
 import io.shockah.skylark.plugin.Plugin;
 import io.shockah.skylark.plugin.PluginManager;
+import io.shockah.skylark.util.ReadWriteMap;
 
 public class FactoidsPlugin extends Plugin {
 	@Dependency
@@ -22,6 +24,8 @@ public class FactoidsPlugin extends Plugin {
 	
 	protected FactoidCommandProvider commandProvider;
 	
+	protected ReadWriteMap<String, FactoidType> types = new ReadWriteMap<>(new HashMap<>());
+	
 	public FactoidsPlugin(PluginManager manager, Info info) {
 		super(manager, info);
 	}
@@ -29,12 +33,25 @@ public class FactoidsPlugin extends Plugin {
 	@Override
 	protected void onLoad() {
 		getConfig().putDefault("defaultContext", Factoid.Context.Server.name());
-		commandsPlugin.addProvider(commandProvider = new FactoidCommandProvider());
+		commandsPlugin.addProvider(commandProvider = new FactoidCommandProvider(this));
+		addType(new SimpleFactoidType());
 	}
 	
 	@Override
 	protected void onUnload() {
 		commandsPlugin.removeProvider(commandProvider);
+	}
+	
+	public void addType(FactoidType type) {
+		types.put(type.type, type);
+	}
+	
+	public void removeType(FactoidType type) {
+		types.remove(type.type);
+	}
+	
+	public FactoidType getType(String type) {
+		return types.get(type);
 	}
 	
 	public Factoid.Context getDefaultContext() {

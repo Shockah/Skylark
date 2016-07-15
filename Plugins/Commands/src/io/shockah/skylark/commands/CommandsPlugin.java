@@ -27,7 +27,7 @@ public class CommandsPlugin extends ListenerPlugin {
 		getConfig().putDefault("prefixes", JSONList.of(".", "`"));
 		defaultPattern = new DefaultCommandPattern(getConfig().getList("prefixes").ofStrings().toArray(new String[0]));
 		defaultProvider = new DefaultCommandProvider();
-		defaultPattern.addProvider(defaultProvider);
+		addProvider(defaultProvider);
 	}
 	
 	public DefaultCommandPattern getDefaultPattern() {
