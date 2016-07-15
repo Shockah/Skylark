@@ -2,13 +2,12 @@
 <project default="build" name="Skylark - All">
 	<target name="build">
 	    <ant useNativeBasedir="true" antfile="build.xml" target="build" />
-		<ant useNativeBasedir="true" antfile="../Plugins/Bot Admin/build.xml" target="build" />
+		<ant useNativeBasedir="true" antfile="../Plugins/Bot Control/build.xml" target="build" />
 		<ant useNativeBasedir="true" antfile="../Plugins/Commands/build.xml" target="build" />
+		<ant useNativeBasedir="true" antfile="../Plugins/Factoids/build.xml" target="build" />
+		<ant useNativeBasedir="true" antfile="../Plugins/Groovy/build.xml" target="build" />
 		<ant useNativeBasedir="true" antfile="../Plugins/Ident/build.xml" target="build" />
 		<ant useNativeBasedir="true" antfile="../Plugins/Ident - NickServ/build.xml" target="build" />
-		<ant useNativeBasedir="true" antfile="../Plugins/Privileges/build.xml" target="build" />
-		<ant useNativeBasedir="true" antfile="../Plugins/Settings/build.xml" target="build" />
-		<ant useNativeBasedir="true" antfile="../Plugins/URL Announcer/build.xml" target="build" />
-		<ant useNativeBasedir="true" antfile="../Plugins/YouTube/build.xml" target="build" />
+		<ant useNativeBasedir="true" antfile="../Plugins/Permissions/build.xml" target="build" />
 	</target>
 </project>

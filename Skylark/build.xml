@@ -6,9 +6,10 @@
 		<jar destfile="../bin/Skylark.jar" filesetmanifest="mergewithoutmain">
 		    <manifest>
                 <attribute name="Main-Class" value="io.shockah.skylark.App"/>
-                <attribute name="Class-Path" value=". libs/commons-codec-1.9.jar libs/commons-io-2.4.jar libs/commons-lang3-3.2.1.jar libs/guava-16.0.jar libs/jsoup-1.7.3.jar libs/mongo-java-driver-2.12.3.jar libs/pircbotx-2.1-20150809.213909-141.jar libs/slf4j-api-1.7.7.jar libs/slf4j-simple-1.7.7.jar"/>
+                <attribute name="Class-Path" value=". libs/commons-codec-1.9.jar libs/commons-lang3-3.2.1.jar libs/guava-16.0.jar libs/commons-io-2.4.jar libs/slf4j-api-1.7.7.jar libs/slf4j-simple-1.7.7.jar libs/jsoup-1.7.3.jar libs/pircbotx-2.1.jar libs/ormlite-core-4.49-SNAPSHOT.jar libs/ormlite-jdbc-4.49-SNAPSHOT.jar libs/h2-1.4.192.jar"/>
             </manifest>
 			<fileset dir="bin"/>
+            <fileset dir="../../io.shockah.json/bin"/>
 		</jar>
 	</target>
 </project>

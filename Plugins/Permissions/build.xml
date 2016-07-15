@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="build" name="Skylark - Permissions">
+	<target name="build">
+		<mkdir dir="bin"/>
+		<delete file="../../bin/plugins/Permissions.jar"/>
+		<jar destfile="../../bin/plugins/Permissions.jar" filesetmanifest="mergewithoutmain">
+		<fileset dir="bin"/>
+		</jar>
+	</target>
+</project>

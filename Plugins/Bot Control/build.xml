@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="build" name="Skylark - Bot Control">
+	<target name="build">
+		<mkdir dir="bin"/>
+		<delete file="../../bin/plugins/Bot Control.jar"/>
+		<jar destfile="../../bin/plugins/Bot Control.jar" filesetmanifest="mergewithoutmain">
+		<fileset dir="bin"/>
+		</jar>
+	</target>
+</project>
