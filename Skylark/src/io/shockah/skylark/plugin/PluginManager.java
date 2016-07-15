@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PluginManager {
+	public static final Path LIBS_PATH = Paths.get("libs");
 	public static final Path PLUGIN_PATH = Paths.get("plugins");
 	
 	public final App app;
@@ -33,6 +34,10 @@ public class PluginManager {
 	
 	public PluginManager(App app) {
 		this.app = app;
+	}
+	
+	public Path getLibsPath() {
+		return LIBS_PATH;
 	}
 	
 	public Path getPluginPath() {
@@ -191,7 +196,7 @@ public class PluginManager {
 		List<Plugin.Info> infos = new ArrayList<>();
 		
 		try {
-			for (Path path : Files.newDirectoryStream(getPluginPath(), (path) -> path.getFileName().toString().endsWith(".jar"))) {
+			for (Path path : Files.newDirectoryStream(getPluginPath(), path -> path.getFileName().toString().endsWith(".jar"))) {
 				Path tmpPath = FileUtils.copyAsTrueTempFile(path);
 				FileSystem fs = FileSystems.newFileSystem(tmpPath, null);
 				
@@ -242,11 +247,18 @@ public class PluginManager {
 		return output;
 	}
 	
-	protected ClassLoader createClassLoader(List<Plugin.Info> infos) {
+	protected ClassLoader createClassLoader(ReadWriteList<Plugin.Info> infos) {
 		List<Path> paths = new ArrayList<>();
-		for (Plugin.Info info : infos) {
-			paths.add(info.fileSystem.getPath("/"));
+		try {
+			for (Path path : Files.newDirectoryStream(getLibsPath(), path -> path.getFileName().toString().endsWith(".jar"))) {
+				Path tmpPath = FileUtils.copyAsTrueTempFile(path);
+				FileSystem fs = FileSystems.newFileSystem(tmpPath, null);
+				paths.add(fs.getPath("/"));
+			}
+		} catch (Exception e) {
+			throw new UnexpectedException(e);
 		}
+		infos.iterate(info -> paths.add(info.fileSystem.getPath("/")));
 		return new PathClassLoader(paths);
 	}
 	

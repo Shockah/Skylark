@@ -58,7 +58,7 @@ public class DatabaseManager implements Closeable {
 		try {
 			return clazz.getConstructor(Dao.class).newInstance(getDao(clazz, Integer.class));
 		} catch (Exception e) {
-			return null;
+			throw new UnexpectedException(e);
 		}
 	}
 	

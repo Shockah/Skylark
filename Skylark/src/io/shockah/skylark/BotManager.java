@@ -187,7 +187,7 @@ public class BotManager {
 				}
 			})
 			.setEncoding(CHARSET)
-			.setName(name)
+			.setName(botName)
 			.setAutoNickChange(true)
 			.setMessageDelay(messageDelay)
 			.setCapEnabled(true)

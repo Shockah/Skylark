@@ -9,9 +9,16 @@ import com.j256.ormlite.field.FieldType;
 import com.j256.ormlite.field.SqlType;
 import com.j256.ormlite.field.types.BaseDataType;
 import com.j256.ormlite.support.DatabaseResults;
+import io.shockah.skylark.util.Lazy;
 
 public class StringListToSpaceDelimitedStringPersister extends BaseDataType {
-	public StringListToSpaceDelimitedStringPersister() {
+	private static final Lazy<StringListToSpaceDelimitedStringPersister> singleton = Lazy.of(() -> new StringListToSpaceDelimitedStringPersister());
+	
+	public static StringListToSpaceDelimitedStringPersister getSingleton() {
+		return singleton.get();
+	}
+	
+	private StringListToSpaceDelimitedStringPersister() {
 		super(SqlType.STRING, new Class<?>[] { List.class });
 	}
 
