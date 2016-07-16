@@ -22,9 +22,12 @@ public class GroovySandbox extends GroovyInterceptor {
 			}))
 			.build();
 	
+	private static final ImmutableMap<Class<?>, ImmutableList<String>> PROPERTY_BLACKLIST = ImmutableMap.<Class<?>, ImmutableList<String>>builder()
+			.build();
+	
 	private static final ImmutableList<String> PACKAGE_WHITELIST = ImmutableList.copyOf(new String[] {
 		"java.util", "java.math", "java.text",
-		"io.shockah.skylark", "io.shockah.json"
+		"io.shockah.json"
 	});
 	
 	private static final ImmutableList<Class<?>> CLASS_WHITELIST = ImmutableList.copyOf(new Class<?>[] {
@@ -39,6 +42,7 @@ public class GroovySandbox extends GroovyInterceptor {
 	
 	protected final List<Class<?>> classBlacklist = new ArrayList<>(CLASS_BLACKLIST);
 	protected final Map<Class<?>, List<String>> methodBlacklist = new HashMap<>(METHOD_BLACKLIST);
+	protected final Map<Class<?>, List<String>> propertyBlacklist = new HashMap<>(PROPERTY_BLACKLIST);
 	protected final List<String> packageWhitelist = new ArrayList<>(PACKAGE_WHITELIST);
 	protected final List<Class<?>> classWhitelist = new ArrayList<>(CLASS_WHITELIST);
 	protected final Map<Class<?>, List<String>> methodWhitelist = new HashMap<>(METHOD_WHITELIST);
@@ -57,6 +61,17 @@ public class GroovySandbox extends GroovyInterceptor {
 		}
 		for (String method : methods)
 			list.add(method);
+		return this;
+	}
+	
+	public GroovySandbox addBlacklistedProperties(Class<?> clazz, String... properties) {
+		List<String> list = propertyBlacklist.get(clazz);
+		if (list == null) {
+			list = new ArrayList<>();
+			propertyBlacklist.put(clazz, list);
+		}
+		for (String property : properties)
+			list.add(property);
 		return this;
 	}
 	
@@ -84,40 +99,37 @@ public class GroovySandbox extends GroovyInterceptor {
 	}
 	
 	public boolean isPropertyAccessAllowed(Object receiver, String property) {
-		if (receiver instanceof Class<?>) {
-			Class<?> clazz = (Class<?>)receiver;
-			if (clazz.getClassLoader() instanceof GroovyClassLoader)
-				return true;
-			
-			if (classBlacklist.contains(clazz))
+		Class<?> clazz = receiver.getClass();
+		if (receiver instanceof Class<?>)
+			clazz = (Class<?>)receiver;
+		
+		if (clazz.getClassLoader() instanceof GroovyClassLoader)
+			return true;
+		
+		if (classBlacklist.contains(clazz))
+			return false;
+		
+		Class<?> loopClazz = clazz;
+		do {
+			if (classBlacklist.contains(loopClazz))
 				return false;
 			
-			for (String packagePrefix : packageWhitelist) {
-				if (clazz.getName().startsWith(packagePrefix + "."))
-					return true;
-			}
-			
-			if (classWhitelist.contains(receiver))
-				return true;
-			
-			return false;
-		} else {
-			if (receiver.getClass().getClassLoader() instanceof GroovyClassLoader)
-				return true;
-			
-			if (classBlacklist.contains(receiver.getClass()))
+			List<String> properties = propertyBlacklist.get(loopClazz);
+			if (properties != null && properties.contains(property))
 				return false;
 			
-			for (String packagePrefix : packageWhitelist) {
-				if (receiver.getClass().getName().startsWith(packagePrefix + "."))
-					return true;
-			}
-			
-			if (classWhitelist.contains(receiver))
+			loopClazz = loopClazz.getSuperclass();
+		} while (loopClazz != null);
+		
+		for (String packagePrefix : packageWhitelist) {
+			if (clazz.getName().startsWith(packagePrefix + "."))
 				return true;
-			
-			return false;
 		}
+		
+		if (classWhitelist.contains(receiver))
+			return true;
+		
+		return true;
 	}
 	
 	public boolean isStaticCallAllowed(Class<?> receiver, String method, Object... args) {
