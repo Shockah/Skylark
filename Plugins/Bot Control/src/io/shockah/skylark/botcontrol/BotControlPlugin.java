@@ -62,7 +62,7 @@ public class BotControlPlugin extends ListenerPlugin {
 			return null;
 		});
 		
-		if (foundBot == null)
+		if (foundBot != null)
 			return;
 		
 		manager.joinChannel(e.getChannel());

@@ -1,6 +1,5 @@
 package io.shockah.skylark.groovy;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +9,7 @@ import org.kohsuke.groovy.sandbox.GroovyInterceptor;
 import com.github.kevinsawicki.http.HttpRequest;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import groovy.lang.GroovyClassLoader;
 
 public class GroovySandbox extends GroovyInterceptor {
 	private static final ImmutableList<Class<?>> CLASS_BLACKLIST = ImmutableList.copyOf(new Class<?>[] {
@@ -29,7 +29,7 @@ public class GroovySandbox extends GroovyInterceptor {
 	
 	private static final ImmutableList<Class<?>> CLASS_WHITELIST = ImmutableList.copyOf(new Class<?>[] {
 		Boolean.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Character.class, String.class,
-		Object.class, Number.class, StringBuilder.class, Math.class, URL.class,
+		Object.class, Number.class, StringBuilder.class, Math.class,
 		Random.class,
 		HttpRequest.class
 	});
@@ -83,7 +83,47 @@ public class GroovySandbox extends GroovyInterceptor {
 		return this;
 	}
 	
+	public boolean isPropertyAccessAllowed(Object receiver, String property) {
+		if (receiver instanceof Class<?>) {
+			Class<?> clazz = (Class<?>)receiver;
+			if (clazz.getClassLoader() instanceof GroovyClassLoader)
+				return true;
+			
+			if (classBlacklist.contains(clazz))
+				return false;
+			
+			for (String packagePrefix : packageWhitelist) {
+				if (clazz.getName().startsWith(packagePrefix + "."))
+					return true;
+			}
+			
+			if (classWhitelist.contains(receiver))
+				return true;
+			
+			return false;
+		} else {
+			if (receiver.getClass().getClassLoader() instanceof GroovyClassLoader)
+				return true;
+			
+			if (classBlacklist.contains(receiver.getClass()))
+				return false;
+			
+			for (String packagePrefix : packageWhitelist) {
+				if (receiver.getClass().getName().startsWith(packagePrefix + "."))
+					return true;
+			}
+			
+			if (classWhitelist.contains(receiver))
+				return true;
+			
+			return false;
+		}
+	}
+	
 	public boolean isStaticCallAllowed(Class<?> receiver, String method, Object... args) {
+		if (receiver.getClassLoader() instanceof GroovyClassLoader)
+			return true;
+		
 		if (classBlacklist.contains(receiver))
 			return false;
 		
@@ -100,6 +140,9 @@ public class GroovySandbox extends GroovyInterceptor {
 	
 	public boolean isCallAllowed(Object receiver, String method, Object... args) {
 		Class<?> clazz = receiver.getClass();
+		if (clazz.getClassLoader() instanceof GroovyClassLoader)
+			return true;
+		
 		boolean whitelistedMethod = false;
 		do {
 			if (classBlacklist.contains(clazz))
@@ -153,19 +196,43 @@ public class GroovySandbox extends GroovyInterceptor {
 	
 	@Override
 	public Object onGetProperty(Invoker invoker, Object receiver, String property) throws Throwable {
+		Class<?> clazz = receiver.getClass();
+		if (receiver instanceof Class<?>)
+			clazz = (Class<?>)receiver;
+		try {
+			clazz.getField(property);
+			if (isPropertyAccessAllowed(receiver, property))
+				return super.onGetProperty(invoker, receiver, property);
+			else
+				throw new SecurityException(String.format("%s.%s property access not allowed.", clazz.getName(), property));
+		} catch (NoSuchFieldException e) {
+		}
+		
 		String method = String.format("get%s%s", property.substring(0, 1).toUpperCase(), property.substring(1));
 		if (isCallAllowed(receiver, method))
-			return super.onMethodCall(invoker, receiver, property);
+			return super.onGetProperty(invoker, receiver, property);
 		else
-			throw new SecurityException(String.format("%s.%s method call not allowed.", receiver.getClass().getName(), method));
+			throw new SecurityException(String.format("%s.%s method call not allowed.", clazz.getName(), method));
 	}
 	
 	@Override
 	public Object onSetProperty(Invoker invoker, Object receiver, String property, Object value) throws Throwable {
+		Class<?> clazz = receiver.getClass();
+		if (receiver instanceof Class<?>)
+			clazz = (Class<?>)receiver;
+		try {
+			clazz.getField(property);
+			if (isPropertyAccessAllowed(receiver, property))
+				return super.onSetProperty(invoker, receiver, property, value);
+			else
+				throw new SecurityException(String.format("%s.%s property access not allowed.", clazz.getName(), property));
+		} catch (NoSuchFieldException e) {
+		}
+		
 		String method = String.format("set%s%s", property.substring(0, 1).toUpperCase(), property.substring(1));
-		if (isCallAllowed(receiver, method, value))
-			return super.onMethodCall(invoker, receiver, property, value);
+		if (isCallAllowed(receiver, method))
+			return super.onSetProperty(invoker, receiver, property, value);
 		else
-			throw new SecurityException(String.format("%s.%s method call not allowed.", receiver.getClass().getName(), method));
+			throw new SecurityException(String.format("%s.%s method call not allowed.", clazz.getName(), method));
 	}
 }

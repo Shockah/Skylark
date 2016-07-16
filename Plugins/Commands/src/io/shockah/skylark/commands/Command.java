@@ -4,11 +4,12 @@ import io.shockah.skylark.event.GenericUserMessageEvent;
 
 public abstract class Command<T, R> {
 	public Integer getLineLimit(CommandCall call, T input) {
-		return null;
+		//return null;
 		
-		/*int maxLines = 2;
+		int maxLines = 3;
 		if (call.inputMedium == CommandCall.Medium.Channel && call.event.getChannel().isOp(call.event.getUser()))
-			maxLines = 4;*/
+			maxLines = 5;
+		return maxLines;
 	}
 	
 	public abstract T parseInput(GenericUserMessageEvent e, String input) throws CommandParseException;
