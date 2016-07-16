@@ -57,21 +57,30 @@ public class GroovyPlugin extends Plugin {
 	}
 	
 	public GroovyShell getShell() {
-		return getShell(new Binding());
+		return getShell(new GroovySandbox());
 	}
 	
 	public GroovyShell getShell(Map<String, Object> variables) {
-		return getShell(new Binding(variables));
+		return getShell(variables, new GroovySandbox());
 	}
 	
-	private GroovyShell getShell(Binding binding) {
+	public GroovyShell getShell(GroovySandbox sandbox) {
+		return getShell(new Binding(), sandbox);
+	}
+	
+	public GroovyShell getShell(Map<String, Object> variables, GroovySandbox sandbox) {
+		return getShell(new Binding(variables), sandbox);
+	}
+	
+	private GroovyShell getShell(Binding binding, GroovySandbox sandbox) {
 		CompilerConfiguration cc = new CompilerConfiguration();
 		cc.addCompilationCustomizers(
 				new SandboxTransformer(),
 				new ASTTransformationCustomizer(ImmutableMap.of("value", 10), TimedInterrupt.class),
 				new ImportCustomizer().addImports(HttpRequest.class.getName())
 		);
-		new GroovySandbox().register();
-		return new GroovyShell(binding, cc);
+		GroovyShell shell =  new GroovyShell(manager.pluginClassLoader, binding, cc);
+		sandbox.register();
+		return shell;
 	}
 }

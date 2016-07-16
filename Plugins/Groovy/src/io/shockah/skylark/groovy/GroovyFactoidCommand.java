@@ -34,7 +34,7 @@ public class GroovyFactoidCommand<T, R> extends NamedCommand<T, R> {
 			variables.put("user", call.event.getUser());
 			variables.put("channel", call.event.getChannel());
 			variables.put("input", input);
-			return (CommandResult<R>)CommandResult.of(plugin.getShell(variables).evaluate(factoid.raw));
+			return (CommandResult<R>)CommandResult.of(plugin.getShell(variables, new UserGroovySandbox()).evaluate(factoid.raw));
 		} catch (Exception e) {
 			return CommandResult.error(e.getMessage());
 		}
