@@ -30,6 +30,7 @@ public class GroovyFactoidCommand<T, R> extends NamedCommand<T, R> {
 	public CommandResult<R> call(CommandCall call, T input) {
 		try {
 			Map<String, Object> variables = new LinkedHashMap<>();
+			variables.put("command", new DynamicCommandHandler(plugin, call.event));
 			variables.put("call", call);
 			variables.put("user", call.event.getUser());
 			variables.put("channel", call.event.getChannel());

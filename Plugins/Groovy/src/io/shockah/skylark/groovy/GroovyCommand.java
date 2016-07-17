@@ -25,6 +25,7 @@ public class GroovyCommand extends NamedCommand<String, Object> {
 	public CommandResult<Object> call(CommandCall call, String input) {
 		try {
 			Map<String, Object> variables = new LinkedHashMap<>();
+			variables.put("command", new DynamicCommandHandler(plugin, call.event));
 			variables.put("call", call);
 			variables.put("user", call.event.getUser());
 			variables.put("channel", call.event.getChannel());
