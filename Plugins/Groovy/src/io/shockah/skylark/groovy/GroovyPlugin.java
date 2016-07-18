@@ -12,6 +12,7 @@ import groovy.lang.GroovyShell;
 import groovy.transform.TimedInterrupt;
 import io.shockah.skylark.commands.CommandCall;
 import io.shockah.skylark.commands.CommandsPlugin;
+import io.shockah.skylark.event.GenericUserMessageEvent;
 import io.shockah.skylark.factoids.FactoidType;
 import io.shockah.skylark.factoids.FactoidsPlugin;
 import io.shockah.skylark.func.Func1;
@@ -60,28 +61,29 @@ public class GroovyPlugin extends Plugin {
 		}
 	}
 	
-	public GroovyShell getShell() {
-		return getShell(new GroovySandbox());
+	public GroovyShell getShell(GenericUserMessageEvent event) {
+		return getShell(new GroovySandbox(), event);
 	}
 	
-	public GroovyShell getShell(Map<String, Object> variables) {
-		return getShell(variables, new GroovySandbox());
+	public GroovyShell getShell(Map<String, Object> variables, GenericUserMessageEvent event) {
+		return getShell(variables, new GroovySandbox(), event);
 	}
 	
-	public GroovyShell getShell(GroovySandbox sandbox) {
-		return getShell(new Binding(), sandbox);
+	public GroovyShell getShell(GroovySandbox sandbox, GenericUserMessageEvent event) {
+		return getShell(new Binding(), sandbox, event);
 	}
 	
-	public GroovyShell getShell(Map<String, Object> variables, GroovySandbox sandbox) {
-		return getShell(new Binding(variables), sandbox);
+	public GroovyShell getShell(Map<String, Object> variables, GroovySandbox sandbox, GenericUserMessageEvent event) {
+		return getShell(new Binding(variables), sandbox, event);
 	}
 	
-	private Func1<String, Object> getEvalFunction(Binding binding, GroovySandbox sandbox) {
-		return input -> getShell(binding, sandbox).evaluate(input);
+	private Func1<String, Object> getEvalFunction(Binding binding, GroovySandbox sandbox, GenericUserMessageEvent event) {
+		return input -> getShell(binding, sandbox, event).evaluate(input);
 	}
 	
-	private GroovyShell getShell(Binding binding, GroovySandbox sandbox) {
-		binding.setVariable("eval", getEvalFunction(binding, sandbox));
+	private GroovyShell getShell(Binding binding, GroovySandbox sandbox, GenericUserMessageEvent event) {
+		binding.setVariable("eval", getEvalFunction(binding, sandbox, event));
+		binding.setVariable("commands", new DynamicCommandHandler(this, event));
 		CompilerConfiguration cc = new CompilerConfiguration();
 		cc.addCompilationCustomizers(
 				new SandboxTransformer(),
