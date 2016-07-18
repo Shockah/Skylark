@@ -28,6 +28,7 @@ public class FactoidsPlugin extends Plugin {
 	
 	private RememberCommand rememberCommand;
 	private ForgetCommand forgetCommand;
+	private FactoidInfoCommand factoidInfoCommand;
 	
 	public FactoidsPlugin(PluginManager manager, Info info) {
 		super(manager, info);
@@ -40,7 +41,8 @@ public class FactoidsPlugin extends Plugin {
 		addType(new SimpleFactoidType());
 		commandsPlugin.addNamedCommands(
 			rememberCommand = new RememberCommand(this),
-			forgetCommand = new ForgetCommand(this)
+			forgetCommand = new ForgetCommand(this),
+			factoidInfoCommand = new FactoidInfoCommand(this)
 		);
 	}
 	
@@ -49,7 +51,8 @@ public class FactoidsPlugin extends Plugin {
 		commandsPlugin.removeProvider(commandProvider);
 		commandsPlugin.removeNamedCommands(
 			rememberCommand,
-			forgetCommand
+			forgetCommand,
+			factoidInfoCommand
 		);
 	}
 	
