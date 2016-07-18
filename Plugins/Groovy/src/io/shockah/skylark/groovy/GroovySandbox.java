@@ -1,5 +1,8 @@
 package io.shockah.skylark.groovy;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,17 +16,30 @@ import groovy.lang.GroovyClassLoader;
 
 public class GroovySandbox extends GroovyInterceptor {
 	private static final ImmutableList<Class<?>> CLASS_BLACKLIST = ImmutableList.copyOf(new Class<?>[] {
-		System.class, Class.class
+		System.class
 	});
 	
 	private static final ImmutableMap<Class<?>, ImmutableList<String>> METHOD_BLACKLIST = ImmutableMap.<Class<?>, ImmutableList<String>>builder()
-			.put(Object.class, ImmutableList.copyOf(new String[] {
-					"getClass", "wait", "notify", "notifyAll", "finalize"
-			}))
-			.build();
+		.put(Object.class, ImmutableList.copyOf(new String[] {
+				"wait", "notify", "notifyAll", "finalize"
+		}))
+		.put(Class.class, ImmutableList.copyOf(new String[] {
+				"forName", "getClassLoader", "getResource", "newInstance"
+		}))
+		.put(Constructor.class, ImmutableList.copyOf(new String[] {
+				"newInstance"
+		}))
+		.put(Method.class, ImmutableList.copyOf(new String[] {
+				"invoke"
+		}))
+		.put(Field.class, ImmutableList.copyOf(new String[] {
+				"get", "getBoolean", "getByte", "getChar", "getDouble", "getFloat", "getInt", "getLong", "getShort",
+				"set", "setBoolean", "setByte", "setChar", "setDouble", "setFloat", "setInt", "setLong", "setShort"
+		}))
+		.build();
 	
 	private static final ImmutableMap<Class<?>, ImmutableList<String>> PROPERTY_BLACKLIST = ImmutableMap.<Class<?>, ImmutableList<String>>builder()
-			.build();
+		.build();
 	
 	private static final ImmutableList<String> PACKAGE_WHITELIST = ImmutableList.copyOf(new String[] {
 		"java.util", "java.math", "java.text",
@@ -38,7 +54,7 @@ public class GroovySandbox extends GroovyInterceptor {
 	});
 	
 	private static final ImmutableMap<Class<?>, ImmutableList<String>> METHOD_WHITELIST = ImmutableMap.<Class<?>, ImmutableList<String>>builder()
-			.build();
+		.build();
 	
 	protected final List<Class<?>> classBlacklist = new ArrayList<>(CLASS_BLACKLIST);
 	protected final Map<Class<?>, List<String>> methodBlacklist = new HashMap<>(METHOD_BLACKLIST);
@@ -136,8 +152,28 @@ public class GroovySandbox extends GroovyInterceptor {
 		if (receiver.getClassLoader() instanceof GroovyClassLoader)
 			return true;
 		
-		if (classBlacklist.contains(receiver))
-			return false;
+		Class<?> clazz = receiver.getClass();
+		boolean whitelistedMethod = false;
+		do {
+			if (classBlacklist.contains(clazz))
+				return false;
+			
+			List<String> methods = methodBlacklist.get(clazz);
+			if (methods != null && methods.contains(method))
+				return false;
+			
+			if (!whitelistedMethod) {
+				methods = methodWhitelist.get(clazz);
+				if (methods != null) {
+					if (methods.contains(method))
+						whitelistedMethod = true;
+					else
+						return false;
+				}
+			}
+			
+			clazz = clazz.getSuperclass();
+		} while (clazz != null);
 		
 		for (String packagePrefix : packageWhitelist) {
 			if (receiver.getName().startsWith(packagePrefix + "."))
