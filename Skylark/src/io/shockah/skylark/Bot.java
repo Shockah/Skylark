@@ -19,6 +19,7 @@ public class Bot extends PircBotX {
 		setupServices();
 		
 		whoisManager = new WhoisManager(this);
+		getConfiguration().getListenerManager().addListener(whoisManager);
 	}
 	
 	public void setupServices() {
