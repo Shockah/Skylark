@@ -89,6 +89,7 @@ public class GroovyPlugin extends Plugin {
 				new SandboxTransformer(),
 				new ASTTransformationCustomizer(ImmutableMap.of("value", TIMEOUT), TimedInterrupt.class),
 				new ImportCustomizer()
+					.addStarImports("java.lang.reflect")
 					.addImports(HttpRequest.class.getName())
 					.addImports(CommandCall.class.getName())
 		);
