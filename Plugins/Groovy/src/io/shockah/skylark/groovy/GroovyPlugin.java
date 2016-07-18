@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableMap;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.transform.TimedInterrupt;
+import io.shockah.skylark.commands.CommandCall;
 import io.shockah.skylark.commands.CommandsPlugin;
 import io.shockah.skylark.factoids.FactoidType;
 import io.shockah.skylark.factoids.FactoidsPlugin;
@@ -18,6 +19,8 @@ import io.shockah.skylark.plugin.Plugin;
 import io.shockah.skylark.plugin.PluginManager;
 
 public class GroovyPlugin extends Plugin {
+	public static final int TIMEOUT = 30;
+	
 	@Dependency
 	protected CommandsPlugin commandsPlugin;
 	
@@ -82,8 +85,10 @@ public class GroovyPlugin extends Plugin {
 		CompilerConfiguration cc = new CompilerConfiguration();
 		cc.addCompilationCustomizers(
 				new SandboxTransformer(),
-				new ASTTransformationCustomizer(ImmutableMap.of("value", 10), TimedInterrupt.class),
-				new ImportCustomizer().addImports(HttpRequest.class.getName())
+				new ASTTransformationCustomizer(ImmutableMap.of("value", TIMEOUT), TimedInterrupt.class),
+				new ImportCustomizer()
+					.addImports(HttpRequest.class.getName())
+					.addImports(CommandCall.class.getName())
 		);
 		GroovyShell shell = new GroovyShell(manager.pluginClassLoader, binding, cc);
 		sandbox.register();
