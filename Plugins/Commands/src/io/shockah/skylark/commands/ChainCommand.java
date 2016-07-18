@@ -24,6 +24,7 @@ public class ChainCommand<T, R> extends Command<T, R> {
 			CommandResult<?> result = objectCommand.call(call, value);
 			if (result.error != null)
 				CommandResult.error(result.error);
+			value = result.value;
 		}
 		return CommandResult.of((R)value);
 	}
