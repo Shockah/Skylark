@@ -180,7 +180,6 @@ public class GroovySandbox extends GroovyInterceptor {
 		return true;
 	}
 	
-	@SuppressWarnings("rawtypes")
 	@Override
 	public Object onStaticCall(Invoker invoker, Class receiver, String method, Object... args) throws Throwable {
 		if (isStaticCallAllowed(receiver, method, args))
@@ -189,7 +188,6 @@ public class GroovySandbox extends GroovyInterceptor {
 			throw new SecurityException(String.format("%s.%s method call not allowed.", receiver.getName(), method));
 	}
 	
-	@SuppressWarnings("rawtypes")
 	@Override
 	public Object onNewInstance(Invoker invoker, Class receiver, Object... args) throws Throwable {
 		if (isStaticCallAllowed(receiver, "..ctor", args))
