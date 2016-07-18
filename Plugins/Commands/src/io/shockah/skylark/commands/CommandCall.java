@@ -9,7 +9,7 @@ import io.shockah.skylark.event.GenericUserMessageEvent;
 public final class CommandCall {
 	public final GenericUserMessageEvent event;
 	public final Medium inputMedium;
-	public Medium outputMedium;
+	public Medium outputMedium = null;
 	
 	public CommandCall(GenericUserMessageEvent event) {
 		this.event = event;
@@ -22,16 +22,15 @@ public final class CommandCall {
 			inputMedium = Medium.Notice;
 		else
 			throw new IllegalArgumentException();
-		
-		outputMedium = inputMedium;
 	}
 	
 	public void respond(List<String> lines) {
-		if (outputMedium == null)
-			return;
+		Medium medium = outputMedium;
+		if (medium == null)
+			medium = inputMedium;
 		
 		for (String line : lines) {
-			switch (outputMedium) {
+			switch (medium) {
 				case Channel:
 					event.getChannel().send().message(line);
 					break;
