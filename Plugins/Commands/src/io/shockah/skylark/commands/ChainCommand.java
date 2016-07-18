@@ -11,6 +11,12 @@ public class ChainCommand<T, R> extends Command<T, R> {
 	
 	@SuppressWarnings("unchecked")
 	@Override
+	public T parseAnyInput(GenericUserMessageEvent e, Object input) throws CommandParseException {
+		return (T)commands[0].parseAnyInput(e, input);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
 	public T parseInput(GenericUserMessageEvent e, String input) throws CommandParseException {
 		return (T)commands[0].parseInput(e, input);
 	}

@@ -46,8 +46,14 @@ public class DynamicCommandHandler extends GroovyObjectSupport implements Map<St
 	public Func1<Object, Object> get(Object key) {
 		String skey = key.toString();
 		return input -> {
-			Command<Object, Object> genericCommand = (Command<Object, Object>)plugin.commandsPlugin.findCommand(event, skey);
-			CommandResult<Object> result = genericCommand.call(new CommandCall(event), input);
+			Command<Object, Object> objectCommand = (Command<Object, Object>)plugin.commandsPlugin.findCommand(event, skey);
+			Object actualInput = input;
+			try {
+				actualInput = objectCommand.parseAnyInput(event, input);
+			} catch (Exception e) {
+				throw new UnexpectedException(e);
+			}
+			CommandResult<Object> result = objectCommand.call(new CommandCall(event), actualInput);
 			if (result.error != null)
 				throw new UnexpectedException(result.error);
 			return result.value;
