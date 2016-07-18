@@ -54,6 +54,10 @@ public class IdentPlugin extends Plugin implements BotManagerService.Factory {
 			}
 		});
 	}
+	
+	public IdentMethodFactory getFactoryForPrefix(String prefix) {
+		return methodFactories.filterFirst(factory -> factory.prefix.equalsIgnoreCase(prefix));
+	}
 
 	@Override
 	public BotManagerService createService(BotManager manager) {

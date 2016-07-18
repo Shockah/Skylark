@@ -13,6 +13,7 @@ import io.shockah.skylark.commands.NamedCommand;
 import io.shockah.skylark.event.GenericUserMessageEvent;
 import io.shockah.skylark.factoids.FactoidInfoCommand.Input;
 import io.shockah.skylark.factoids.db.Factoid;
+import io.shockah.skylark.ident.IdentMethodFactory;
 import io.shockah.skylark.util.TimeDuration;
 
 public class FactoidInfoCommand extends NamedCommand<Input, Factoid> {
@@ -62,8 +63,12 @@ public class FactoidInfoCommand extends NamedCommand<Input, Factoid> {
 					sdf.format(factoid.date), TimeDuration.format(factoid.date)
 			));
 			lines.add(String.format("Source: %s", factoid.raw));
-			lines.add(String.format("User info: %s", Joiner.on("; ").join(factoid.getIdents().stream()
-					.map(ident -> String.format("%s: %s", ident.prefix, ident.account))
+			lines.add(String.format("User: %s", Joiner.on("; ").join(factoid.getIdents().stream()
+					.map(ident -> {
+						IdentMethodFactory identMethodFactory = plugin.identPlugin.getFactoryForPrefix(ident.prefix);
+						String identName = identMethodFactory == null ? ident.prefix : identMethodFactory.name;
+						return String.format("%s: %s", identName, ident.account);
+					})
 					.collect(Collectors.toList())
 			)));
 			return CommandResult.of(factoid, Joiner.on("\n").join(lines));
