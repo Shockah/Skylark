@@ -7,15 +7,15 @@ import org.pircbotx.UserHostmask;
 import io.shockah.skylark.Bot;
 import io.shockah.skylark.commands.CommandCall;
 
-public class UserGroovySandbox extends GroovySandbox {
-	public UserGroovySandbox() {
+public class UserGroovySandboxImpl extends GroovySandboxImpl {
+	public UserGroovySandboxImpl() {
 		super();
 		
 		addBlacklistedMethods(CommandCall.class,
 				"respond"
 		);
-		addBlacklistedMethods(Bot.class,
-				"getBotManager"
+		addBlacklistedFields(Bot.class,
+				"botManager"
 		);
 		
 		addWhitelistedMethods(PircBotX.class,

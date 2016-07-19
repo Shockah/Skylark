@@ -28,7 +28,7 @@ public class GroovyCommand extends NamedCommand<String, Object> {
 			variables.put("call", call);
 			variables.put("user", call.event.getUser());
 			variables.put("channel", call.event.getChannel());
-			return CommandResult.of(plugin.getShell(variables, new UserGroovySandbox(), call.event).evaluate(input));
+			return CommandResult.of(plugin.getShell(variables, new UserGroovySandboxImpl(), call.event).evaluate(input));
 		} catch (Exception e) {
 			return CommandResult.error(e.getMessage());
 		}

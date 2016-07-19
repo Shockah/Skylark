@@ -4,6 +4,7 @@ import java.util.Map;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
+import org.kohsuke.groovy.sandbox.GroovyInterceptor;
 import org.kohsuke.groovy.sandbox.SandboxTransformer;
 import com.github.kevinsawicki.http.HttpRequest;
 import com.google.common.collect.ImmutableMap;
@@ -62,26 +63,26 @@ public class GroovyPlugin extends Plugin {
 	}
 	
 	public GroovyShell getShell(GenericUserMessageEvent event) {
-		return getShell(new GroovySandbox(), event);
+		return getShell(new GroovySandboxImpl(), event);
 	}
 	
 	public GroovyShell getShell(Map<String, Object> variables, GenericUserMessageEvent event) {
-		return getShell(variables, new GroovySandbox(), event);
+		return getShell(variables, new GroovySandboxImpl(), event);
 	}
 	
-	public GroovyShell getShell(GroovySandbox sandbox, GenericUserMessageEvent event) {
+	public GroovyShell getShell(GroovyInterceptor sandbox, GenericUserMessageEvent event) {
 		return getShell(new Binding(), sandbox, event);
 	}
 	
-	public GroovyShell getShell(Map<String, Object> variables, GroovySandbox sandbox, GenericUserMessageEvent event) {
+	public GroovyShell getShell(Map<String, Object> variables, GroovyInterceptor sandbox, GenericUserMessageEvent event) {
 		return getShell(new Binding(variables), sandbox, event);
 	}
 	
-	private Func1<String, Object> getEvalFunction(Binding binding, GroovySandbox sandbox, GenericUserMessageEvent event) {
+	private Func1<String, Object> getEvalFunction(Binding binding, GroovyInterceptor sandbox, GenericUserMessageEvent event) {
 		return input -> getShell(binding, sandbox, event).evaluate(input);
 	}
 	
-	private GroovyShell getShell(Binding binding, GroovySandbox sandbox, GenericUserMessageEvent event) {
+	private GroovyShell getShell(Binding binding, GroovyInterceptor sandbox, GenericUserMessageEvent event) {
 		binding.setVariable("eval", getEvalFunction(binding, sandbox, event));
 		binding.setVariable("commands", new DynamicCommandHandler(this, event));
 		CompilerConfiguration cc = new CompilerConfiguration();
