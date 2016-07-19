@@ -2,6 +2,7 @@ package io.shockah.skylark.factoids;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.regex.Pattern;
 import io.shockah.skylark.Bot;
 import io.shockah.skylark.DatabaseManager;
 import io.shockah.skylark.commands.CommandCall;
@@ -16,6 +17,8 @@ import io.shockah.skylark.factoids.db.FactoidIdent;
 import io.shockah.skylark.ident.IdentMethod;
 
 public class RememberCommand extends NamedCommand<Input, Factoid> {
+	private static final Pattern FACTOID_NAME_PATTERN = Pattern.compile("\\w\\S*");
+	
 	private final FactoidsPlugin plugin;
 	
 	public RememberCommand(FactoidsPlugin plugin) {
@@ -33,6 +36,7 @@ public class RememberCommand extends NamedCommand<Input, Factoid> {
 		String typeName = null;
 		String name = null;
 		String raw = null;
+		boolean append = false;
 		
 		for (int i = 0; i < split.length; i++) {
 			String arg = split[i];
@@ -68,11 +72,19 @@ public class RememberCommand extends NamedCommand<Input, Factoid> {
 		if (typeName == null)
 			typeName = SimpleFactoidType.TYPE;
 		
-		return new Input(context, name, typeName, raw);
+		if (name.charAt(0) == '+') {
+			name = name.substring(1);
+			append = true;
+		}
+		
+		return new Input(context, name, typeName, raw, append);
 	}
 
 	@Override
 	public CommandResult<Factoid> call(CommandCall call, Input input) {
+		if (!FACTOID_NAME_PATTERN.matcher(input.name).find())
+			throw new IllegalArgumentException("Illegal name.");
+		
 		DatabaseManager databaseManager = plugin.manager.app.databaseManager;
 		
 		databaseManager.delete(Factoid.class, (builder, where) -> {
@@ -88,13 +100,26 @@ public class RememberCommand extends NamedCommand<Input, Factoid> {
 				where.equals(Factoid.SERVER_COLUMN, call.event.<Bot>getBot().manager.name);
 		});
 		
+		String raw = input.raw;
+		if (input.append) {
+			Factoid currentFactoid = plugin.findActiveFactoid(call.event, input.name, input.context);
+			if (currentFactoid == null)
+				return CommandResult.error("Factoid doesn't exist.");
+			
+			raw = String.format("%s\n%s", currentFactoid.raw, input.raw);
+			currentFactoid.update(obj -> {
+				obj.active = false;
+			});
+		}
+		
+		final String f_raw = raw;
 		Factoid factoid = databaseManager.create(Factoid.class, obj -> {
 			obj.server = call.event.<Bot>getBot().manager.name;
 			obj.channel = call.event.getChannel().getName();
 			obj.context = input.context;
 			obj.name = input.name;
 			obj.type = input.typeName;
-			obj.raw = input.raw;
+			obj.raw = f_raw;
 			obj.date = new Date();
 		});
 		
@@ -114,12 +139,18 @@ public class RememberCommand extends NamedCommand<Input, Factoid> {
 		public final String name;
 		public final String typeName;
 		public final String raw;
+		public final boolean append;
 		
 		public Input(Factoid.Context context, String name, String typeName, String raw) {
+			this(context, name, typeName, raw, true);
+		}
+		
+		public Input(Factoid.Context context, String name, String typeName, String raw, boolean append) {
 			this.context = context;
 			this.name = name;
 			this.typeName = typeName;
 			this.raw = raw;
+			this.append = append;
 		}
 	}
 }
