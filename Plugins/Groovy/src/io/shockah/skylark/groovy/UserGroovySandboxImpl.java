@@ -6,6 +6,7 @@ import org.pircbotx.User;
 import org.pircbotx.UserHostmask;
 import io.shockah.skylark.Bot;
 import io.shockah.skylark.commands.CommandCall;
+import io.shockah.skylark.commands.CommandResult;
 
 public class UserGroovySandboxImpl extends GroovySandboxImpl {
 	public UserGroovySandboxImpl() {
@@ -39,6 +40,10 @@ public class UserGroovySandboxImpl extends GroovySandboxImpl {
 		
 		addWhitelistedPackages(
 				"io.shockah.skylark.commands"
+		);
+		
+		addWhitelistedClasses(
+				CommandResult.class
 		);
 	}
 }

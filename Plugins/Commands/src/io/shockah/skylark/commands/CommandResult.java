@@ -23,7 +23,8 @@ public final class CommandResult<T> {
 		return new CommandResult<>(null, null, error);
 	}
 	
-	public String getIRCOutput() {
+	@Override
+	public String toString() {
 		return error == null ? ircOutput : error;
 	}
 }

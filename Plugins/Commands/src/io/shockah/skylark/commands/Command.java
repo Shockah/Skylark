@@ -12,7 +12,11 @@ public abstract class Command<T, R> {
 		return maxLines;
 	}
 	
-	public T parseAnyInput(GenericUserMessageEvent e, Object input) throws CommandParseException {
+	public T prepareChainedCallInput(GenericUserMessageEvent e, CommandResult<T> previousResult) {
+		return previousResult.value;
+	}
+	
+	public T convertToInput(GenericUserMessageEvent e, Object input) throws CommandParseException {
 		if (input == null)
 			return parseInput(e, null);
 		return parseInput(e, input.toString());

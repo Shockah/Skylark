@@ -49,7 +49,7 @@ public class DynamicCommandHandler extends GroovyObjectSupport implements Map<St
 			Command<Object, Object> objectCommand = (Command<Object, Object>)plugin.commandsPlugin.findCommand(event, skey);
 			Object actualInput = input;
 			try {
-				actualInput = objectCommand.parseAnyInput(event, input);
+				actualInput = objectCommand.convertToInput(event, input);
 			} catch (Exception e) {
 				throw new UnexpectedException(e);
 			}

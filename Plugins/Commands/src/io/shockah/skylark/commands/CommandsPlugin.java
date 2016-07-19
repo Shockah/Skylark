@@ -106,7 +106,7 @@ public class CommandsPlugin extends ListenerPlugin {
 				return;
 			
 			CommandResult<?> value = preparedCall.call(call);
-			String output = value.getIRCOutput();
+			String output = value.toString();
 			
 			if (output != null) {
 				List<String> lines = Arrays.asList(output.split("\\r?\\n|\\r"));

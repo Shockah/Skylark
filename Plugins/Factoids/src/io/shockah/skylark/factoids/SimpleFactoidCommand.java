@@ -12,6 +12,11 @@ public class SimpleFactoidCommand extends AbstractFactoidCommand<String, String>
 	}
 	
 	@Override
+	public String prepareChainedCallInput(GenericUserMessageEvent e, CommandResult<String> previousResult) {
+		return previousResult.toString();
+	}
+	
+	@Override
 	public String parseInput(GenericUserMessageEvent e, String input) throws CommandParseException {
 		return input;
 	}
