@@ -22,7 +22,7 @@ public class GroovySandboxImpl extends AbstractGroovySandbox {
 		).build()
 	).put(
 		Class.class, ImmutableList.<String>builder().add(
-			"forName", "getClassLoader", "getResource", "newInstance"
+			"getClassLoader", "getResource", "newInstance"
 		).build()
 	).put(
 		Constructor.class, ImmutableList.<String>builder().add(
@@ -49,7 +49,7 @@ public class GroovySandboxImpl extends AbstractGroovySandbox {
 	private static final List<Class<?>> CLASS_WHITELIST = ImmutableList.<Class<?>>builder().add(
 		Boolean.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class,
 		Character.class, String.class, Object.class, Number.class, StringBuilder.class, Math.class,
-		HttpRequest.class
+		HttpRequest.class, Class.class
 	).build();
 	
 	private static final Map<Class<?>, List<String>> METHOD_WHITELIST = ImmutableMap.<Class<?>, List<String>>builder().build();

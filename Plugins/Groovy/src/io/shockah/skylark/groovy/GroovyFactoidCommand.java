@@ -21,6 +21,12 @@ public class GroovyFactoidCommand<T, R> extends NamedCommand<T, R> {
 	
 	@SuppressWarnings("unchecked")
 	@Override
+	public T parseAnyInput(GenericUserMessageEvent e, Object input) throws CommandParseException {
+		return (T)input;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
 	public T parseInput(GenericUserMessageEvent e, String input) throws CommandParseException {
 		return (T)input;
 	}
