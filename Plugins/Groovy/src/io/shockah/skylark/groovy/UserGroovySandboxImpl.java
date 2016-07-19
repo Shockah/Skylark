@@ -14,8 +14,9 @@ public class UserGroovySandboxImpl extends GroovySandboxImpl {
 		addBlacklistedMethods(CommandCall.class,
 				"respond"
 		);
+		
 		addBlacklistedFields(Bot.class,
-				"botManager"
+				"manager"
 		);
 		
 		addWhitelistedMethods(PircBotX.class,

@@ -54,7 +54,7 @@ public abstract class AbstractGroovySandbox extends GroovyInterceptor {
 					return super.onGetProperty(invoker, receiver, property);
 				else
 					throw new SecurityException(String.format("%s.%s static field access not allowed.", clazz.getName(), property));
-			} catch (Exception e) {
+			} catch (NoSuchFieldException e) {
 			}
 			
 			String method = String.format("get%s%s", property.substring(0, 1).toUpperCase(), property.substring(1));
@@ -67,7 +67,7 @@ public abstract class AbstractGroovySandbox extends GroovyInterceptor {
 					else
 						throw new SecurityException(String.format("%s.%s instance method call not allowed.", clazz.getName(), method));
 				}
-			} catch (Exception e) {
+			} catch (NoSuchMethodException e) {
 			}
 			if (isClassMethodCallAllowed(clazz, method))
 				return super.onGetProperty(invoker, receiver, property);
@@ -82,7 +82,7 @@ public abstract class AbstractGroovySandbox extends GroovyInterceptor {
 					return super.onGetProperty(invoker, receiver, property);
 				else
 					throw new SecurityException(String.format("%s.%s instance field access not allowed.", clazz.getName(), property));
-			} catch (Exception e) {
+			} catch (NoSuchFieldException e) {
 			}
 			
 			String method = String.format("get%s%s", property.substring(0, 1).toUpperCase(), property.substring(1));
@@ -104,7 +104,7 @@ public abstract class AbstractGroovySandbox extends GroovyInterceptor {
 					return super.onSetProperty(invoker, receiver, property, value);
 				else
 					throw new SecurityException(String.format("%s.%s static field access not allowed.", clazz.getName(), property));
-			} catch (Exception e) {
+			} catch (NoSuchFieldException e) {
 			}
 			
 			String method = String.format("set%s%s", property.substring(0, 1).toUpperCase(), property.substring(1));
@@ -117,7 +117,7 @@ public abstract class AbstractGroovySandbox extends GroovyInterceptor {
 					else
 						throw new SecurityException(String.format("%s.%s instance method call not allowed.", clazz.getName(), method));
 				}
-			} catch (Exception e) {
+			} catch (NoSuchMethodException e) {
 			}
 			if (isClassMethodCallAllowed(clazz, method, value))
 				return super.onSetProperty(invoker, receiver, property, value);
@@ -132,7 +132,7 @@ public abstract class AbstractGroovySandbox extends GroovyInterceptor {
 					return super.onSetProperty(invoker, receiver, property, value);
 				else
 					throw new SecurityException(String.format("%s.%s instance field access not allowed.", clazz.getName(), property));
-			} catch (Exception e) {
+			} catch (NoSuchFieldException e) {
 			}
 			
 			String method = String.format("set%s%s", property.substring(0, 1).toUpperCase(), property.substring(1));

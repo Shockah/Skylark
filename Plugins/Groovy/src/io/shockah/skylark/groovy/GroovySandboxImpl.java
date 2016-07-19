@@ -80,6 +80,16 @@ public class GroovySandboxImpl extends AbstractGroovySandbox {
 		return false;
 	}
 	
+	protected final boolean isFieldBlacklisted(Class<?> clazz, String field) {
+		do {
+			List<String> fields = fieldBlacklist.get(clazz);
+			if (fields != null && fields.contains(field))
+				return true;
+			clazz = clazz.getSuperclass();
+		} while (clazz != null);
+		return false;
+	}
+	
 	protected final boolean isPackageWhitelisted(Class<?> clazz) {
 		for (String packagePrefix : packageWhitelist) {
 			if (clazz.getName().startsWith(packagePrefix + "."))
@@ -170,6 +180,8 @@ public class GroovySandboxImpl extends AbstractGroovySandbox {
 	public boolean isInstanceFieldGetAllowed(Object obj, String field) {
 		if (isClassBlacklisted(obj.getClass()))
 			return false;
+		if (isFieldBlacklisted(obj.getClass(), field))
+			return false;
 		/*if (isPackageWhitelisted(obj.getClass()))
 			return true;
 		if (isClassWhitelisted(obj.getClass()))
@@ -180,6 +192,8 @@ public class GroovySandboxImpl extends AbstractGroovySandbox {
 	@Override
 	public boolean isInstanceFieldSetAllowed(Object obj, String field, Object value) {
 		if (isClassBlacklisted(obj.getClass()))
+			return false;
+		if (isFieldBlacklisted(obj.getClass(), field))
 			return false;
 		/*if (isPackageWhitelisted(obj.getClass()))
 			return true;
