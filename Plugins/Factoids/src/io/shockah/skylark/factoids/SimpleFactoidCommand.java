@@ -3,16 +3,12 @@ package io.shockah.skylark.factoids;
 import io.shockah.skylark.commands.CommandCall;
 import io.shockah.skylark.commands.CommandParseException;
 import io.shockah.skylark.commands.CommandResult;
-import io.shockah.skylark.commands.NamedCommand;
 import io.shockah.skylark.event.GenericUserMessageEvent;
 import io.shockah.skylark.factoids.db.Factoid;
 
-public class SimpleFactoidCommand extends NamedCommand<String, String> {
-	public final Factoid factoid;
-	
+public class SimpleFactoidCommand extends AbstractFactoidCommand<String, String> {
 	public SimpleFactoidCommand(Factoid factoid) {
-		super(factoid.name);
-		this.factoid = factoid;
+		super(factoid);
 	}
 	
 	@Override
