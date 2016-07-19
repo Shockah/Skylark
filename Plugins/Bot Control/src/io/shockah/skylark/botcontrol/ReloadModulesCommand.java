@@ -22,6 +22,8 @@ public class ReloadModulesCommand extends NamedCommand<Void, String> {
 		//	return CommandResult.error("Permission required.");
 		
 		call.event.<Bot>getBot().manager.serverManager.app.pluginManager.reload();
+		if (call.outputMedium == null)
+			call.outputMedium = CommandCall.Medium.Notice;
 		return CommandResult.of("Done.");
 	}
 }
