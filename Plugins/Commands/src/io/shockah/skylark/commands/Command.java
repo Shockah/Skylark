@@ -15,9 +15,7 @@ public abstract class Command<T, R> {
 	public T parseAnyInput(GenericUserMessageEvent e, Object input) throws CommandParseException {
 		if (input == null)
 			return parseInput(e, null);
-		if (input instanceof String)
-			return parseInput(e, (String)input);
-		throw new CommandParseException(String.format("Cannot parse input of type %s.", input.getClass().getName()));
+		return parseInput(e, input.toString());
 	}
 	
 	public abstract T parseInput(GenericUserMessageEvent e, String input) throws CommandParseException;
