@@ -38,13 +38,13 @@ public class NickServIdentMethod extends IdentMethod {
 	public NickServIdentMethod(IdentService service, IdentMethodFactory factory) {
 		super(service, factory, METHOD_NAME, METHOD_PREFIX);
 		
-		service.manager.bots.iterate(bot -> {
-			if (!hasWhoX())
-				return;
-			for (Channel channel : bot.getUserBot().getChannels()) {
-				bot.sendRaw().rawLine(String.format("WHO %s %%na", channel.getName()));
-			}
-		});
+		if (!service.manager.bots.isEmpty() && hasWhoX()) {
+			service.manager.bots.iterate(bot -> {
+				for (Channel channel : bot.getUserBot().getChannels()) {
+					bot.sendRaw().rawLine(String.format("WHO %s %%na", channel.getName()));
+				}
+			});
+		}
 	}
 
 	@Override
