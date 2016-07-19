@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import org.pircbotx.Channel;
 import org.pircbotx.User;
 import io.shockah.skylark.Bot;
 import io.shockah.skylark.event.Whois2Event;
@@ -37,14 +36,6 @@ public class NickServIdentMethod extends IdentMethod {
 	
 	public NickServIdentMethod(IdentService service, IdentMethodFactory factory) {
 		super(service, factory, METHOD_NAME, METHOD_PREFIX);
-		
-		if (!service.manager.bots.isEmpty() && hasWhoX()) {
-			service.manager.bots.iterate(bot -> {
-				for (Channel channel : bot.getUserBot().getChannels()) {
-					bot.sendRaw().rawLine(String.format("WHO %s %%na", channel.getName()));
-				}
-			});
-		}
 	}
 
 	@Override

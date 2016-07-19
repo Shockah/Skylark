@@ -33,6 +33,24 @@ public class NickServIdentPlugin extends ListenerPlugin {
 	}
 	
 	@Override
+	protected void onAllPluginsLoaded() {
+		manager.app.serverManager.botManagers.iterate(botManager -> {
+			if (!botManager.bots.isEmpty()) {
+				IdentService service = botManager.getService(IdentService.class);
+				NickServIdentMethod method = service.getMethod(NickServIdentMethod.class);
+				if (method == null || !method.isAvailable() || !method.hasWhoX())
+					return;
+				
+				botManager.bots.iterate(bot -> {
+					for (Channel channel : bot.getUserBot().getChannels()) {
+						bot.sendRaw().rawLine(String.format("WHO %s %%na", channel.getName()));
+					}
+				});
+			}
+		});
+	}
+	
+	@Override
 	protected void onUnload() {
 		identPlugin.unregister(factory);
 	}
