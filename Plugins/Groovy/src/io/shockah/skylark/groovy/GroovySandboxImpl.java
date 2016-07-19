@@ -10,6 +10,8 @@ import java.util.Map;
 import com.github.kevinsawicki.http.HttpRequest;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import groovy.lang.Tuple;
+import groovy.lang.Tuple2;
 
 public class GroovySandboxImpl extends AbstractGroovySandbox {
 	private static final List<Class<?>> CLASS_BLACKLIST = ImmutableList.<Class<?>>builder().add(
@@ -43,13 +45,15 @@ public class GroovySandboxImpl extends AbstractGroovySandbox {
 	
 	private static final List<String> PACKAGE_WHITELIST = ImmutableList.<String>builder().add(
 		"io.shockah.json",
-		"java.math", "java.text", "java.util"
+		"java.math", "java.text", "java.util",
+		"groovy.json"
 	).build();
 	
 	private static final List<Class<?>> CLASS_WHITELIST = ImmutableList.<Class<?>>builder().add(
 		Boolean.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class,
 		Character.class, String.class, Object.class, Number.class, StringBuilder.class, Math.class,
-		HttpRequest.class, Class.class
+		HttpRequest.class, Class.class,
+		Tuple.class, Tuple2.class
 	).build();
 	
 	private static final Map<Class<?>, List<String>> METHOD_WHITELIST = ImmutableMap.<Class<?>, List<String>>builder().build();
