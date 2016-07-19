@@ -1,13 +1,5 @@
 package io.shockah.skylark.permissions;
 
-import io.shockah.skylark.DatabaseManager;
-import io.shockah.skylark.UnexpectedException;
-import io.shockah.skylark.ident.IdentMethod;
-import io.shockah.skylark.ident.IdentPlugin;
-import io.shockah.skylark.permissions.db.UserGroup;
-import io.shockah.skylark.permissions.db.UserGroupIdent;
-import io.shockah.skylark.plugin.Plugin;
-import io.shockah.skylark.plugin.PluginManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +8,14 @@ import org.pircbotx.User;
 import com.j256.ormlite.field.SqlType;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.SelectArg;
+import io.shockah.skylark.DatabaseManager;
+import io.shockah.skylark.UnexpectedException;
+import io.shockah.skylark.ident.IdentMethod;
+import io.shockah.skylark.ident.IdentPlugin;
+import io.shockah.skylark.permissions.db.UserGroup;
+import io.shockah.skylark.permissions.db.UserGroupIdent;
+import io.shockah.skylark.plugin.Plugin;
+import io.shockah.skylark.plugin.PluginManager;
 
 public class PermissionsPlugin extends Plugin {
 	@Dependency
@@ -54,12 +54,28 @@ public class PermissionsPlugin extends Plugin {
 		}
 	}
 	
+	public boolean permissionGranted(User user, Plugin plugin, String subpermission) {
+		return permissionGranted(user, plugin.info, subpermission);
+	}
+	
+	public boolean permissionGranted(User user, Plugin.Info pluginInfo, String subpermission) {
+		return permissionGranted(user, String.format("%s.%s", pluginInfo.packageName(), subpermission));
+	}
+	
 	public boolean permissionGranted(User user, String permission) {
 		for (UserGroup group : getUserGroups(user)) {
 			if (group.permissionGranted(permission))
 				return true;
 		}
 		return false;
+	}
+	
+	public boolean permissionGranted(IdentMethod method, String identString, Plugin plugin, String subpermission) {
+		return permissionGranted(method, identString, plugin.info, subpermission);
+	}
+	
+	public boolean permissionGranted(IdentMethod method, String identString, Plugin.Info pluginInfo, String subpermission) {
+		return permissionGranted(method, identString, String.format("%s.%s", pluginInfo.packageName(), subpermission));
 	}
 	
 	public boolean permissionGranted(IdentMethod method, String identString, String permission) {
@@ -69,4 +85,22 @@ public class PermissionsPlugin extends Plugin {
 		}
 		return false;
 	}
+	
+	/*@Override
+	protected void onLoad() {
+		DatabaseManager databaseManager = manager.app.databaseManager;
+		
+		UserGroup group = databaseManager.create(UserGroup.class, obj -> {
+			obj.name = "admin";
+		});
+		databaseManager.create(UserGroupIdent.class, obj -> {
+			obj.method = "ns";
+			obj.identPattern = Pattern.compile(Pattern.quote("Shockah"));
+			obj.setUserGroup(group);
+		});
+		databaseManager.create(UserGroupPermission.class, obj -> {
+			obj.permission = "*";
+			obj.setUserGroup(group);
+		});
+	}*/
 }

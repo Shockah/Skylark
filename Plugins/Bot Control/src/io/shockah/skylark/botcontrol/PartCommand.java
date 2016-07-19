@@ -37,7 +37,9 @@ public class PartCommand extends NamedCommand<List<String>, List<String>> {
 
 	@Override
 	public CommandResult<List<String>> call(CommandCall call, List<String> input) {
-		if (!plugin.permissionGranted(call.event.getUser(), "part"))
+		if (call.outputMedium == null)
+			call.outputMedium = CommandCall.Medium.Notice;
+		if (!plugin.permissionsPlugin.permissionGranted(call.event.getUser(), plugin, names[0]))
 			return CommandResult.error("Permission required.");
 		
 		List<String> result = new ArrayList<>();

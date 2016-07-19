@@ -27,7 +27,9 @@ public class JoinCommand extends NamedCommand<List<String>, Map<String, Bot>> {
 
 	@Override
 	public CommandResult<Map<String, Bot>> call(CommandCall call, List<String> input) {
-		if (!plugin.permissionGranted(call.event.getUser(), "join"))
+		if (call.outputMedium == null)
+			call.outputMedium = CommandCall.Medium.Notice;
+		if (!plugin.permissionsPlugin.permissionGranted(call.event.getUser(), plugin, names[0]))
 			return CommandResult.error("Permission required.");
 		
 		Map<String, Bot> result = new HashMap<>();

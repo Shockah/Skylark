@@ -1,7 +1,6 @@
 package io.shockah.skylark.botcontrol;
 
 import org.pircbotx.Channel;
-import org.pircbotx.User;
 import org.pircbotx.hooks.events.InviteEvent;
 import io.shockah.skylark.Bot;
 import io.shockah.skylark.BotManager;
@@ -30,7 +29,7 @@ public class BotControlPlugin extends ListenerPlugin {
 		commandsPlugin.addNamedCommands(
 			joinCommand = new JoinCommand(this),
 			partCommand = new PartCommand(this),
-			reloadModulesCommand = new ReloadModulesCommand()
+			reloadModulesCommand = new ReloadModulesCommand(this)
 		);
 	}
 	
@@ -66,9 +65,5 @@ public class BotControlPlugin extends ListenerPlugin {
 			return;
 		
 		manager.joinChannel(e.getChannel());
-	}
-	
-	protected boolean permissionGranted(User user, String subpermission) {
-		return permissionsPlugin.permissionGranted(user, String.format("%s.%s", info.packageName(), subpermission));
 	}
 }

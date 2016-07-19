@@ -29,6 +29,11 @@ public class UserGroupIdent extends DbObject<UserGroupIdent> {
 		super();
 	}
 	
+	@Deprecated //ORMLite-only
+	public UserGroupIdent(Dao<UserGroupIdent, Integer> dao) {
+		super(dao);
+	}
+	
 	public UserGroupIdent(Dao<UserGroupIdent, Integer> dao, UserGroup userGroup) {
 		super(dao);
 		this.userGroup = userGroup;

@@ -21,6 +21,11 @@ public class UserGroupPermission extends DbObject<UserGroupPermission> {
 	protected UserGroupPermission() {
 	}
 	
+	@Deprecated //ORMLite-only
+	public UserGroupPermission(Dao<UserGroupPermission, Integer> dao) {
+		super(dao);
+	}
+	
 	public UserGroupPermission(Dao<UserGroupPermission, Integer> dao, UserGroup userGroup) {
 		super(dao);
 		this.userGroup = userGroup;

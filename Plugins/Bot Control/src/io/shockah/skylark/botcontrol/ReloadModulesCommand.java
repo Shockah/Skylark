@@ -7,8 +7,11 @@ import io.shockah.skylark.commands.NamedCommand;
 import io.shockah.skylark.event.GenericUserMessageEvent;
 
 public class ReloadModulesCommand extends NamedCommand<Void, String> {
-	public ReloadModulesCommand() {
+	private final BotControlPlugin plugin;
+	
+	public ReloadModulesCommand(BotControlPlugin plugin) {
 		super("reload");
+		this.plugin = plugin;
 	}
 
 	@Override
@@ -18,8 +21,10 @@ public class ReloadModulesCommand extends NamedCommand<Void, String> {
 
 	@Override
 	public CommandResult<String> call(CommandCall call, Void input) {
-		//if (!plugin.permissionGranted(call.event.getUser(), "reload"))
-		//	return CommandResult.error("Permission required.");
+		if (call.outputMedium == null)
+			call.outputMedium = CommandCall.Medium.Notice;
+		if (!plugin.permissionsPlugin.permissionGranted(call.event.getUser(), plugin, names[0]))
+			return CommandResult.error("Permission required.");
 		
 		call.event.<Bot>getBot().manager.serverManager.app.pluginManager.reload();
 		if (call.outputMedium == null)
