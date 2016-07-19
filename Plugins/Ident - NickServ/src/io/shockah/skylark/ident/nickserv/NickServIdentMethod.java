@@ -1,5 +1,12 @@
 package io.shockah.skylark.ident.nickserv;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 import io.shockah.skylark.Bot;
 import io.shockah.skylark.event.Whois2Event;
 import io.shockah.skylark.func.Action2;
@@ -11,12 +18,6 @@ import io.shockah.skylark.util.Dates;
 import io.shockah.skylark.util.Lazy;
 import io.shockah.skylark.util.ReadWriteList;
 import io.shockah.skylark.util.ReadWriteMap;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import org.pircbotx.User;
 
 public class NickServIdentMethod extends IdentMethod {
 	public static final String METHOD_NAME = "NickServ";
@@ -36,6 +37,14 @@ public class NickServIdentMethod extends IdentMethod {
 	
 	public NickServIdentMethod(IdentService service, IdentMethodFactory factory) {
 		super(service, factory, METHOD_NAME, METHOD_PREFIX);
+		
+		service.manager.bots.iterate(bot -> {
+			if (!hasWhoX())
+				return;
+			for (Channel channel : bot.getUserBot().getChannels()) {
+				bot.sendRaw().rawLine(String.format("WHO %s %%na", channel.getName()));
+			}
+		});
 	}
 
 	@Override

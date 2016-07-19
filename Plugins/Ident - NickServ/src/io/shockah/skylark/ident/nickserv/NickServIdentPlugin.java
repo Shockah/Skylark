@@ -82,7 +82,7 @@ public class NickServIdentPlugin extends ListenerPlugin {
 		if (method == null || !method.isAvailable())
 			return;
 		
-		if (e.getUser() == e.getBot().getUserBot())
+		if (method.hasWhoX() && e.getUser() == e.getBot().getUserBot())
 			e.getBot().sendRaw().rawLine(String.format("WHO %s %%na", e.getChannel().getName()));
 	}
 	
