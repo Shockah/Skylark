@@ -1,0 +1,9 @@
+{
+	"packageName": "io.shockah.skylark.urlannouncer",
+	"baseClass": "io.shockah.skylark.urlannouncer.URLAnnouncerPlugin",
+	"enabledByDefault": true,
+
+	"name": "URL Announcer",
+	"author": "Shockah",
+	"description": ""
+}

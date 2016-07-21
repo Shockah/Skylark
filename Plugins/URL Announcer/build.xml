@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="build" name="Skylark - URL Announcer">
+	<target name="build">
+		<mkdir dir="bin"/>
+		<delete file="../../bin/plugins/URL Announcer.jar"/>
+		<jar destfile="../../bin/plugins/URL Announcer.jar" filesetmanifest="mergewithoutmain">
+		<fileset dir="bin"/>
+		</jar>
+	</target>
+</project>
