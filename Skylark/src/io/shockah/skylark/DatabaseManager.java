@@ -2,6 +2,11 @@ package io.shockah.skylark;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +17,11 @@ import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.DatabaseTable;
 import com.j256.ormlite.table.TableUtils;
+import io.shockah.json.JSONObject;
+import io.shockah.json.JSONParser;
+import io.shockah.json.JSONPrettyPrinter;
 import io.shockah.skylark.db.DbObject;
 import io.shockah.skylark.db.PatternPersister;
 import io.shockah.skylark.db.SQLExceptionWrappedAction1;
@@ -21,33 +30,41 @@ import io.shockah.skylark.db.WhereBuilder;
 import io.shockah.skylark.func.Action1;
 
 public class DatabaseManager implements Closeable {
+	public static final Path TABLE_VERSIONS_PATH = Paths.get("tableVersions.json");
+	
 	public final App app;
 	protected final ConnectionSource connection;
 	
 	private final Object lock = new Object();
 	private final List<Class<?>> createdTables = new ArrayList<>();
+	private final JSONObject tableVersions;
 	
 	public DatabaseManager(App app) {
 		this.app = app;
 		try {
 			connection = new JdbcConnectionSource("jdbc:" + app.config.getObject("database").getString("databasePath"));
 			DataPersisterManager.registerDataPersisters(new PatternPersister());
-		} catch (SQLException e) {
+			
+			if (Files.exists(TABLE_VERSIONS_PATH))
+				tableVersions = new JSONParser().parseObject(new String(Files.readAllBytes(TABLE_VERSIONS_PATH), "UTF-8"));
+			else
+				tableVersions = new JSONObject();
+		} catch (Exception e) {
 			throw new UnexpectedException(e);
 		}
 	}
 	
-	public <T> Dao<T, Integer> getDao(Class<T> clazz) {
+	public <T extends DbObject<T>> Dao<T, Integer> getDao(Class<T> clazz) {
 		return getDao(clazz, Integer.class);
 	}
 	
-	public <T, ID> Dao<T, ID> getDao(Class<T> clazz, Class<ID> clazzId) {
+	public <T extends DbObject<T>, ID> Dao<T, ID> getDao(Class<T> clazz, Class<ID> clazzId) {
 		try {
 			synchronized (lock) {
 				Dao<T, ID> dao = DaoManager.lookupDao(connection, clazz);
 				if (dao == null)
 					dao = DaoManager.createDao(connection, clazz);
-				createTableIfNeeded(clazz);
+				createTableIfNeeded(dao, clazz);
 				return dao;
 			}
 		} catch (SQLException e) {
@@ -55,16 +72,51 @@ public class DatabaseManager implements Closeable {
 		}
 	}
 	
-	private void createTableIfNeeded(Class<?> clazz) {
+	private <T extends DbObject<T>, ID> void createTableIfNeeded(Dao<T, ID> dao, Class<T> clazz) {
 		synchronized (lock) {
 			if (createdTables.contains(clazz))
 				return;
 			try {
 				TableUtils.createTableIfNotExists(connection, clazz);
+				String databaseTable = getDatabaseTable(clazz);
+				int tableVersion = getTableVersion(clazz);
+				int oldTableVersion = tableVersions.getInt(databaseTable, 0);
+				if (tableVersion > oldTableVersion) {
+					if (oldTableVersion != 0) {
+						try {
+							Method method = clazz.getMethod("migrate", Dao.class, int.class, int.class);
+							if (Modifier.isStatic(method.getModifiers())) {
+								method.invoke(null, dao, oldTableVersion, tableVersion);
+								tableVersions.put(databaseTable, tableVersion);
+							}
+						} catch (Exception e) {
+							throw new UnexpectedException(e);
+						}
+					}
+					saveTableVersions();
+				}
 			} catch (SQLException e) {
 				throw new UnexpectedException(e);
 			}
 			createdTables.add(clazz);
+		}
+	}
+	
+	private <T extends DbObject<T>> String getDatabaseTable(Class<T> clazz) {
+		DatabaseTable databaseTable = clazz.getAnnotation(DatabaseTable.class);
+		return databaseTable == null ? clazz.getSimpleName().toLowerCase() : databaseTable.tableName();
+	}
+	
+	private <T extends DbObject<T>> int getTableVersion(Class<T> clazz) {
+		DbObject.TableVersion tableVersion = clazz.getAnnotation(DbObject.TableVersion.class);
+		return tableVersion == null ? 1 : tableVersion.value();
+	}
+	
+	private void saveTableVersions() {
+		try {
+			Files.write(TABLE_VERSIONS_PATH, new JSONPrettyPrinter().toString(tableVersions).getBytes("UTF-8"));
+		} catch (Exception e) {
+			throw new UnexpectedException(e);
 		}
 	}
 	

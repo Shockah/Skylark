@@ -75,7 +75,8 @@ public class Plugin {
 		}
 	}
 	
-	@Retention(RetentionPolicy.RUNTIME) @Target(ElementType.FIELD)
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.FIELD)
 	public static @interface Dependency {
 		public String value() default "";
 	}

@@ -1,5 +1,9 @@
 package io.shockah.skylark.db;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.misc.BaseDaoEnabled;
@@ -42,5 +46,11 @@ public class DbObject<T> extends BaseDaoEnabled<T, Integer> {
 		} catch (Exception e) {
 			throw new UnexpectedException(e);
 		}
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.TYPE)
+	public static @interface TableVersion {
+		public int value() default 1;
 	}
 }
