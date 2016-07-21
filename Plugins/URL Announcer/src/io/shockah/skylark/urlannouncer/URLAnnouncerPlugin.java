@@ -78,7 +78,7 @@ public class URLAnnouncerPlugin extends ListenerPlugin {
 					
 					String title = getTitleForURL(normalized);
 					if (title != null) {
-						e.getChannel().send().message(String.format("[%s]", title));
+						e.getChannel().send().message(title);
 						if (lastDate != null) {
 							SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 							sdf.setTimeZone(TimeZone.getTimeZone("UTC"));

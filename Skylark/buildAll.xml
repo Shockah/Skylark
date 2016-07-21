@@ -10,5 +10,6 @@
 		<ant useNativeBasedir="true" antfile="../Plugins/Ident - NickServ/build.xml" target="build" />
 		<ant useNativeBasedir="true" antfile="../Plugins/Permissions/build.xml" target="build" />
 		<ant useNativeBasedir="true" antfile="../Plugins/URL Announcer/build.xml" target="build" />
+		<ant useNativeBasedir="true" antfile="../Plugins/YouTube/build.xml" target="build" />
 	</target>
 </project>

@@ -16,7 +16,7 @@ public class DefaultURLAnnouncer extends URLAnnouncer {
 			if (splitContentType[0].equals("text/html")) {
 				Matcher m = TITLE_PATTERN.matcher(req.body());
 				if (m.find())
-					return m.group(1).replaceAll("\\s+", " ").trim();
+					return String.format("[%s]", m.group(1).replaceAll("\\s+", " ").trim());
 			}
 		} catch (Exception e) {
 		}

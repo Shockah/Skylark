@@ -1,0 +1,9 @@
+{
+	"packageName": "io.shockah.skylark.youtube",
+	"baseClass": "io.shockah.skylark.youtube.YouTubePlugin",
+	"enabledByDefault": true,
+
+	"name": "YouTube",
+	"author": "Shockah",
+	"description": ""
+}
