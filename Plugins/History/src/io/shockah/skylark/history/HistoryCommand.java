@@ -103,8 +103,20 @@ public class HistoryCommand extends NamedCommand<AbstractHistoryQuery, List<Line
 		if (lines.isEmpty())
 			return CommandResult.of(lines, "No lines found.");
 		
-		//TODO: find longest nicks and message IDs and pass their lengths to Line.toString()
-		String message = lines.stream().map(line -> line.toString()).collect(Collectors.joining("\n"));
+		int idLength = 0;
+		int nickLength = 0;
+		for (Line line : lines) {
+			idLength = Math.max(idLength, String.valueOf(line.getId()).length());
+			if (line.type == Line.Type.Message || line.type == Line.Type.Notice)
+				nickLength = Math.max(nickLength, line.nick.length() + 2);
+			else
+				nickLength = Math.max(nickLength, 1);
+		}
+		
+		final int f_idLength = idLength;
+		final int f_nickLength = nickLength;
+		
+		String message = lines.stream().map(line -> line.toString(f_idLength, 0, f_nickLength)).collect(Collectors.joining("\n"));
 		return CommandResult.of(lines, message);
 	}
 }

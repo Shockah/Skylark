@@ -125,29 +125,84 @@ public class Line extends DbObject<Line> {
 				sb.append(content);
 			} break;
 			case Join: {
+				{
+					StringBuilder sb2 = new StringBuilder();
+					sb2.append("*");
+					while (sb2.length() < nickLength)
+						sb2.insert(0, ' ');
+					
+					if (sb.length() != 0)
+						sb.append(' ');
+					sb.append(sb2);
+				}
+				
 				if (sb.length() != 0)
 					sb.append(' ');
-				sb.append(String.format("* %s has joined %s", nick, channel));
+				sb.append(String.format("%s has joined %s", nick, channel));
 			} break;
 			case Part: {
+				{
+					StringBuilder sb2 = new StringBuilder();
+					sb2.append("*");
+					while (sb2.length() < nickLength)
+						sb2.insert(0, ' ');
+					
+					if (sb.length() != 0)
+						sb.append(' ');
+					sb.append(sb2);
+				}
+				
 				if (sb.length() != 0)
 					sb.append(' ');
-				sb.append(String.format("* %s has left %s", nick, channel));
+				sb.append(String.format("%s has left %s", nick, channel));
 			} break;
 			case Quit: {
+				{
+					StringBuilder sb2 = new StringBuilder();
+					sb2.append("*");
+					while (sb2.length() < nickLength)
+						sb2.insert(0, ' ');
+					
+					if (sb.length() != 0)
+						sb.append(' ');
+					sb.append(sb2);
+				}
+				
 				if (sb.length() != 0)
 					sb.append(' ');
-				sb.append(String.format("* %s has quit %s", nick, channel));
+				sb.append(String.format("%s has quit %s", nick, channel));
 			} break;
 			case NickChange: {
+				{
+					StringBuilder sb2 = new StringBuilder();
+					sb2.append("*");
+					while (sb2.length() < nickLength)
+						sb2.insert(0, ' ');
+					
+					if (sb.length() != 0)
+						sb.append(' ');
+					sb.append(sb2);
+				}
+				
 				if (sb.length() != 0)
 					sb.append(' ');
-				sb.append(String.format("* %s is now known as %s", nick, nick2));
+				sb.append(String.format("%s is now known as %s", nick, nick2));
 			} break;
 			case Kick: {
+				{
+					StringBuilder sb2 = new StringBuilder();
+					sb2.append("*");
+					while (sb2.length() < nickLength)
+						sb2.insert(0, ' ');
+					
+					if (sb.length() != 0)
+						sb.append(' ');
+					sb.append(sb2);
+				}
+				
 				if (sb.length() != 0)
 					sb.append(' ');
-				sb.append(String.format("* %s has kicked %s from %s (%s)", nick, nick2, channel, content));
+				sb.append(String.format("%s has kicked %s from %s (%s)", nick, nick2, channel, content));
 			} break;
 			default:
 				throw new IllegalStateException();
@@ -232,6 +287,7 @@ public class Line extends DbObject<Line> {
 		return manager.create(Line.class, obj -> {
 			fillFromGenericChannelUserEvent(obj, e);
 			obj.type = Type.Kick;
+			obj.nick2 = e.getRecipient().getNick();
 			obj.content = e.getReason();
 		});
 	}
