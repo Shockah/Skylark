@@ -31,8 +31,9 @@ public class SkylarkInputParser extends InputParser {
 	}
 	
 	@Override
-	public void processCommand(String target, UserHostmask sourceh, String command, String line, List<String> parsedLine, ImmutableMap<String, String> map) throws IOException {
+	public void processCommand(String target, UserHostmask source, String command, String line, List<String> parsedLine, ImmutableMap<String, String> map) throws IOException {
 		Channel channel = (target.length() != 0 && configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0 && bot.getUserChannelDao().containsChannel(target)) ? bot.getUserChannelDao().getChannel(target) : null;
+		User sourceUser = bot.getUserChannelDao().containsUser(source) ? bot.getUserChannelDao().getUser(source) : null;
 		
 		if (command.equals("ACCOUNT")) {
 			if (availableAccountNotify == null)
@@ -41,12 +42,11 @@ public class SkylarkInputParser extends InputParser {
 				String account = parsedLine.get(0);
 				if (account.equals("0") || account.equals("*"))
 					account = null;
-				User source = bot.getUserChannelDao().getUser(sourceh);
-				configuration.getListenerManager().onEvent(new AccountNotifyEvent(bot, channel, source, account));
+				configuration.getListenerManager().onEvent(new AccountNotifyEvent(bot, channel, sourceUser, account));
 				return;
 			}
 		} else if (command.equals("JOIN")) {
-			User source = bot.getUserChannelDao().getUser(sourceh);
+			sourceUser = createUserIfNull(sourceUser, source);
 			String sourceNick = source.getNick();
 			if (!sourceNick.equalsIgnoreCase(bot.getNick())) {
 				if (availableExtendedJoin == null)
@@ -55,12 +55,12 @@ public class SkylarkInputParser extends InputParser {
 					String account = parsedLine.get(1);
 					if (account.equals("0") || account.equals("*"))
 						account = null;
-					configuration.getListenerManager().onEvent(new ExtendedJoinEvent(bot, channel, source, account));
+					configuration.getListenerManager().onEvent(new ExtendedJoinEvent(bot, channel, sourceUser, account));
 				}
 			}
 		}
 		
-		super.processCommand(target, sourceh, command, line, parsedLine, map);
+		super.processCommand(target, source, command, line, parsedLine, map);
 	}
 	
 	@Override
