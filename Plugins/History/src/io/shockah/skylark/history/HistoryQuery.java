@@ -66,7 +66,7 @@ public class HistoryQuery extends AbstractHistoryQuery {
 					}
 				} else {
 					where.and();
-					where.ge(Line.DATE_COLUMN, new Date(firstLine.date.getTime() - seconds * 1000l));
+					where.ge(Line.DATE_COLUMN, new Date(new Date().getTime() - seconds * 1000l));
 				}
 			}
 			
