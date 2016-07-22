@@ -237,11 +237,13 @@ public class BotManager {
 			if (ellipsis != null && !ellipsis.isEmpty()) {
 				String lastLine = newLines.get(newLines.size() - 1);
 				String replacement = ellipsis;
-				if (Colors.removeFormattingAndColors(lastLine).equals(lastLine))
+				if (!Colors.removeFormattingAndColors(lastLine).equals(lastLine))
 					replacement = "\u000F" + replacement;
 				
 				if (replacement.length() >= lastLine.length())
 					lastLine = replacement;
+				else if (lastLine.length() + replacement.length() < getLinebreakLength() + 1)
+					lastLine = String.format("%s %s", lastLine, replacement);
 				else
 					lastLine = lastLine.substring(0, lastLine.length() - replacement.length()) + replacement;
 				newLines.set(newLines.size() - 1, lastLine);
