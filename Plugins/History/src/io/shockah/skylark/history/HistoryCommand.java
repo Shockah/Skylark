@@ -20,6 +20,13 @@ public class HistoryCommand extends NamedCommand<AbstractHistoryQuery, List<Line
 	}
 	
 	@Override
+	public AbstractHistoryQuery convertToInput(GenericUserMessageEvent e, Object input) throws CommandParseException {
+		if (input instanceof AbstractHistoryQuery)
+			return (AbstractHistoryQuery)input;
+		return super.convertToInput(e, input);
+	}
+	
+	@Override
 	public AbstractHistoryQuery parseInput(GenericUserMessageEvent e, String input) throws CommandParseException {
 		String[] split = input.split("\\s");
 		

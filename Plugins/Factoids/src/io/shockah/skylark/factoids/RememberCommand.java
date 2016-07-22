@@ -6,10 +6,10 @@ import java.util.regex.Pattern;
 import io.shockah.skylark.Bot;
 import io.shockah.skylark.commands.CommandCall;
 import io.shockah.skylark.commands.CommandCall.Medium;
-import io.shockah.skylark.db.DatabaseManager;
 import io.shockah.skylark.commands.CommandParseException;
 import io.shockah.skylark.commands.CommandResult;
 import io.shockah.skylark.commands.NamedCommand;
+import io.shockah.skylark.db.DatabaseManager;
 import io.shockah.skylark.event.GenericUserMessageEvent;
 import io.shockah.skylark.factoids.RememberCommand.Input;
 import io.shockah.skylark.factoids.db.Factoid;
@@ -24,6 +24,13 @@ public class RememberCommand extends NamedCommand<Input, Factoid> {
 	public RememberCommand(FactoidsPlugin plugin) {
 		super("remember", "r");
 		this.plugin = plugin;
+	}
+	
+	@Override
+	public Input convertToInput(GenericUserMessageEvent e, Object input) throws CommandParseException {
+		if (input instanceof Input)
+			return (Input)input;
+		return super.convertToInput(e, input);
 	}
 	
 	@Override

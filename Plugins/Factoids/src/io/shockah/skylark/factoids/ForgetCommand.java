@@ -19,6 +19,13 @@ public class ForgetCommand extends NamedCommand<Input, Factoid> {
 	}
 	
 	@Override
+	public Input convertToInput(GenericUserMessageEvent e, Object input) throws CommandParseException {
+		if (input instanceof Input)
+			return (Input)input;
+		return super.convertToInput(e, input);
+	}
+	
+	@Override
 	public Input parseInput(GenericUserMessageEvent e, String input) throws CommandParseException {
 		if (input.isEmpty())
 			throw new CommandParseException("Not enough arguments.");

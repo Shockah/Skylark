@@ -8,6 +8,7 @@ import com.google.common.base.Joiner;
 import io.shockah.skylark.Bot;
 import io.shockah.skylark.BotManager;
 import io.shockah.skylark.commands.CommandCall;
+import io.shockah.skylark.commands.CommandParseException;
 import io.shockah.skylark.commands.CommandResult;
 import io.shockah.skylark.commands.NamedCommand;
 import io.shockah.skylark.event.GenericUserMessageEvent;
@@ -18,6 +19,14 @@ public class JoinCommand extends NamedCommand<List<String>, Map<String, Bot>> {
 	public JoinCommand(BotControlPlugin plugin) {
 		super("join");
 		this.plugin = plugin;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> convertToInput(GenericUserMessageEvent e, Object input) throws CommandParseException {
+		if (input instanceof List<?>)
+			return (List<String>)input;
+		return super.convertToInput(e, input);
 	}
 
 	@Override
