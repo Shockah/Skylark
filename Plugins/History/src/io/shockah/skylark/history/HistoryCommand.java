@@ -113,7 +113,7 @@ public class HistoryCommand extends NamedCommand<AbstractHistoryQuery, List<Line
 		int idLength = 0;
 		int nickLength = 0;
 		for (Line line : lines) {
-			idLength = Math.max(idLength, String.valueOf(line.getId()).length());
+			idLength = Math.max(idLength, String.valueOf(line.getId()).length() + 1);
 			if (line.type == Line.Type.Message || line.type == Line.Type.Notice)
 				nickLength = Math.max(nickLength, line.nick.length() + 2);
 			else
