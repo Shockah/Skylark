@@ -170,7 +170,7 @@ public class Line extends DbObject<Line> {
 				
 				if (sb.length() != 0)
 					sb.append(' ');
-				sb.append(String.format("%s has quit %s", nick, channel));
+				sb.append(String.format("%s has quit (%s)", nick, content));
 			} break;
 			case NickChange: {
 				{
@@ -263,6 +263,7 @@ public class Line extends DbObject<Line> {
 			fillFromEvent(obj, e);
 			obj.channel = channel;
 			obj.nick = e.getUser().getNick();
+			obj.content = e.getReason();
 			obj.type = Type.Quit;
 		});
 	}
