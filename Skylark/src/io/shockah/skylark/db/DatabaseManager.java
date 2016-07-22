@@ -1,7 +1,8 @@
-package io.shockah.skylark;
+package io.shockah.skylark.db;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
@@ -22,11 +23,8 @@ import com.j256.ormlite.table.TableUtils;
 import io.shockah.json.JSONObject;
 import io.shockah.json.JSONParser;
 import io.shockah.json.JSONPrettyPrinter;
-import io.shockah.skylark.db.DbObject;
-import io.shockah.skylark.db.PatternPersister;
-import io.shockah.skylark.db.SQLExceptionWrappedAction1;
-import io.shockah.skylark.db.SQLExceptionWrappedAction2;
-import io.shockah.skylark.db.WhereBuilder;
+import io.shockah.skylark.App;
+import io.shockah.skylark.UnexpectedException;
 import io.shockah.skylark.func.Action1;
 
 public class DatabaseManager implements Closeable {
@@ -122,7 +120,9 @@ public class DatabaseManager implements Closeable {
 	
 	public <T extends DbObject<T>> T make(Class<T> clazz) {
 		try {
-			return clazz.getConstructor(Dao.class).newInstance(getDao(clazz, Integer.class));
+			T obj = clazz.getConstructor(Dao.class).newInstance(getDao(clazz, Integer.class));
+			obj.manager = new WeakReference<>(this);
+			return obj;
 		} catch (Exception e) {
 			throw new UnexpectedException(e);
 		}
@@ -139,11 +139,26 @@ public class DatabaseManager implements Closeable {
 		}
 	}
 	
+	public <T extends DbObject<T>> T get(Class<T> clazz, int id) {
+		try {
+			T obj = getDao(clazz).queryForId(id);
+			if (obj != null)
+				obj.manager = new WeakReference<>(this);
+			return obj;
+		} catch (SQLException e) {
+			throw new UnexpectedException(e);
+		}
+	}
+	
 	public <T extends DbObject<T>> List<T> query(Class<T> clazz, SQLExceptionWrappedAction1<QueryBuilder<T, Integer>> f) {
 		try {
 			QueryBuilder<T, Integer> builder = getDao(clazz).queryBuilder();
 			f.call(builder);
-			return builder.query();
+			List<T> objs = builder.query();
+			for (T obj : objs) {
+				obj.manager = new WeakReference<>(this);
+			}
+			return objs;
 		} catch (SQLException e) {
 			throw new UnexpectedException(e);
 		}
@@ -153,7 +168,11 @@ public class DatabaseManager implements Closeable {
 		try {
 			QueryBuilder<T, Integer> builder = getDao(clazz).queryBuilder();
 			f.call(builder, new WhereBuilder(builder.where()));
-			return builder.query();
+			List<T> objs = builder.query();
+			for (T obj : objs) {
+				obj.manager = new WeakReference<>(this);
+			}
+			return objs;
 		} catch (SQLException e) {
 			throw new UnexpectedException(e);
 		}
@@ -163,7 +182,10 @@ public class DatabaseManager implements Closeable {
 		try {
 			QueryBuilder<T, Integer> builder = getDao(clazz).queryBuilder();
 			f.call(builder);
-			return builder.queryForFirst();
+			T obj = builder.queryForFirst();
+			if (obj != null)
+				obj.manager = new WeakReference<>(this);
+			return obj;
 		} catch (SQLException e) {
 			throw new UnexpectedException(e);
 		}
@@ -173,7 +195,10 @@ public class DatabaseManager implements Closeable {
 		try {
 			QueryBuilder<T, Integer> builder = getDao(clazz).queryBuilder();
 			f.call(builder, new WhereBuilder(builder.where()));
-			return builder.queryForFirst();
+			T obj = builder.queryForFirst();
+			if (obj != null)
+				obj.manager = new WeakReference<>(this);
+			return obj;
 		} catch (SQLException e) {
 			throw new UnexpectedException(e);
 		}

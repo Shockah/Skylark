@@ -1,0 +1,12 @@
+{
+	"packageName": "io.shockah.skylark.history",
+	"baseClass": "io.shockah.skylark.history.HistoryPlugin",
+	"enabledByDefault": true,
+	"dependsOn": [
+		"io.shockah.skylark.commands"
+	],
+
+	"name": "History",
+	"author": "Shockah",
+	"description": ""
+}

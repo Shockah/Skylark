@@ -4,6 +4,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.ref.WeakReference;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.misc.BaseDaoEnabled;
@@ -15,6 +16,8 @@ public class DbObject<T> extends BaseDaoEnabled<T, Integer> {
 	
 	@DatabaseField(generatedId = true, columnName = ID_COLUMN)
 	private int id;
+	
+	WeakReference<DatabaseManager> manager;
 	
 	@Deprecated //ORMLite-only
 	protected DbObject() {
@@ -36,6 +39,10 @@ public class DbObject<T> extends BaseDaoEnabled<T, Integer> {
 	
 	public int getId() {
 		return id;
+	}
+	
+	public DatabaseManager getDatabaseManager() {
+		return manager.get();
 	}
 	
 	@SuppressWarnings("unchecked")

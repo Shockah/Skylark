@@ -1,7 +1,7 @@
 package io.shockah.skylark.factoids.db;
 
-import io.shockah.skylark.DatabaseManager;
 import io.shockah.skylark.UnexpectedException;
+import io.shockah.skylark.db.DatabaseManager;
 import io.shockah.skylark.db.DbObject;
 import io.shockah.skylark.ident.IdentMethod;
 import java.sql.SQLException;

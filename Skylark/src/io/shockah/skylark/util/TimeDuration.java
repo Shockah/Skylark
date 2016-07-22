@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class TimeDuration {
+	public static final Pattern TIME_DURATION_PATTERN = Pattern.compile("(\\d+)([smhdw])(\\s?\\d+[smhdw])*", Pattern.CASE_INSENSITIVE);
 	public static final Pattern TIME_DURATION_TOKEN_PATTERN = Pattern.compile("(\\d+)([smhdw])", Pattern.CASE_INSENSITIVE);
 	
 	public static String format(Date date) {

@@ -25,6 +25,8 @@ public class DefaultCommandPattern extends CommandPattern {
 				String[] commandNames = commandList.split(">");
 				if (commandNames.length == 1) {
 					Command<Object, Object> command = (Command<Object, Object>)providers.firstResult(provider -> provider.provide(e, commandNames[0]));
+					if (command == null)
+						return null;
 					return new PreparedCommandCall<>(command, command.parseInput(e, textInput));
 				} else {
 					Command<?, ?>[] commands = new Command[commandNames.length];

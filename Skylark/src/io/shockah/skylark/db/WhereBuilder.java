@@ -1,26 +1,45 @@
 package io.shockah.skylark.db;
 
-import io.shockah.skylark.UnexpectedException;
 import java.lang.reflect.Field;
 import java.sql.SQLException;
+import java.util.regex.Pattern;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.SqlType;
 import com.j256.ormlite.stmt.SelectArg;
 import com.j256.ormlite.stmt.Where;
+import io.shockah.skylark.UnexpectedException;
 
 public final class WhereBuilder {
+	public static enum Operator {
+		AND, OR;
+	}
+	
 	public final Where<?, ?> where;
+	public final Operator operator;
 	private boolean first = true;
 	
 	public WhereBuilder(Where<?, ?> where) {
+		this(where, Operator.AND);
+	}
+	
+	public WhereBuilder(Where<?, ?> where, Operator operator) {
 		this.where = where;
+		this.operator = operator;
 	}
 	
 	private void checkFirst() {
-		if (first)
+		if (first) {
 			first = false;
-		else
-			where.and();
+		} else {
+			switch (operator) {
+				case AND:
+					where.and();
+					break;
+				case OR:
+					where.or();
+					break;
+			}
+		}
 	}
 	
 	private String getColumnName(Field field) {
@@ -72,6 +91,7 @@ public final class WhereBuilder {
 	
 	public WhereBuilder greater(String columnName, Object value) {
 		try {
+			checkFirst();
 			where.gt(columnName, value);
 		} catch (SQLException e) {
 			throw new UnexpectedException(e);
@@ -85,6 +105,7 @@ public final class WhereBuilder {
 	
 	public WhereBuilder greaterOrEqual(String columnName, Object value) {
 		try {
+			checkFirst();
 			where.ge(columnName, value);
 		} catch (SQLException e) {
 			throw new UnexpectedException(e);
@@ -98,6 +119,7 @@ public final class WhereBuilder {
 	
 	public WhereBuilder less(String columnName, Object value) {
 		try {
+			checkFirst();
 			where.lt(columnName, value);
 		} catch (SQLException e) {
 			throw new UnexpectedException(e);
@@ -111,6 +133,7 @@ public final class WhereBuilder {
 	
 	public WhereBuilder lessOrEqual(String columnName, Object value) {
 		try {
+			checkFirst();
 			where.le(columnName, value);
 		} catch (SQLException e) {
 			throw new UnexpectedException(e);
@@ -124,6 +147,7 @@ public final class WhereBuilder {
 	
 	public WhereBuilder between(String columnName, Object low, Object high) {
 		try {
+			checkFirst();
 			where.between(columnName, low, high);
 		} catch (SQLException e) {
 			throw new UnexpectedException(e);
@@ -137,7 +161,22 @@ public final class WhereBuilder {
 	
 	public WhereBuilder regexp(String columnName, String pattern) {
 		try {
+			checkFirst();
 			where.rawComparison(columnName, "REGEXP", pattern);
+		} catch (SQLException e) {
+			throw new UnexpectedException(e);
+		}
+		return this;
+	}
+	
+	public WhereBuilder regexp(Field field, Pattern pattern) {
+		return regexp(getColumnName(field), pattern.pattern());
+	}
+	
+	public WhereBuilder regexp(String columnName, Pattern pattern) {
+		try {
+			checkFirst();
+			where.rawComparison(columnName, "REGEXP", pattern.pattern());
 		} catch (SQLException e) {
 			throw new UnexpectedException(e);
 		}
@@ -149,6 +188,7 @@ public final class WhereBuilder {
 	}
 	
 	public WhereBuilder reverseRegexp(String columnName, String value) {
+		checkFirst();
 		where.raw(String.format("? REGEXP %s", columnName), new SelectArg(SqlType.STRING, value));
 		return this;
 	}

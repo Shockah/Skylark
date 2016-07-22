@@ -6,6 +6,7 @@
 		<ant useNativeBasedir="true" antfile="../Plugins/Commands/build.xml" target="build" />
 		<ant useNativeBasedir="true" antfile="../Plugins/Factoids/build.xml" target="build" />
 		<ant useNativeBasedir="true" antfile="../Plugins/Groovy/build.xml" target="build" />
+		<ant useNativeBasedir="true" antfile="../Plugins/History/build.xml" target="build" />
 		<ant useNativeBasedir="true" antfile="../Plugins/Ident/build.xml" target="build" />
 		<ant useNativeBasedir="true" antfile="../Plugins/Ident - NickServ/build.xml" target="build" />
 		<ant useNativeBasedir="true" antfile="../Plugins/Permissions/build.xml" target="build" />
