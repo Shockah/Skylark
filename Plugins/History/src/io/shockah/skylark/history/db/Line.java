@@ -186,7 +186,7 @@ public class Line extends DbObject<Line> {
 	private static void fillFromGenericChannelUserEvent(Line line, GenericChannelUserEvent e) {
 		fillFromEvent(line, (Event)e);
 		line.channel = e.getChannel().getName();
-		line.nick = e.getUser().getNick();
+		line.nick = e.getUser() == null ? e.getUserHostmask().getNick() : e.getUser().getNick();
 	}
 	
 	public static Line createFrom(DatabaseManager manager, MessageEvent e) {

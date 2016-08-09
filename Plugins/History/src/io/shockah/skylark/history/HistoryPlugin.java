@@ -115,7 +115,8 @@ public class HistoryPlugin extends ListenerPlugin {
 	
 	@Override
 	protected void onMode(ModeEvent e) {
-		Line.createFrom(manager.app.databaseManager, e);
+		if (e.getUser() != null || e.getUserHostmask() != null)
+			Line.createFrom(manager.app.databaseManager, e);
 	}
 	
 	@Override
