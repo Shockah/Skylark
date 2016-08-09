@@ -3,13 +3,16 @@ package io.shockah.skylark.history.db;
 import java.util.Date;
 import java.util.stream.Collectors;
 import org.pircbotx.hooks.Event;
+import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
+import org.pircbotx.hooks.events.ModeEvent;
 import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.QuitEvent;
+import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.types.GenericChannelUserEvent;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DataType;
@@ -18,6 +21,9 @@ import com.j256.ormlite.table.DatabaseTable;
 import io.shockah.skylark.Bot;
 import io.shockah.skylark.db.DatabaseManager;
 import io.shockah.skylark.db.DbObject;
+import io.shockah.skylark.event.OutActionEvent;
+import io.shockah.skylark.event.OutMessageEvent;
+import io.shockah.skylark.event.OutNoticeEvent;
 import io.shockah.skylark.history.HistoryPlugin;
 
 @DatabaseTable(tableName = "io_shockah_skylark_history_line")
@@ -31,7 +37,7 @@ public class Line extends DbObject<Line> {
 	public static final String NICK2_COLUMN = "nick2";
 	
 	public static enum Type {
-		Message, Notice, Join, Part, Quit, NickChange, Kick;
+		Message, Notice, Join, Part, Quit, NickChange, Kick, Action, Mode, UserMode;
 	}
 	
 	@DatabaseField(canBeNull = false, columnName = SERVER_COLUMN)
@@ -124,7 +130,7 @@ public class Line extends DbObject<Line> {
 					sb.append(' ');
 				sb.append(content);
 			} break;
-			case Join: {
+			default: {
 				{
 					StringBuilder sb2 = new StringBuilder();
 					sb2.append("*");
@@ -138,74 +144,35 @@ public class Line extends DbObject<Line> {
 				
 				if (sb.length() != 0)
 					sb.append(' ');
-				sb.append(String.format("%s has joined %s", nick, channel));
-			} break;
-			case Part: {
-				{
-					StringBuilder sb2 = new StringBuilder();
-					sb2.append("*");
-					while (sb2.length() < nickLength)
-						sb2.insert(0, ' ');
-					
-					if (sb.length() != 0)
-						sb.append(' ');
-					sb.append(sb2);
+				switch (type) {
+					case Join:
+						sb.append(String.format("%s has joined %s", nick, channel));
+						break;
+					case Part:
+						sb.append(String.format("%s has left %s", nick, channel));
+						break;
+					case Quit:
+						sb.append(String.format("%s has quit (%s)", nick, content));
+						break;
+					case NickChange:
+						sb.append(String.format("%s is now known as %s", nick, nick2));
+						break;
+					case Kick:
+						sb.append(String.format("%s has kicked %s from %s (%s)", nick, nick2, channel, content));
+						break;
+					case Action:
+						sb.append(String.format("%s %s", nick, content));
+						break;
+					case Mode:
+						sb.append(String.format("%s sets %s", nick, content));
+						break;
+					case UserMode:
+						sb.append(String.format("%s sets %s on %s", nick, content, nick2));
+						break;
+					default:
+						throw new IllegalStateException();
 				}
-				
-				if (sb.length() != 0)
-					sb.append(' ');
-				sb.append(String.format("%s has left %s", nick, channel));
-			} break;
-			case Quit: {
-				{
-					StringBuilder sb2 = new StringBuilder();
-					sb2.append("*");
-					while (sb2.length() < nickLength)
-						sb2.insert(0, ' ');
-					
-					if (sb.length() != 0)
-						sb.append(' ');
-					sb.append(sb2);
-				}
-				
-				if (sb.length() != 0)
-					sb.append(' ');
-				sb.append(String.format("%s has quit (%s)", nick, content));
-			} break;
-			case NickChange: {
-				{
-					StringBuilder sb2 = new StringBuilder();
-					sb2.append("*");
-					while (sb2.length() < nickLength)
-						sb2.insert(0, ' ');
-					
-					if (sb.length() != 0)
-						sb.append(' ');
-					sb.append(sb2);
-				}
-				
-				if (sb.length() != 0)
-					sb.append(' ');
-				sb.append(String.format("%s is now known as %s", nick, nick2));
-			} break;
-			case Kick: {
-				{
-					StringBuilder sb2 = new StringBuilder();
-					sb2.append("*");
-					while (sb2.length() < nickLength)
-						sb2.insert(0, ' ');
-					
-					if (sb.length() != 0)
-						sb.append(' ');
-					sb.append(sb2);
-				}
-				
-				if (sb.length() != 0)
-					sb.append(' ');
-				sb.append(String.format("%s has kicked %s from %s (%s)", nick, nick2, channel, content));
-			} break;
-			default:
-				throw new IllegalStateException();
+			}
 		}
 		
 		return sb.toString();
@@ -230,7 +197,39 @@ public class Line extends DbObject<Line> {
 		});
 	}
 	
+	public static Line createFrom(DatabaseManager manager, OutMessageEvent e) {
+		return manager.create(Line.class, obj -> {
+			fillFromGenericChannelUserEvent(obj, e);
+			obj.type = Type.Message;
+			obj.content = e.getMessage();
+		});
+	}
+	
+	public static Line createFrom(DatabaseManager manager, ActionEvent e) {
+		return manager.create(Line.class, obj -> {
+			fillFromGenericChannelUserEvent(obj, e);
+			obj.type = Type.Action;
+			obj.content = e.getMessage();
+		});
+	}
+	
+	public static Line createFrom(DatabaseManager manager, OutActionEvent e) {
+		return manager.create(Line.class, obj -> {
+			fillFromGenericChannelUserEvent(obj, e);
+			obj.type = Type.Action;
+			obj.content = e.getMessage();
+		});
+	}
+	
 	public static Line createFrom(DatabaseManager manager, NoticeEvent e) {
+		return manager.create(Line.class, obj -> {
+			fillFromGenericChannelUserEvent(obj, e);
+			obj.type = Type.Notice;
+			obj.content = e.getMessage();
+		});
+	}
+	
+	public static Line createFrom(DatabaseManager manager, OutNoticeEvent e) {
 		return manager.create(Line.class, obj -> {
 			fillFromGenericChannelUserEvent(obj, e);
 			obj.type = Type.Notice;
@@ -290,6 +289,31 @@ public class Line extends DbObject<Line> {
 			obj.type = Type.Kick;
 			obj.nick2 = e.getRecipient().getNick();
 			obj.content = e.getReason();
+		});
+	}
+	
+	public static Line createFrom(DatabaseManager manager, ModeEvent e) {
+		return manager.create(Line.class, obj -> {
+			fillFromGenericChannelUserEvent(obj, e);
+			obj.type = Type.Mode;
+			obj.content = e.getMode();
+		});
+	}
+	
+	public static Line[] createFrom(DatabaseManager manager, UserModeEvent e) {
+		return e.getUser().getChannels().stream()
+			.map(channel -> createFrom(manager, e, channel.getName()))
+			.collect(Collectors.toList()).toArray(new Line[0]);
+	}
+	
+	public static Line createFrom(DatabaseManager manager, UserModeEvent e, String channel) {
+		return manager.create(Line.class, obj -> {
+			fillFromEvent(obj, e);
+			obj.channel = channel;
+			obj.nick = e.getUser().getNick();
+			obj.nick2 = e.getRecipient().getNick();
+			obj.type = Type.UserMode;
+			obj.content = e.getMode();
 		});
 	}
 }
