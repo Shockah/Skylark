@@ -42,6 +42,7 @@ public class DatabaseManager implements Closeable {
 		try {
 			connection = new JdbcConnectionSource("jdbc:" + app.config.getObject("database").getString("databasePath"));
 			DataPersisterManager.registerDataPersisters(new PatternPersister());
+			DataPersisterManager.registerDataPersisters(new JSONObjectPersister());
 			
 			if (Files.exists(TABLE_VERSIONS_PATH))
 				tableVersions = new JSONParser().parseObject(new String(Files.readAllBytes(TABLE_VERSIONS_PATH), "UTF-8"));

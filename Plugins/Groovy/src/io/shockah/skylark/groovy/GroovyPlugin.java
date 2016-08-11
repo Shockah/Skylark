@@ -1,5 +1,6 @@
 package io.shockah.skylark.groovy;
 
+import java.util.Collection;
 import java.util.Map;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer;
@@ -11,6 +12,8 @@ import com.google.common.collect.ImmutableMap;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.transform.TimedInterrupt;
+import io.shockah.json.JSONList;
+import io.shockah.json.JSONObject;
 import io.shockah.skylark.commands.CommandCall;
 import io.shockah.skylark.commands.CommandsPlugin;
 import io.shockah.skylark.event.GenericUserMessageEvent;
@@ -97,5 +100,26 @@ public class GroovyPlugin extends Plugin {
 		GroovyShell shell = new GroovyShell(manager.pluginClassLoader, binding, cc);
 		sandbox.register();
 		return shell;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Object turnIntoJSONValue(Object o) {
+		if (o instanceof Map<?, ?>) {
+			Map<String, Object> map = (Map<String, Object>)o;
+			JSONObject j = new JSONObject();
+			for (Map.Entry<String, Object> entry : map.entrySet()) {
+				j.put(entry.getKey(), turnIntoJSONValue(entry.getValue()));
+			}
+			return j;
+		} else if (o instanceof Collection<?>) {
+			Collection<Object> collection = (Collection<Object>)o;
+			JSONList<Object> jList = new JSONList<>();
+			for (Object element : collection) {
+				jList.add(turnIntoJSONValue(element));
+			}
+			return jList;
+		} else {
+			return o;
+		}
 	}
 }

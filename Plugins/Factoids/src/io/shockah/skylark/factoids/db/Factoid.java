@@ -1,6 +1,5 @@
 package io.shockah.skylark.factoids.db;
 
-import io.shockah.skylark.db.DbObject;
 import java.util.Date;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.ForeignCollection;
@@ -8,6 +7,8 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
+import io.shockah.json.JSONObject;
+import io.shockah.skylark.db.DbObject;
 
 @DatabaseTable(tableName = "io_shockah_skylark_factoids_factoid")
 public class Factoid extends DbObject<Factoid> {
@@ -60,5 +61,45 @@ public class Factoid extends DbObject<Factoid> {
 	
 	public ForeignCollection<FactoidIdent> getIdents() {
 		return idents;
+	}
+	
+	public FactoidStore getStore() {
+		return getDatabaseManager().queryFirst(FactoidStore.class, (builder, where) -> {
+			where.equals(FactoidStore.NAME_COLUMN, name);
+			where.equals(FactoidStore.CONTEXT_COLUMN, context);
+			switch (context) {
+				case Channel:
+					where.equals(FactoidStore.CHANNEL_COLUMN, channel);
+					where.equals(FactoidStore.SERVER_COLUMN, server);
+					break;
+				case Server:
+					where.equals(FactoidStore.SERVER_COLUMN, server);
+					break;
+				default:
+					break;
+			}
+		});
+	}
+	
+	public JSONObject getStoreData() {
+		FactoidStore store = getStore();
+		return store == null ? null : store.data;
+	}
+	
+	public void setStoreData(JSONObject data) {
+		FactoidStore store = getStore();
+		if (store == null) {
+			getDatabaseManager().create(FactoidStore.class, obj -> {
+				obj.name = name;
+				obj.context = context;
+				obj.server = server;
+				obj.channel = channel;
+				obj.data = data;
+			});
+		} else {
+			store.update(obj -> {
+				obj.data = data;
+			});
+		}
 	}
 }
