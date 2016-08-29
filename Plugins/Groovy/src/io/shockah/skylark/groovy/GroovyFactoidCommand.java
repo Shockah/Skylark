@@ -39,6 +39,8 @@ public class GroovyFactoidCommand<T, R> extends AbstractFactoidCommand<T, R> {
 	public CommandResult<R> call(CommandCall call, T input) {
 		try {
 			JSONObject storeData = factoid.getStoreData();
+			JSONPrinter printer = new JSONPrinter();
+			String jsonOld = storeData == null ? null : printer.toString(storeData);
 			
 			Map<String, Object> variables = new LinkedHashMap<>();
 			variables.put("call", call);
@@ -61,8 +63,6 @@ public class GroovyFactoidCommand<T, R> extends AbstractFactoidCommand<T, R> {
 			CommandResult<R> ret = (CommandResult<R>)CommandResult.of(result);
 			JSONObject newStoreData = (JSONObject)plugin.turnIntoJSONValue(shell.getVariable("store"));
 			
-			JSONPrinter printer = new JSONPrinter();
-			String jsonOld = storeData == null ? null : printer.toString(storeData);
 			String jsonNew = newStoreData == null ? null : printer.toString(newStoreData);
 			if (!Objects.equals(jsonOld, jsonNew))
 				factoid.setStoreData(newStoreData);
