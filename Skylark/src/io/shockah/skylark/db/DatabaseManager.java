@@ -86,12 +86,12 @@ public class DatabaseManager implements Closeable {
 							Method method = clazz.getMethod("migrate", Dao.class, int.class, int.class);
 							if (Modifier.isStatic(method.getModifiers())) {
 								method.invoke(null, dao, oldTableVersion, tableVersion);
-								tableVersions.put(databaseTable, tableVersion);
 							}
 						} catch (Exception e) {
 							throw new UnexpectedException(e);
 						}
 					}
+					tableVersions.put(databaseTable, tableVersion);
 					saveTableVersions();
 				}
 			} catch (SQLException e) {
